@@ -18,7 +18,7 @@
  */
 
 ==Title==
-%%NAME%%
+PAYONE FinanceGate
 
 ==Author==
 FATCHIP GmbH
@@ -28,8 +28,8 @@ www.fatchip.de
 fc
 
 ==Version==
-%%VERSION%%_%%REVISION%%
-%%TODAY%%
+2.0.4_5_5585
+June 14 2016
 
 ==Link==
 http://www.payone.de
