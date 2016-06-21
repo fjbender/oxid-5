@@ -1,3 +1,6 @@
+==2.0.4==
+  * Further refactoring for increasing code quality
+
 ==2.0.3==
   * Several bugfixes after refactoring
 

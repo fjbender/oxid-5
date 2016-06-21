@@ -55,6 +55,12 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @var array
      */
     protected $_aKlarnaBirthdayNeededCountries = array('DE', 'NL', 'AT');
+    
+    /**
+     * Datacontainer for all cc payment meta data
+     * @var array
+     */
+    protected $_aPaymentCCMetaData = array();
 
     /**
      * init object construction
@@ -279,42 +285,31 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return bool
      */
     public function hasPaymentMethodAvailableSubTypes($sType) {
-        if ($sType == 'cc') {
-            if ($this->getVisa())
-                return true;
-            if ($this->getMastercard())
-                return true;
-            if ($this->getAmex())
-                return true;
-            if ($this->getDiners())
-                return true;
-            if ($this->getJCB())
-                return true;
-            if ($this->getMaestroInternational())
-                return true;
-            if ($this->getMaestroUK())
-                return true;
-            if ($this->getDiscover())
-                return true;
-            if ($this->getCarteBleue())
-                return true;
-        } elseif ($sType == 'sb') {
-            if ($this->getSofortUeberweisung())
-                return true;
-            if ($this->getGiropay())
-                return true;
-            if ($this->getEPS())
-                return true;
-            if ($this->getPostFinanceEFinance())
-                return true;
-            if ($this->getPostFinanceCard())
-                return true;
-            if ($this->getIdeal())
-                return true;
-            if ($this->getP24())
-                return true;
-        }
-        return false;
+        $aSubtypes = array(
+            'cc' => array(
+                $this->getVisa(),
+                $this->getMastercard(),
+                $this->getAmex(),
+                $this->getDiners(),
+                $this->getJCB(),
+                $this->getMaestroInternational(),
+                $this->getMaestroUK(),
+                $this->getDiscover(),
+                $this->getCarteBleue(),
+            ),
+            'sb' => array(
+                $this->getSofortUeberweisung(),
+                $this->getGiropay(),
+                $this->getPostFinanceEFinance(),
+                $this->getPostFinanceCard(),
+                $this->getIdeal(),
+                $this->getP24(),
+            ),
+        );
+        
+        $blReturn = in_array(true, $aSubtypes[$sType]);
+        
+        return $blReturn;
     }
 
     /**
@@ -593,45 +588,23 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return array
      */
     public function fcpoGetCCPaymentMetaData() {
-        $aPaymentMetaData = array();
-
-//        if ( ! ( $sPaymentId = $this->_oFcpoHelper->fcpoGetRequestParameter( 'paymentid' ) ) ) {
-//            $sPaymentId = $this->_oFcpoHelper->fcpoGetSessionVariable( 'paymentid' );
-//        }
+        $this->_aPaymentCCMetaData = array();
         $sPaymentId = 'fcpocreditcard';
 
         $oPayment = oxNew('oxpayment');
         $oPayment->load($sPaymentId);
+        
+        $this->_fcpoSetCCMetaData($oPayment, 'V', 'Visa');
+        $this->_fcpoSetCCMetaData($oPayment, 'M', 'Mastercard');
+        $this->_fcpoSetCCMetaData($oPayment, 'A', 'American Express');
+        $this->_fcpoSetCCMetaData($oPayment, 'D', 'Diners Club');
+        $this->_fcpoSetCCMetaData($oPayment, 'J', 'JCB');
+        $this->_fcpoSetCCMetaData($oPayment, 'O', 'Maestro International');
+        $this->_fcpoSetCCMetaData($oPayment, 'U', 'Maestro UK');
+        $this->_fcpoSetCCMetaData($oPayment, 'C', 'Discover');
+        $this->_fcpoSetCCMetaData($oPayment, 'B', 'Carte Bleue');
 
-        if ($this->getVisa()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'V', 'Visa');
-        }
-        if ($this->getMastercard()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'M', 'Mastercard');
-        }
-        if ($this->getAmex()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'A', 'American Express');
-        }
-        if ($this->getDiners()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'D', 'Diners Club');
-        }
-        if ($this->getJCB()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'J', 'JCB');
-        }
-        if ($this->getMaestroInternational()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'O', 'Maestro International');
-        }
-        if ($this->getMaestroUK()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'U', 'Maestro UK');
-        }
-        if ($this->getDiscover()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'C', 'Discover');
-        }
-        if ($this->getCarteBleue()) {
-            $aPaymentMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, 'B', 'Carte Bleue');
-        }
-
-        return $aPaymentMetaData;
+        return $this->_aPaymentCCMetaData;
     }
 
     /**
@@ -666,6 +639,31 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         }
 
         return $aPaymentMetaData;
+    }
+    
+    /**
+     * Sets cc meta payment data
+     * 
+     * @param oxPayment $oPayment
+     * @param string $sBrandShortcut
+     * @param string $sBrandName
+     */
+    protected function _fcpoSetCCMetaData($oPayment, $sBrandShortcut, $sBrandName) {
+        $aActiveCCBrands = array(
+            'V' => $this->getVisa(),
+            'M' => $this->getMastercard(),
+            'A' => $this->getAmex(),
+            'D' => $this->getDiners(),
+            'J' => $this->getJCB(),
+            'O' => $this->getMaestroInternational(),
+            'U' => $this->getMaestroUK(),
+            'C' => $this->getDiscover(),
+            'B' => $this->getCarteBleue(),
+        );
+        
+        if ($aActiveCCBrands[$sBrandShortcut]) {
+            $this->_aPaymentCCMetaData[] = $this->_fcpoGetCCPaymentMetaData($oPayment, $sBrandShortcut, $sBrandName);
+        }
     }
 
     /**

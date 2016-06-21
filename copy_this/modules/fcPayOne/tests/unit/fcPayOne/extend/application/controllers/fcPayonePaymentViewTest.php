@@ -1723,16 +1723,16 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
      */
     public function test_fcpoGetConfirmationText_Coverage() {
         $sId = 'someKlarnaStoreId';
-        $sKlarnaLang = '_fcpoGetKlarnaLang';
+        $sKlarnaLang = '';
         $sConfirmText = 'someConfirmText';
 
         $oMockPayment = $this->getMock('oxpayment', array('fcpoGetKlarnaStoreId'));
-        $oMockPayment->expects($this->any())->method('fcpoGetKlarnaStoreId')->will($this->returnValue('someKlarnaStoreId'));
+        $oMockPayment->expects($this->any())->method('fcpoGetKlarnaStoreId')->will($this->returnValue(''));
 
         $oTestObject = $this->getMock('fcPayOnePaymentView', array('_fcpoGetKlarnaLang'));
         $oTestObject->expects($this->any())->method('_fcpoGetKlarnaLang')->will($this->returnValue($sKlarnaLang));
 
-        $oMockLang = $this->getMock('oxLang', array('getLanguageAbbr'));
+        $oMockLang = $this->getMock('oxLang', array('translateString'));
         $oMockLang->expects($this->any())->method('translateString')->will($this->returnValue($sConfirmText));
 
         $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
@@ -1741,8 +1741,7 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
 
         $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
 
-        // $sExpect = sprintf($sConfirmText, $sId, $sKlarnaLang, $sId, $sKlarnaLang);
-        $sExpect = 'FCPO_KLV_CONFIRM';
+        $sExpect = $sConfirmText;
         $this->assertEquals($sExpect, $oTestObject->fcpoGetConfirmationText());
     }
 
