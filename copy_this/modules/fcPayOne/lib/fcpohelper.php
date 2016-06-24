@@ -367,7 +367,7 @@ class fcpohelper extends oxBase {
      * @return string
      */
     public function fcpoGetModuleVersion() {
-        return '2.0.5_5';
+        return '2.0.6_5';
     }
     
     
@@ -450,8 +450,13 @@ class fcpohelper extends oxBase {
     public function fcpoGetIntShopVersion() {
         $sVersion = $this->_oFcConfig->getActiveShop()->oxshops__oxversion->value;
         $iVersion = (int)str_replace('.', '', $sVersion);
-        while ($iVersion < 1000) {
-            $iVersion = $iVersion*10;
+        #fix for ce/pe 4.10.0+
+        if ( $iVersion > 1000 ) {
+            $iVersion *= 10;
+        } else {
+            while ($iVersion < 1000) {
+                $iVersion = $iVersion*10;
+            }
         }
         return $iVersion;
     }

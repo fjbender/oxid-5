@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,10 +18,9 @@
  * @copyright (C) Payone GmbH
  * @version   OXID eShop CE
  */
- 
+class fcpayone_apilog_main extends fcpayone_adminview
+{
 
-class fcpayone_apilog_main extends fcpayone_adminview {
-    
     /**
      * Current class template name.
      * 
@@ -29,27 +28,4 @@ class fcpayone_apilog_main extends fcpayone_adminview {
      */
     protected $_sThisTemplate = 'fcpayone_apilog_main.tpl';
 
-    /**
-     * Returns current view identifier
-     *
-     * @return string
-     */
-    public function getViewId() {
-        return 'dyn_fcpayone';
-    }
-    
-    /**
-     * Return admin template seperator sign by shop-version
-     *
-     * @return string
-     */
-    public function fcGetAdminSeperator() {
-        $iVersion = $this->_oFcpoHelper->fcpoGetIntShopVersion();
-        if($iVersion < 4300) {
-            return '?';
-        } else {
-            return '&';
-        }
-    }
-    
 }

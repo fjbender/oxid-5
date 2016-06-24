@@ -178,7 +178,8 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      * @return string
      */
     public function fcpoGetKlarnaStoreId() {
-        $sBillCountryId = $this->getUserBillCountryId();
+        $oUser = $this->getUser();
+        $sBillCountryId = $oUser->oxuser__oxcountryid->value;
 
         $sQuery = " SELECT 
                         b.fcpo_storeid 
