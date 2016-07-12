@@ -43,4 +43,64 @@ class fcpayone_adminview extends oxAdminView {
         $this->_oFcpoDb     = oxDb::getDb();
     }
     
+    
+    /**
+     * Return admin template seperator sign by shop-version
+     *
+     * @return string
+     */
+    public function fcGetAdminSeperator() {
+        $iVersion = $this->_oFcpoHelper->fcpoGetIntShopVersion();
+        if($iVersion < 4300) {
+            return '?';
+        } else {
+            return '&';
+        }
+    }
+    
+    /**
+     * Returns current view identifier
+     *
+     * @return string
+     */
+    public function getViewId() {
+        return 'dyn_fcpayone';
+    }
+    
+    
+    /**
+     * Template getter for integrator ID
+     * 
+     * @param void
+     * @return string
+     */
+    public function fcpoGetIntegratorId()
+    {
+        return $this->_oFcpoHelper->fcpoGetIntegratorId();
+    }
+    
+    
+    /**
+     * Template getter returns payone connector version
+     * 
+     * @param void
+     * @return string
+     */
+    public function fcpoGetVersion()
+    {
+        return $this->_oFcpoHelper->fcpoGetModuleVersion();
+    }
+
+    /**
+     * Template getter for Merchant ID
+     * 
+     * @param void
+     * @return string
+     */
+    public function fcpoGetMerchantId()
+    {
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        return $oConfig->getConfigParam('sFCPOMerchantID');
+    }
+
 }

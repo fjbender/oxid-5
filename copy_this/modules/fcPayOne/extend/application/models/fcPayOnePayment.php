@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,10 +18,8 @@
  * @copyright (C) Payone GmbH
  * @version   OXID eShop CE
  */
- 
 class fcPayOnePayment extends fcPayOnePayment_parent {
-    
-    
+
     /**
      * Helper object for dealing with different shop versions
      * @var object
@@ -34,7 +32,7 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     protected $_oFcpoDb = null;
 
-    
+
     /*
      * Array of all payment method IDs belonging to PAYONE
      *
@@ -57,15 +55,12 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpobarzahlen',
         'fcpopaydirekt',
     );
-    
     protected static $_aIframePaymentTypes = array(
         'fcpocreditcard_iframe',
     );
-    
     protected static $_aFrontendApiPaymentTypes = array(
         'fcpocreditcard_iframe',
     );
-    
 
     /**
      * init object construction
@@ -75,26 +70,23 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
     public function __construct() {
         parent::__construct();
         $this->_oFcpoHelper = oxNew('fcpohelper');
-        $this->_oFcpoDb     = oxDb::getDb();
+        $this->_oFcpoDb = oxDb::getDb();
     }
 
-    
-    
     public static function fcIsPayOnePaymentType($sPaymentId) {
         $blReturn = (array_search($sPaymentId, self::$_aPaymentTypes) !== false) ? true : false;
         return $blReturn;
     }
-    
+
     public static function fcIsPayOneIframePaymentType($sPaymentId) {
         $blReturn = (array_search($sPaymentId, self::$_aIframePaymentTypes) !== false) ? true : false;
         return $blReturn;
     }
-    
+
     public static function fcIsPayOneFrontendApiPaymentType($sPaymentId) {
         $blReturn = (array_search($sPaymentId, self::$_aFrontendApiPaymentTypes) !== false) ? true : false;
         return $blReturn;
     }
-    
 
     /**
      * Determines the operation mode ( live or test ) used in this order based on the payment (sub) method
@@ -104,27 +96,27 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      * @return bool
      */
     public function fcpoGetOperationMode($sType = '') {
-        $oConfig    = $this->_oFcpoHelper->fcpoGetConfig();
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $blLivemode = $this->oxpayments__fcpolivemode->value;
-        
+
         if ($sType != '') {
             $sPaymentId = $this->getId();
-            
+
             $aMap = array(
-                'fcpocreditcard'            => $oConfig->getConfigParam('blFCPOCC'.$sType.'Live'),
-                'fcpoonlineueberweisung'    => $oConfig->getConfigParam('blFCPOSB'.$sType.'Live'),
+                'fcpocreditcard' => $oConfig->getConfigParam('blFCPOCC' . $sType . 'Live'),
+                'fcpoonlineueberweisung' => $oConfig->getConfigParam('blFCPOSB' . $sType . 'Live'),
             );
-            
+
             if (in_array($sPaymentId, array_keys($aMap))) {
                 $blLivemode = $aMap[$sPaymentId];
             }
         }
-        
+
         $sReturn = ($blLivemode == true) ? 'live' : 'test';
-        
+
         return $sReturn;
     }
-    
+
     /**
      * Adds dynvalues to the payone payment type
      * 
@@ -133,13 +125,12 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      * @return array dyn values
      */
     public function getDynValues() {
-        $aDynValues = parent::getDynValues();        
+        $aDynValues = parent::getDynValues();
         $aDynValues = $this->_fcGetDynValues($aDynValues);
-        
+
         return $aDynValues;
     }
-    
-    
+
     /**
      * Returns the isoalpa of a country by offering an id
      * 
@@ -149,11 +140,10 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
     public function fcpoGetCountryIsoAlphaById($sCountryId) {
         $sQuery = "SELECT oxisoalpha2 FROM oxcountry WHERE oxid = " . oxDb::getDb()->quote($sCountryId);
         $sIsoAlpha = $this->_oFcpoDb->GetOne($sQuery);
-        
+
         return $sIsoAlpha;
-    }    
-    
-    
+    }
+
     /**
      * Returns the isoalpa of a country by offering an id
      * 
@@ -163,11 +153,10 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
     public function fcpoGetCountryNameById($sCountryId) {
         $sQuery = "SELECT oxtitle FROM oxcountry WHERE oxid = " . oxDb::getDb()->quote($sCountryId);
         $sName = $this->_oFcpoDb->GetOne($sQuery);
-        
+
         return $sName;
     }
-    
-    
+
     /**
      * Method assigns a certain mandate to an order
      * 
@@ -175,23 +164,23 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      * @param string $sMandateIdentification
      * @return void
      */
-    public function fcpoAddMandateToDb($sOrderId,$sMandateIdentification) {
+    public function fcpoAddMandateToDb($sOrderId, $sMandateIdentification) {
         $sOrderId = oxDb::getDb()->quote($sOrderId);
         $sMandateIdentification = oxDb::getDb()->quote(basename($sMandateIdentification . '.pdf'));
-        
+
         $sQuery = "INSERT INTO fcpopdfmandates VALUES (" . $sOrderId . ", " . $sMandateIdentification . ")";
         $this->_oFcpoDb->Execute($sQuery);
     }
-    
-    
+
     /**
      * Returns the Klarna StoreID for the current bill country
      * 
      * @return string
      */
     public function fcpoGetKlarnaStoreId() {
-        $sBillCountryId = $this->getUserBillCountryId();
-        
+        $oUser = $this->getUser();
+        $sBillCountryId = $oUser->oxuser__oxcountryid->value;
+
         $sQuery = " SELECT 
                         b.fcpo_storeid 
                     FROM 
@@ -200,16 +189,15 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
                         fcpoklarnastoreids AS b ON a.fcpo_type = b.oxid
                     WHERE 
                         a.fcpo_paymentid = 'KLV' AND 
-                        a.fcpo_countryid = ".oxDb::getDb()->quote($sBillCountryId)." 
+                        a.fcpo_countryid = " . oxDb::getDb()->quote($sBillCountryId) . " 
                     LIMIT 1";
         $sStoreId = $this->_oFcpoDb->GetOne($sQuery);
-        
+
         $sStoreId = ($sStoreId) ? $sStoreId : 0;
-        
+
         return $sStoreId;
     }
-    
-    
+
     /**
      * Returns user paymentid 
      * 
@@ -219,14 +207,13 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     public function fcpoGetUserPaymentId($sUserOxid, $sPaymentType) {
         $oDb = oxDb::getDb();
-        $sQ  = 'select oxpaymentid from oxorder where oxpaymenttype=' . $oDb->quote( $sPaymentType ) . ' and
-                oxuserid=' . $oDb->quote( $sUserOxid ).' order by oxorderdate desc';
-        $sOxid = $this->_oFcpoDb->GetOne( $sQ );
-        
+        $sQ = 'select oxpaymentid from oxorder where oxpaymenttype=' . $oDb->quote($sPaymentType) . ' and
+                oxuserid=' . $oDb->quote($sUserOxid) . ' order by oxorderdate desc';
+        $sOxid = $this->_oFcpoDb->GetOne($sQ);
+
         return $sOxid;
     }
 
-    
     /**
      * Check database if the user is allowed to use the given payment method and re
      * 
@@ -237,17 +224,15 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     public function isPaymentMethodAvailableToUser($sSubPaymentId, $sType, $sUserBillCountryId, $sUserDelCountryId) {
         $sBaseQuery = "SELECT COUNT(*) FROM fcpopayment2country WHERE fcpo_paymentid = '{$sSubPaymentId}' AND fcpo_type = '{$sType}'";
-        if($sUserDelCountryId !== false && $sUserBillCountryId != $sUserDelCountryId) {
+        if ($sUserDelCountryId !== false && $sUserBillCountryId != $sUserDelCountryId) {
             $sWhereCountry = "AND (fcpo_countryid = '{$sUserBillCountryId}' || fcpo_countryid = '{$sUserDelCountryId}')";
-        } 
-        else {
+        } else {
             $sWhereCountry = "AND fcpo_countryid = '{$sUserBillCountryId}'";
         }
         $sQuery = "SELECT IF(({$sBaseQuery} LIMIT 1) > 0,IF(({$sBaseQuery} {$sWhereCountry} LIMIT 1) > 0,1,0),1)";
 
         return $this->_oFcpoDb->GetOne($sQuery);
-    }  
-    
+    }
 
     /**
      * Adds dynvalues for debitcard payment-method
@@ -257,33 +242,32 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     protected function _fcGetDynValues($aDynValues) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
-        if((bool)$oConfig->getConfigParam('sFCPOSaveBankdata') === true) {
-            if($this->getId() == 'fcpodebitnote') {
-                if ( !is_array( $aDynValues ) ) {
+        if ((bool) $oConfig->getConfigParam('sFCPOSaveBankdata') === true) {
+            if ($this->getId() == 'fcpodebitnote') {
+                if (!is_array($aDynValues)) {
                     $aDynValues = array();
                 }
-                $oDynValue          = new oxStdClass();
-                $oDynValue->name    = 'fcpo_elv_blz';
-                $oDynValue->value   = '';
-                $aDynValues[]       = $oDynValue;
-                $oDynValue          = new oxStdClass();
-                $oDynValue->name    = 'fcpo_elv_ktonr';
-                $oDynValue->value   = '';
-                $aDynValues[]       = $oDynValue;
-                $oDynValue          = new oxStdClass();
-                $oDynValue->name    = 'fcpo_elv_iban';
-                $oDynValue->value   = '';
-                $aDynValues[]       = $oDynValue;
-                $oDynValue          = new oxStdClass();
-                $oDynValue->name    = 'fcpo_elv_bic';
-                $oDynValue->value   = '';
-                $aDynValues[]       = $oDynValue;
+                $oDynValue = new oxStdClass();
+                $oDynValue->name = 'fcpo_elv_blz';
+                $oDynValue->value = '';
+                $aDynValues[] = $oDynValue;
+                $oDynValue = new oxStdClass();
+                $oDynValue->name = 'fcpo_elv_ktonr';
+                $oDynValue->value = '';
+                $aDynValues[] = $oDynValue;
+                $oDynValue = new oxStdClass();
+                $oDynValue->name = 'fcpo_elv_iban';
+                $oDynValue->value = '';
+                $aDynValues[] = $oDynValue;
+                $oDynValue = new oxStdClass();
+                $oDynValue->name = 'fcpo_elv_bic';
+                $oDynValue->value = '';
+                $aDynValues[] = $oDynValue;
             }
         }
         return $aDynValues;
     }
-    
-    
+
     /**
      * Check if a creditworthiness check has to be done
      * ( Has to be done if from boni is greater zero )
@@ -294,8 +278,7 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $blReturn = ($this->oxpayments__oxfromboni->value > 0) ? true : false;
         return $blReturn;
     }
-    
-    
+
     /**
      * Returns mandate text from session if available
      * 
@@ -303,23 +286,22 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     public function fcpoGetMandateText() {
         $aMandate = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMandate');
-        
+
         $blMandateTextValid = (
             $aMandate &&
             array_key_exists('mandate_status', $aMandate) !== false &&
             $aMandate['mandate_status'] == 'pending' &&
             array_key_exists('mandate_text', $aMandate) !== false
         );
-        
+
         $mReturn = false;
-        if($blMandateTextValid) {
+        if ($blMandateTextValid) {
             $mReturn = urldecode($aMandate['mandate_text']);
         }
-        
+
         return $mReturn;
     }
-    
-    
+
     /**
      * Returns countries assigned to given campaign id
      * 
@@ -328,7 +310,7 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     protected function _fcGetCountries($sCampaignId) {
         $aCountries = array();
-        
+
         $sQuery = "SELECT fcpo_countryid FROM fcpopayment2country WHERE fcpo_paymentid = 'KLR_{$sCampaignId}'";
         $oResult = $this->_oFcpoDb->Execute($sQuery);
         if ($oResult != false && $oResult->recordCount() > 0) {
@@ -337,11 +319,10 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
                 $oResult->moveNext();
             }
         }
-        
+
         return $aCountries;
     }
-    
-    
+
     /**
      * Returning klarna campaigns
      * 
@@ -350,49 +331,15 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     public function fcpoGetKlarnaCampaigns($blGetAll = false) {
         $aStoreIds = array();
-        
-        if($blGetAll === false) {
-            $oConfig        = $this->_oFcpoHelper->fcpoGetConfig();
-            $oCurrency      = $oConfig->getActShopCurrencyObject();
-            $sCurrCurrency  = $oCurrency->name;
-            $oLang          = $this->_oFcpoHelper->fcpoGetLang();
-            $sCurrLanguage  = $oLang->getLanguageAbbr();
-            $oUser          = $this->getUser();
-            $sCurrCountry   = $oUser->oxuser__oxcountryid->value;
-        }
-        
+
         $sQuery = "SELECT oxid, fcpo_campaign_code, fcpo_campaign_title, fcpo_campaign_language, fcpo_campaign_currency FROM fcpoklarnacampaigns ORDER BY oxid ASC";
         $oResult = $this->_oFcpoDb->Execute($sQuery);
-        if ($oResult != false && $oResult->recordCount() > 0) {
+        if ($oResult->recordCount() > 0) {
             while (!$oResult->EOF) {
-                $blAdd = true;
-                
-                $aCampaign = array(
-                    'code' => $oResult->fields[1],
-                    'title' => $oResult->fields[2],
-                    'language' => unserialize($oResult->fields[3]),
-                    'currency' => unserialize($oResult->fields[4]),
-                );
-                if(!is_array($aCampaign['language'])) {
-                    $aCampaign['language'] = array();
-                }
-                if(!is_array($aCampaign['currency'])) {
-                    $aCampaign['currency'] = array();
-                }
+                $aCampaign = $this->_fcpoGetKlarnaCampaignArray($oResult);
+                $blAdd = ($blGetAll) ? true : $this->_fcpoCheckKlarnaCampaignsResult($oResult->fields[0], $aCampaign);
 
-                if($blGetAll === false) {
-                    $aConnectedCountries = $this->_fcGetCountries($oResult->fields[0]);
-                    if(in_array($sCurrCountry, $aConnectedCountries) === false) {
-                        $blAdd = false;
-                    }
-                    if(in_array($sCurrLanguage, $aCampaign['language']) === false) {
-                        $blAdd = false;
-                    }
-                    if(in_array($sCurrCurrency, $aCampaign['currency']) === false) {
-                        $blAdd = false;
-                    }
-                }
-                if($blGetAll === true || $blAdd === true) {
+                if ($blAdd === true) {
                     $aStoreIds[$oResult->fields[0]] = $aCampaign;
                 }
                 $oResult->moveNext();
@@ -400,8 +347,84 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         }
         return $aStoreIds;
     }
-    
-    
+
+    /**
+     * Method returns campaign array on db request result
+     * 
+     * @param object $oResult
+     * @return array
+     */
+    protected function _fcpoGetKlarnaCampaignArray($oResult) {
+        $aCampaign = array(
+            'code' => $oResult->fields[1],
+            'title' => $oResult->fields[2],
+            'language' => unserialize($oResult->fields[3]),
+            'currency' => unserialize($oResult->fields[4]),
+        );
+
+        $aCampaign = $this->_fcpoSetArrayDefault($aCampaign, 'language');
+        $aCampaign = $this->_fcpoSetArrayDefault($aCampaign, 'currency');
+
+        return $aCampaign;
+    }
+
+    /**
+     * Method evaluates result of klarna campaign data and returns if it can be added
+     * 
+     * @param string $sCountryOxid
+     * @param array $aCampaign
+     * @return boolean
+     */
+    protected function _fcpoCheckKlarnaCampaignsResult($sCountryOxid, $aCampaign) {
+        $blAdd = true;
+
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+        $sCurrLanguage = $oLang->getLanguageAbbr();
+        $oUser = $this->getUser();
+        $sCurrCountry = $oUser->oxuser__oxcountryid->value;
+        $oCurrency = $oConfig->getActShopCurrencyObject();
+        $sCurrCurrency = $oCurrency->name;
+
+        $aConnectedCountries = $this->_fcGetCountries($sCountryOxid);
+        $blAdd = $this->_fcpoCheckAddCampaign($blAdd, $sCurrCountry, $aConnectedCountries);
+        $blAdd = $this->_fcpoCheckAddCampaign($blAdd, $sCurrLanguage, $aCampaign['language']);
+        $blAdd = $this->_fcpoCheckAddCampaign($blAdd, $sCurrCurrency, $aCampaign['currency']);
+
+        return $blAdd;
+    }
+
+    /**
+     * Sets add flag to false if conditions doesn't match
+     * 
+     * @param boolean $blAdd
+     * @param string $sNeedle
+     * @param array $aHaystack
+     * @return boolean
+     */
+    protected function _fcpoCheckAddCampaign($blAdd, $sNeedle, $aHaystack) {
+        if (in_array($sNeedle, $aHaystack) === false) {
+            $blAdd = false;
+        }
+
+        return $blAdd;
+    }
+
+    /**
+     * Sets given index to empty array if no array has been detected
+     * 
+     * @param array $aCampaign
+     * @param string $sIndex
+     * @return array
+     */
+    protected function _fcpoSetArrayDefault($aCampaign, $sIndex) {
+        if (!is_array($aCampaign[$sIndex])) {
+            $aCampaign[$sIndex] = array();
+        }
+
+        return $aCampaign;
+    }
+
     /**
      * Determines the operation mode ( live or test ) used for this payment based on payment or form data
      *
@@ -411,23 +434,22 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      * @return string
      */
     public function fcpoGetMode($aDynvalue) {
-        $sReturn        = '';
-        $sId            = $this->getId();
-        $blIdAffected   = in_array($sId, array('fcpocreditcard', 'fcpoonlineueberweisung'));
-        
+        $sReturn = '';
+        $sId = $this->getId();
+        $blIdAffected = in_array($sId, array('fcpocreditcard', 'fcpoonlineueberweisung'));
+
         if ($blIdAffected) {
             $aMap = array(
-                'fcpocreditcard'            => $aDynvalue['fcpo_ccmode'],
-                'fcpoonlineueberweisung'    => $this->fcpoGetOperationMode($aDynvalue['fcpo_sotype']),
+                'fcpocreditcard' => $aDynvalue['fcpo_ccmode'],
+                'fcpoonlineueberweisung' => $this->fcpoGetOperationMode($aDynvalue['fcpo_sotype']),
             );
-            
+
             $sReturn = $aMap[$sId];
         }
-        
+
         return $sReturn;
     }
-    
-    
+
     /**
      * Returns a list of payment types
      * 
@@ -436,26 +458,24 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     public function fcpoGetPayonePaymentTypes() {
         $aPaymentTypes = array();
-        
+
         $sQuery = "SELECT oxid, oxdesc FROM oxpayments WHERE fcpoispayone = 1";
         $oResult = $this->_oFcpoDb->Execute($sQuery);
         if ($oResult != false && $oResult->recordCount() > 0) {
             while (!$oResult->EOF) {
-                $sOxid                  = (isset($oResult->fields['oxid'])) ? $oResult->fields['oxid'] : $oResult->fields[0];
-                $sDesc                  = (isset($oResult->fields['oxdesc'])) ? $oResult->fields['oxdesc'] : $oResult->fields[1];
-                $oPaymentType           = new stdClass();
-                $oPaymentType->sId      = $sOxid;
-                $oPaymentType->sTitle   = $sDesc;
-                $aPaymentTypes[]        = $oPaymentType;
+                $sOxid = (isset($oResult->fields['oxid'])) ? $oResult->fields['oxid'] : $oResult->fields[0];
+                $sDesc = (isset($oResult->fields['oxdesc'])) ? $oResult->fields['oxdesc'] : $oResult->fields[1];
+                $oPaymentType = new stdClass();
+                $oPaymentType->sId = $sOxid;
+                $oPaymentType->sTitle = $sDesc;
+                $aPaymentTypes[] = $oPaymentType;
                 $oResult->moveNext();
             }
         }
-        
+
         return $aPaymentTypes;
-        
     }
-    
-    
+
     /**
      * Returning red payments
      * 
@@ -468,17 +488,16 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $oResult = $this->_oFcpoDb->Execute($sQuery);
         if ($oResult != false && $oResult->recordCount() > 0) {
             while (!$oResult->EOF) {
-                $sPayment = (isset($oResult->fields[0])) ? $oResult->fields[0]: $oResult->fields['oxid'];
-                $sPayments .= $sPayment.',';
+                $sPayment = (isset($oResult->fields[0])) ? $oResult->fields[0] : $oResult->fields['oxid'];
+                $sPayments .= $sPayment . ',';
                 $oResult->moveNext();
             }
         }
         $sPayments = rtrim($sPayments, ',');
-        
+
         return $sPayments;
     }
-    
-    
+
     /**
      * Returning yellow payments
      * 
@@ -491,13 +510,14 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $oResult = $this->_oFcpoDb->Execute($sQuery);
         if ($oResult != false && $oResult->recordCount() > 0) {
             while (!$oResult->EOF) {
-                $sPayment = (isset($oResult->fields[0])) ? $oResult->fields[0]: $oResult->fields['oxid'];
-                $sPayments .= $sPayment.',';
+                $sPayment = (isset($oResult->fields[0])) ? $oResult->fields[0] : $oResult->fields['oxid'];
+                $sPayments .= $sPayment . ',';
                 $oResult->moveNext();
             }
         }
         $sPayments = rtrim($sPayments, ',');
-        
+
         return $sPayments;
     }
+
 }

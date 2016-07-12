@@ -1,3 +1,15 @@
+==2.0.6==
+  * Fixed compability issues for OXID 4.10.0_beta1
+  * Relocated some admin methods do remove duplicates
+  * Deactive Payone paymethods on module deactivation
+  * Disable address check on first module activation to prevent checkout blocker
+
+==2.0.5==
+  * Added version compare fix
+
+==2.0.4==
+  * Further refactoring for increasing code quality
+
 ==2.0.3==
   * Several bugfixes after refactoring
 

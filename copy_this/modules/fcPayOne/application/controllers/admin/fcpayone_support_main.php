@@ -1,5 +1,6 @@
 <?php
-/** 
+
+/**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,59 +18,14 @@
  * @copyright (C) Payone GmbH
  * @version   OXID eShop CE
  */
- 
+class fcpayone_support_main extends fcpayone_adminview
+{
 
-class fcpayone_support_main extends fcpayone_adminview {
-    
     /**
      * Current class template name.
      * 
      * @var string
      */
     protected $_sThisTemplate = 'fcpayone_support_main.tpl';
-
-    
-    /**
-     * Template getter returns payone connector version
-     * 
-     * @param void
-     * @return string
-     */
-    public function fcpoGetVersion() {
-       return  $this->_oFcpoHelper->fcpoGetModuleVersion();
-    }
-    
-    
-    /**
-     * Template getter for Merchant ID
-     * 
-     * @param void
-     * @return string
-     */
-    public function fcpoGetMerchantId() {
-        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
-        return $oConfig->getConfigParam( 'sFCPOMerchantID' );
-    }
-
-
-    /**
-     * Template getter for integrator ID
-     * 
-     * @param void
-     * @return string
-     */
-    public function fcpoGetIntegratorId() {
-        return $this->_oFcpoHelper->fcpoGetIntegratorId();
-    }
-    
-
-    /**
-     * Returns current view identifier
-     *
-     * @return string
-     */
-    public function getViewId() {
-        return 'dyn_fcpayone';
-    }
 
 }
