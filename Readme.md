@@ -1,4 +1,5 @@
 # PAYONE FinanceGate
+[![GitHub issues](https://img.shields.io/github/issues/PAYONE-GmbH/oxid-5.svg)](https://github.com/PAYONE-GmbH/oxid-5/issues)
 
 ## Author
 FATCHIP GmbH
