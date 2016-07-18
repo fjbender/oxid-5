@@ -343,10 +343,11 @@ class fcpoRequest extends oxSuperCfg {
     /**
      * Set payment params paypal
      * 
+     * @param object $oOrder
      * @param string $sRefNr
      * @return boolean
      */
-    protected function _setPaymentParamsPayPal($sRefNr) {
+    protected function _setPaymentParamsPayPal($oOrder, $sRefNr) {
         $this->addParameter('clearingtype', 'wlt'); //Payment method
         $this->addParameter('wallettype', 'PPE');
         $this->addParameter('narrative_text', 'Ihre Bestellung Nr. ' . $sRefNr . ' bei ' . $this->_oFcpoHelper->fcpoGetShopName());
@@ -414,7 +415,7 @@ class fcpoRequest extends oxSuperCfg {
                 break;
             case 'fcpopaypal':
             case 'fcpopaypal_express':
-                $blAddRedirectUrls = $this->_setPaymentParamsPayPal($sRefNr);
+                $blAddRedirectUrls = $this->_setPaymentParamsPayPal($oOrder, $sRefNr);
                 break;
             case 'fcpocommerzfinanz':
                 $this->addParameter('clearingtype', 'fnc');//Payment method

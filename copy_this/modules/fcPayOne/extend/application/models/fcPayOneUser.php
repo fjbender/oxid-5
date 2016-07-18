@@ -132,8 +132,15 @@ class fcPayOneUser extends fcPayOneUser_parent {
         $aResponse = array();
         $blCheckedBoni = false;
         $sFCPOBonicheck = $oConfig->getConfigParam('sFCPOBonicheck');
+        
+        if ( $sFCPOBonicheck == -1 || $sFCPOBonicheck == '-1' ) {
+            $blFCPOBonicheck = false;
+        } else {
+            $blFCPOBonicheck = true;
+        }
+        
         $blBoniCheckNeeded = $this->isBonicheckNeeded();
-        $blBoniCheckValid = ($blCheckBoni && $sFCPOBonicheck && $blBoniCheckNeeded);
+        $blBoniCheckValid = ($blCheckBoni && $blFCPOBonicheck && $blBoniCheckNeeded);
         $sFCPOAddresscheck = $oConfig->getConfigParam('sFCPOAddresscheck');
         $blAddressCheck = ($sFCPOAddresscheck == 'NO') ? false : true;
         $blAddressCheckValid = ($blCheckAddress && $blAddressCheck);

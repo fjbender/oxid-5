@@ -1,3 +1,18 @@
+==2.0.7==
+  * Added Flow Theme Support
+  * Restructring and relocation of payment templates
+  * Fixes JS Error caused by some special configurations
+  * Fixed array_merge PHP Notice in backend
+  * Fixed boni check
+  * Removed spaces in smarty tags for better Editor highlighting
+  * Fixed state mapping and forwarding in backend
+  * Fixed database getter in assoc mode
+  * Fixed backend payone config display and saving
+  * Fixed paypal ecs error after redirect to shop
+  * Clear tmp-dir on module deactivation.
+  * Fixed PayPal Express after order redirect
+  * Dont show PayPal Express in payment list
+
 ==2.0.6==
   * Fixed compability issues for OXID 4.10.0_beta1
   * Relocated some admin methods do remove duplicates

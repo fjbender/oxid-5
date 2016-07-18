@@ -24,7 +24,7 @@ $aModule = array(
     'title'         => 'PAYONE FinanceGate',
     'description'   => 'PAYONE bietet Ihnen mit dem Payment-Modul f&uuml;r Oxid eShops &uuml;ber 20 Zahlarten aus einer Hand. Das Payment-Modul von PAYONE bietet eine nahtlose Integration in den Checkout-Prozess des OXID eShops.',
     'thumbnail'     => 'picture.gif',
-    'version'       => '2.0.6_5_5629',
+    'version'       => '2.0.7_5_5761',
     'author'        => 'FATCHIP GmbH',
     'email'         => 'kontakt@fatchip.de',
     'url'           => 'http://wiki.fatchip.de/fc/mod_oxid_payone/start',
@@ -90,7 +90,7 @@ $aModule = array(
     'templates' => array(
         // frontend
         'fcpayoneiframe.tpl'                => 'fcPayOne/application/views/frontend/tpl/fcpayoneiframe.tpl',
-        'fcpayone_mobile_payment.tpl'       => 'fcPayOne/application/views/frontend/tpl/fcpayone_mobile_payment.tpl',
+
         // admin
         'fcpayone_popup_main.tpl'           => 'fcPayOne/application/views/admin/tpl/popups/fcpayone_popup_main.tpl',
         'fcpayone.tpl'                      => 'fcPayOne/application/views/admin/tpl/fcpayone.tpl',
@@ -213,6 +213,11 @@ $aModule = array(
             'template' => 'page/checkout/basket.tpl',
             'block' => 'mb_basket_btn_next_bottom',
             'file' => 'fcpo_mb_basket_btn_next',
+        ),
+        array(
+            'template' => 'page/checkout/payment.tpl',
+            'block' => 'checkout_payment_errors',
+            'file' => 'fcpo_payment_errors',
         ),
     ),
 );

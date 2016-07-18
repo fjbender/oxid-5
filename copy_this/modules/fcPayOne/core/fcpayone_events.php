@@ -14,21 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @link      http://www.payone.de
- * @copyright (C) Payone GmbH
+ * PHP version 5
+ * 
+ * @copyright 2003 - 2016 Payone GmbH
  * @version   OXID eShop CE
+ * @link      http://www.payone.de
+ */
+
+/**
+ * Eventhandler for module activation and deactivation.
  */
 class fcpayone_events
 {
 
     /**
      * Database object
+     * 
      * @var object
      */
     protected static $_oFcpoHelper = null;
 
     /**
      * Paymnts that were once used but now deprecated and marked for removal
+     * 
      * @var array
      */
     public static $_aRemovedPaymentMethods = array(
@@ -217,13 +225,14 @@ class fcpayone_events
     );
 
     /**
-     * Execute action on activate event
+     * Execute action on activate event.
+     * 
+     * @return void
      */
     public static function onActivate()
     {
         $sMessage = "";
         self::$_oFcpoHelper = oxNew('fcpohelper');
-
         self::addDatabaseStructure();
         $sMessage .= "Datenbankstruktur angepasst...<br>";
         self::addPayonePayments();
@@ -236,27 +245,40 @@ class fcpayone_events
         self::clearTmp();
         $sMessage .= "Tmp geleert...<br>";
         $sMessage .= "Installation erfolgreich!<br>";
-
         self::$_oFcpoHelper->fcpoGetUtilsView()->addErrorToDisplay($sMessage, false, true);
     }
 
     /**
-     * Execute action on deactivate event
+     * Execute action on deactivate event.
+     * 
+     * @return void
      */
     public static function onDeactivate()
     {
         self::$_oFcpoHelper = oxNew('fcpohelper');
         self::deactivePaymethods();
         $sMessage = "Payone-Zahlarten deaktiviert!<br>";
+        self::clearTmp();
+        $sMessage .= "Tmp geleert...<br>";
         self::$_oFcpoHelper->fcpoGetUtilsView()->addErrorToDisplay($sMessage, false, true);
     }
 
+    /**
+     * Regenerates database view-tables.
+     * 
+     * @return void
+     */
     public static function regenerateViews()
     {
         $oShop = oxNew('oxShop');
         $oShop->generateViews();
     }
 
+    /**
+     * Clear tmp dir and smarty cache.
+     * 
+     * @return void
+     */
     public static function clearTmp()
     {
         $sTmpDir = getShopBasePath() . "/tmp/";
@@ -271,9 +293,8 @@ class fcpayone_events
     }
 
     /**
-     * Adding payone payments
+     * Adding payone payments.
      * 
-     * @param void
      * @return void
      */
     public static function addPayonePayments()
@@ -311,9 +332,8 @@ class fcpayone_events
     }
 
     /**
-     * Removing depreacted stuff
+     * Removing depreacted stuff.
      * 
-     * @param void
      * @return void
      */
     public static function removeDeprecated()
@@ -326,9 +346,8 @@ class fcpayone_events
     }
 
     /**
-     * Creating database structure changes
+     * Creating database structure changes.
      * 
-     * @param void
      * @return void
      */
     public static function addDatabaseStructure()
@@ -397,26 +416,52 @@ class fcpayone_events
         self::insertRowIfNotExists('fcpopayoneexpresslogos', array('OXID' => '2'), "INSERT INTO fcpopayoneexpresslogos (OXID, FCPO_ACTIVE, FCPO_LANGID, FCPO_LOGO, FCPO_DEFAULT) VALUES(2, 1, 1, 'btn_xpressCheckout_en.gif', 0);");
     }
 
+    /**
+     * Add a database table.
+     * 
+     * @param string $sTableName table to add
+     * @param string $sQuery     sql-query to add table
+     * 
+     * @return boolean true or false
+     */
     public static function addTableIfNotExists($sTableName, $sQuery)
     {
         if (oxDb::getDb()->Execute("SHOW TABLES LIKE '{$sTableName}'")->EOF) {
             oxDb::getDb()->Execute($sQuery);
-            #echo 'Tabelle '.$sTableName.' hinzugef&uuml;gt.<br>';
+            // echo 'Tabelle '.$sTableName.' hinzugef&uuml;gt.<br>';
             return true;
         }
         return false;
     }
 
+    /**
+     * Add a column to a database table.
+     * 
+     * @param string $sTableName  table name
+     * @param string $sColumnName column name
+     * @param string $sQuery      sql-query to add column to table
+     * 
+     * @return boolean true or false
+     */
     public static function addColumnIfNotExists($sTableName, $sColumnName, $sQuery)
     {
         if (oxDb::getDb()->Execute("SHOW COLUMNS FROM {$sTableName} LIKE '{$sColumnName}'")->EOF) {
             oxDb::getDb()->Execute($sQuery);
-            #echo 'In Tabelle '.$sTableName.' Spalte '.$sColumnName.' hinzugef&uuml;gt.<br>';
+            // echo 'In Tabelle '.$sTableName.' Spalte '.$sColumnName.' hinzugef&uuml;gt.<br>';
             return true;
         }
         return false;
     }
 
+    /**
+     * Insert a database row to an existing table.
+     * 
+     * @param string $sTableName database table name
+     * @param array  $aKeyValue  keys of rows to add for existance check
+     * @param string $sQuery     sql-query to insert data
+     * 
+     * @return boolean true or false
+     */
     public static function insertRowIfNotExists($sTableName, $aKeyValue, $sQuery)
     {
         $sWhere = '';
@@ -425,32 +470,59 @@ class fcpayone_events
         }
         if (oxDb::getDb()->Execute("SELECT * FROM {$sTableName} WHERE 1" . $sWhere)->EOF) {
             oxDb::getDb()->Execute($sQuery);
-            #echo 'In Tabelle '.$sTableName.' neuen Eintrag erstellt.<br>';
+            // echo 'In Tabelle '.$sTableName.' neuen Eintrag erstellt.<br>';
             return true;
         }
         return false;
     }
 
+    /**
+     * Check and change database table structure.
+     * 
+     * @param string $sTableName    database table name
+     * @param string $sColumnName   database column name
+     * @param string $sExpectedType column structure type for comparison
+     * @param string $sQuery        sql-query to execute
+     * 
+     * @return boolean true or false
+     */
     public static function changeColumnTypeIfWrong($sTableName, $sColumnName, $sExpectedType, $sQuery)
     {
         if (oxDb::getDb()->Execute("SHOW COLUMNS FROM {$sTableName} WHERE FIELD = '{$sColumnName}' AND TYPE = '{$sExpectedType}'")->EOF) {
             oxDb::getDb()->Execute($sQuery);
-            #echo 'In Tabelle '.$sTableName.' Spalte '.$sColumnName.' auf Typ '.$sExpectedType.' umgestellt.<br>';
+            // echo 'In Tabelle '.$sTableName.' Spalte '.$sColumnName.' auf Typ '.$sExpectedType.' umgestellt.<br>';
             return true;
         }
         return false;
     }
 
+    /**
+     * Delete a database index.
+     * 
+     * @param string $sTable database table name
+     * @param string $sIndex database index name
+     * 
+     * @return boolean true or false
+     */
     public static function dropIndexIfExists($sTable, $sIndex)
     {
         if (!oxDb::getDb()->Execute("SHOW KEYS FROM {$sTable} WHERE Key_name = '{$sIndex}'")->EOF) {
             oxDb::getDb()->Execute("ALTER TABLE {$sTable} DROP INDEX {$sIndex}");
-            #echo "In Tabelle {$sTable} den Index {$sIndex} entfernt.<br>";
+            // echo "In Tabelle {$sTable} den Index {$sIndex} entfernt.<br>";
             return true;
         }
         return false;
     }
 
+    /**
+     * Drop a table entry.
+     * 
+     * @param string $sTableName database table name
+     * @param array  $aKeyValue  array of keys to drop
+     * @param string $sQuery     sql-query to execute
+     * 
+     * @return boolean
+     */
     public static function dropRowIfExists($sTableName, $aKeyValue, $sQuery)
     {
         $blReturn = false;
@@ -467,11 +539,25 @@ class fcpayone_events
         return $blReturn;
     }
 
+    /**
+     * Get the OXID eShop version.
+     * 
+     * @return int versionnumber
+     */
     public static function getCurrentVersion()
     {
         return versionToInt(self::$_oFcpoHelper->fcpoGetConfig()->getActiveShop()->oxshops__oxversion->value);
     }
 
+    /**
+     * Cast a version string to an integer.
+     * 
+     * @param string $sVersion versionnumber with dots and numbers
+     * 
+     * @todo Does this work with beta versions?
+     * 
+     * @return int verssionnumber
+     */
     public static function versionToInt($sVersion)
     {
         $iVersion = (int) str_replace('.', '', $sVersion);
@@ -481,6 +567,13 @@ class fcpayone_events
         return $iVersion;
     }
 
+    /**
+     * Checks if OXID eShop is below given version.
+     * 
+     * @param string $sMaxVersion maximum allowed version
+     * 
+     * @return boolean true or false
+     */
     public static function isUnderVersion($sMaxVersion)
     {
         $iMaxVersion = self::versionToInt($sMaxVersion);
@@ -491,6 +584,14 @@ class fcpayone_events
         return false;
     }
 
+    /**
+     * Checks if OXID eShop is above given version.
+     * 
+     * @param string  $sMinVersion      minimum allowed version
+     * @param boolean $blEqualOrGreater define if equal is allowed
+     * 
+     * @return boolean true or false
+     */  
     public static function isOverVersion($sMinVersion, $blEqualOrGreater = false)
     {
         $iMinVersion = self::versionToInt($sMinVersion);
@@ -507,6 +608,14 @@ class fcpayone_events
         return false;
     }
 
+    /**
+     * Checks if OXID eShop is between two given versions.
+     * 
+     * @param string $sMinVersion minimum allowed version number
+     * @param string $sMaxVersion maximum allowed version number
+     * 
+     * @return boolean true or false
+     */
     public static function isBetweenVersions($sMinVersion, $sMaxVersion)
     {
         if (!isOverVersion($sMinVersion, true)) {
@@ -518,16 +627,18 @@ class fcpayone_events
         return true;
     }
 
+    /**
+     * Copies a sourcefile to a destination.
+     * 
+     * @param string $sSource      path to source-file
+     * @param string $sDestination path to destination-file
+     * 
+     * @return boolean true or false
+     */
     public static function copyFile($sSource, $sDestination)
     {
         if (file_exists($sSource) === true) {
-            if (file_exists($sDestination)) {
-                if (md5_file($sSource) != md5_file($sDestination)) {
-                    unlink($sDestination);
-                } else {
-                    return;
-                }
-            }
+            self::deleteFileIfExists($sDestination);
             if (copy($sSource, $sDestination)) {
                 echo 'Datei ' . $sDestination . ' in Theme kopiert.<br>';
             } else {
@@ -535,23 +646,42 @@ class fcpayone_events
             }
         }
     }
+    
+    /**
+     * Checks if given file exists and deletes if it exists.
+     * 
+     * @param string $sFile path to file
+     * 
+     * @return void
+     */
+    public static function deleteFileIfExists($sFile)
+    {
+        if (file_exists($sFile)) {
+            unlink($sFile);
+        }
+    }
 
     /**
-     * Deactivates payone paymethods on module deactivation
+     * Deactivates payone paymethods on module deactivation.
+     * 
+     * @return void
      */
     public static function deactivePaymethods()
     {
-        $sPaymenthodIds = "'" .implode("','", array_keys(self::$aPaymentMethods)) . "'";
+        $sPaymenthodIds = "'" . implode("','", array_keys(self::$aPaymentMethods)) . "'";
         $sQ = "update oxpayments set oxactive = 0 where oxid in ($sPaymenthodIds)";
         oxDB::getDB()->Execute($sQ);
     }
-    
+
     /**
-     * Sets default config values on activation
+     * Sets default config values on activation.
+     * 
+     * @return void
      */
-    public static function setDefaultConfigValues() {     
-        if ( !self::$_oFcpoHelper->fcpoGetConfig()->getConfigParam('sFCPOAddresscheck') ) {
-            self::$_oFcpoHelper->fcpoGetConfig()->saveShopConfVar('str','sFCPOAddresscheck', 'NO');
+    public static function setDefaultConfigValues()
+    {
+        if (!self::$_oFcpoHelper->fcpoGetConfig()->getConfigParam('sFCPOAddresscheck')) {
+            self::$_oFcpoHelper->fcpoGetConfig()->saveShopConfVar('str', 'sFCPOAddresscheck', 'NO');
         }
     }
 

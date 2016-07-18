@@ -28,12 +28,6 @@ class fcPayOneBasketView extends fcPayOneBasketView_parent {
     protected $_oFcpoHelper = null;
     
     /**
-     * Helper object for dealing database
-     * @var object
-     */
-    protected $_oFcpoDb = null;
-
-    /**
      * Path where paypal logos can be found
      * @var string
      */
@@ -54,7 +48,6 @@ class fcPayOneBasketView extends fcPayOneBasketView_parent {
     public function __construct() {
         parent::__construct();
         $this->_oFcpoHelper = oxNew('fcpohelper');
-        $this->_oFcpoDb     = $this->_oFcpoHelper->fcpoGetDb();
     }
 
     

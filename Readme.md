@@ -1,4 +1,5 @@
 # PAYONE FinanceGate
+[![GitHub issues](https://img.shields.io/github/issues/PAYONE-GmbH/oxid-5.svg)](https://github.com/PAYONE-GmbH/oxid-5/issues)
 
 ## Author
 FATCHIP GmbH
@@ -8,8 +9,8 @@ www.fatchip.de
 fc
 
 ## Version
-2.0.6_5_5629
-June 22 2016
+2.0.7_5_5761
+July 17 2016
 
 ## Link
 http://www.payone.de

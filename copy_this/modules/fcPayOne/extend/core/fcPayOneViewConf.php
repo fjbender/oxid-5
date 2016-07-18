@@ -32,6 +32,12 @@ class fcPayOneViewConf extends fcPayOneViewConf_parent {
      */
     protected $_oFcpoHelper = null;
 
+    /**
+     * Hosted creditcard js url
+     * 
+     * @var string
+     */
+    protected $_sFcPoHostedJsUrl = 'https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js';
     
     /**
      * Initializing needed things
@@ -120,6 +126,47 @@ class fcPayOneViewConf extends fcPayOneViewConf_parent {
      */
     public function fcpoGetIntShopVersion() {
         return $this->_oFcpoHelper->fcpoGetIntShopVersion();
+    }
+    
+    /**
+     * Returns the path to javascripts of module
+     * 
+     * @param string $sFile
+     * @return string
+     */
+    public function fcpoGetModuleCssPath( $sFile="" ) {
+        $sModuleUrl         = $this->fcpoGetModuleUrl();
+        $sModuleUrl       = $sModuleUrl.'out/src/css/';
+        if ( $sFile ) {
+            $sModuleUrl   = $sModuleUrl.$sFile;
+        }
+        
+        return $sModuleUrl;
+    }
+    
+    /**
+     * Returns the path to javascripts of module
+     * 
+     * @param string $sFile
+     * @return string
+     */
+    public function fcpoGetAbsModuleTemplateFrontendPath( $sFile="" ) {
+        $sModulePath        = $this->fcpoGetModulePath();
+        $sModulePath      = $sModulePath.'application/views/frontend/tpl/';
+        if ( $sFile ) {
+            $sModulePath  = $sModulePath.$sFile;
+        }
+        
+        return $sModulePath;
+    }
+    
+    /**
+     * Returns hosted js url
+     * 
+     * @return string
+     */
+    public function fcpoGetHostedPayoneJs() {
+        return $this->_sFcPoHostedJsUrl;
     }
     
 }
