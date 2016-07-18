@@ -49,7 +49,7 @@ class fcpomapping extends oxBase {
      */
     public function fcpoGetExistingMappings() {
         $aMappings = array();
-        $oDb = $this->_oFcpoHelper->fcpoGetDb();
+        $oDb = $this->_oFcpoHelper->fcpoGetDb(true);
 
         $sQuery = "SELECT oxid, fcpo_paymentid, fcpo_payonestatus, fcpo_folder FROM fcpostatusmapping ORDER BY oxid ASC";
         $oResult = $oDb->Execute($sQuery);

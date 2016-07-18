@@ -49,7 +49,7 @@ class fcpoforwarding extends oxBase {
      */
     public function fcpoGetExistingForwardings() {
         $aForwardings = array();
-        $oDb = $this->_oFcpoHelper->fcpoGetDb();
+        $oDb = $this->_oFcpoHelper->fcpoGetDb(true);
 
         $sQuery = "SELECT oxid, fcpo_payonestatus, fcpo_url, fcpo_timeout FROM fcpostatusforwarding ORDER BY oxid ASC";
         $oResult = $oDb->Execute($sQuery);

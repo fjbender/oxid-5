@@ -101,7 +101,7 @@ class fcpoconfigexport extends oxBase {
      */
     public function fcpoGetConfig($sShopId, $iLang=0) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
-        $oDb = $this->_oFcpoHelper->fcpoGetDb();
+        $oDb = $this->_oFcpoHelper->fcpoGetDb(true);
         $sQuery = "select oxvarname, oxvartype, DECODE( oxvarvalue, " . $oDb->quote($oConfig->getConfigParam('sConfigKey')) . ") as oxvarvalue from oxconfig where oxshopid = '$sShopId' AND (oxvartype = 'str' OR oxvartype = 'bool' OR oxvartype = 'arr')";
         $oResult = $oDb->Execute($sQuery);
 

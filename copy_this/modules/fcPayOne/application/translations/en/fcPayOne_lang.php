@@ -127,5 +127,5 @@ $aLang = array(
 );
 
 /*
-[{ oxmultilang ident="GENERAL_YOUWANTTODELETE" }]
+[{oxmultilang ident="GENERAL_YOUWANTTODELETE"}]
 */

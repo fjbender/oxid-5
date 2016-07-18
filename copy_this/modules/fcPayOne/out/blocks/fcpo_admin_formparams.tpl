@@ -16,5 +16,5 @@
         [{/foreach}]
     [{/foreach}]
 [{else}]
-    <input type="hidden" name="sort" value="[{ $sort }]">
+    <input type="hidden" name="sort" value="[{$sort}]">
 [{/if}]

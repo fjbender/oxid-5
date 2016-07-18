@@ -168,7 +168,7 @@ class fcpayone_main extends fcpayone_admindetails {
      * Collects messages of different types
      * @var array
      */
-    protected $_aAdminMessages = null;
+    protected $_aAdminMessages = array();
 
     /**
      * init object construction
@@ -178,6 +178,11 @@ class fcpayone_main extends fcpayone_admindetails {
     public function __construct() {
         parent::__construct();
         $this->_oFcpoHelper = oxNew('fcpohelper');
+        
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $sOxid = $oConfig->getShopId();
+        $this->_fcpoLoadConfigs($sOxid);
+        $this->_fcpoLoadCountryList();
     }
 
     /**
@@ -189,11 +194,6 @@ class fcpayone_main extends fcpayone_admindetails {
     public function render() {
         $sReturn = parent::render();
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
-        $sOxid = $oConfig->getShopId();
-
-        $this->_fcpoLoadConfigs($sOxid);
-        $this->_fcpoLoadCountryList();
-
 
         $this->_aViewData['sHelpURL'] = $this->_oFcpoHelper->fcpoGetHelpUrl();
 
@@ -311,6 +311,10 @@ class fcpayone_main extends fcpayone_admindetails {
 
 
         $this->_handlePayPalExpressLogos();
+        
+        //reload config after saving
+        $sOxid = $oConfig->getShopId();
+        $this->_fcpoLoadConfigs($sOxid);
     }
 
     /**
@@ -809,13 +813,12 @@ class fcpayone_main extends fcpayone_admindetails {
      * @return array
      */
     protected function _fcpoSetDefault($aArray, $sKey, $mValue) {
+        $oConfig = $this->getConfig();
         if (!isset($aArray[$sKey])) {
-            $aArray[$sKey] = $mValue;
-            $oConfig = $this->getConfig();
             $oConfig->saveShopConfVar("str", $sKey, $mValue);
         }
 
-        return $aArray;
+        return $oConfig->getShopConfVar($sKey);
     }
 
     /**
@@ -825,10 +828,11 @@ class fcpayone_main extends fcpayone_admindetails {
      * @return array
      */
     protected function _initConfigStrings() {
+        $aConfStrs = $this->_aConfStrs;
         foreach ($this->_aFcpoDefaultStringConf as $sKey => $sValue) {
-            $aConfStrs = $this->_fcpoSetDefault($this->_aConfStrs, $sKey, $sValue);
+            $aConfStrs[$sKey] = $this->_fcpoSetDefault($aConfStrs, $sKey, $sValue);
         }
-
+        
         return $aConfStrs;
     }
 

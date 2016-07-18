@@ -9,8 +9,8 @@ www.fatchip.de
 fc
 
 ## Version
-2.0.6_5_5629
-June 22 2016
+2.0.7_5_5761
+July 17 2016
 
 ## Link
 http://www.payone.de

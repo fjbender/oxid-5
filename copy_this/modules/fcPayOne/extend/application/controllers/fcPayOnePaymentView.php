@@ -821,7 +821,8 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return void
      */
     protected function _fcpoCheckPaypalExpressRemoval() {
-        if (array_key_exists('fcpopaypal_express', $this->_oPaymentList) !== false && !$this->_oFcpoHelper->fcpoGetSessionVariable('fcpoWorkorderId')) {
+        //&& !$this->_oFcpoHelper->fcpoGetSessionVariable('fcpoWorkorderId')
+        if (array_key_exists('fcpopaypal_express', $this->_oPaymentList) !== false ) {
             unset($this->_oPaymentList['fcpopaypal_express']);
         }
     }

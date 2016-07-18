@@ -33,12 +33,6 @@ class fcpohelper extends oxBase {
     protected $_oFcSession = null;
     
     /**
-     * Instance of oxids database object
-     * @var object
-     */
-    protected $_oFcDb = null;
-
-    /**
      * Flags if shop uses registry
      * @var static boolean
      */
@@ -52,7 +46,6 @@ class fcpohelper extends oxBase {
         parent::__construct();
         $this->_oFcConfig       = $this->getConfig();
         $this->_oFcSession      = $this->getSession();
-        $this->_oFcDb           = ( $this->_fcUseDeprecatedInstantiation ) ? oxDb::getDb() : oxDb::getDb(FETCH_MODE_NUM);
     }
     
     
@@ -217,11 +210,15 @@ class fcpohelper extends oxBase {
     /**
      * Getter for database instance
      * 
-     * @param void
+     * @param $blAssoc with assoc mode
      * @param mixed
      */
-    public function fcpoGetDb() {
-        return $this->_oFcDb;
+    public function fcpoGetDb($blAssoc = false) {
+        if ( $blAssoc ) {
+            return  ( $this->_fcUseDeprecatedInstantiation ) ? oxDb::getDb(true) : oxDb::getDb(oxDB::FETCH_MODE_ASSOC);
+        } else {
+            return  ( $this->_fcUseDeprecatedInstantiation ) ? oxDb::getDb() : oxDb::getDb(oxDb::FETCH_MODE_NUM);
+        }
     }
 
     
@@ -367,7 +364,7 @@ class fcpohelper extends oxBase {
      * @return string
      */
     public function fcpoGetModuleVersion() {
-        return '2.0.6_5';
+        return '2.0.7_5';
     }
     
     

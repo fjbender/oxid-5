@@ -50,6 +50,13 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @var bool
      */
     protected $_blIsPayonePayment = false;
+    
+    /**
+     * Appointed error
+     * 
+     * @var bool
+     */
+    protected $_blFcPayoneAppointedError = false;
 
     /**
      * init object construction
@@ -164,7 +171,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
                         oxstreetnr = {$this->_oFcpoDb->quote($sStreetNr)} AND
                         oxcity = {$this->_oFcpoDb->quote($aResponse['add_paydata[shipping_city]'])} AND
                         oxzip = {$this->_oFcpoDb->quote($aResponse['add_paydata[shipping_zip]'])} AND
-                        oxcountryid = {$this->_oFcpoDb->quote($this->_fcpoGetIdByCode($aResponse['add_paydata[shipping_country]']))}";
+                        oxcountryid = {$this->_oFcpoDb->quote($this->fcpoGetIdByCode($aResponse['add_paydata[shipping_country]']))}";
 
         return $this->_oFcpoDb->GetOne($sQuery);
     }
@@ -327,7 +334,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $this->_updateOrderDate();
         }
 
-        $this->_fcpoSetOrderStatus($blAppointedError);
+        $this->_fcpoSetOrderStatus();
 
         // store orderid
         $oBasket->setOrderId($this->getId());
@@ -362,14 +369,14 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return mixed
      */
     protected function _fcpoExecutePayment($blSaveAfterRedirect, $oBasket, $oUserPayment, $blRecalculatingOrder) {
-        $blAppointedError = false;
         if ($blSaveAfterRedirect === true) {
             $sRefNrCheckResult = $this->_fcpoCheckRefNr();
             $sTxid = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoTxid');
 
-            if ($sRefNrCheckResult != '')
+            if ($sRefNrCheckResult != '') {
                 return $sRefNrCheckResult;
-            $blAppointedError = $this->_fcpoProcessOrder($oBasket, $sTxid);
+            }
+            $this->_fcpoProcessOrder($oBasket, $sTxid);
         } else {
             if (!$blRecalculatingOrder) {
                 $blRet = $this->_executePayment($oBasket, $oUserPayment);
@@ -424,7 +431,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $this->setId($sGetChallenge);
 
             // validating various order/basket parameters before finalizing
-            if ($iOrderState = $this->validateOrder($oBasket, $oUser)) {
+            if (($iOrderState = $this->validateOrder($oBasket, $oUser))) {
                 return $iOrderState;
             }
         }
@@ -485,11 +492,10 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
     /**
      * Sets order status depending on having an appointed error
      * 
-     * @param bool $blAppointedError
      * @return void
      */
-    protected function _fcpoSetOrderStatus($blAppointedError) {
-        if ($blAppointedError === false) {
+    protected function _fcpoSetOrderStatus() {
+        if ($this->_fcpoGetAppointedError() === false) {
             // updating order trans status (success status)
             $this->_setOrderStatus('OK');
         } else {
@@ -514,18 +520,16 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * 
      * @param object $oBasket
      * @param string $sTxid
-     * @return boolean
+     * @return void
      */
     protected function _fcpoProcessOrder($oBasket, $sTxid) {
-        $blAppointedError = $this->_fcpoCheckTxid($oBasket);
+        $this->_fcpoCheckTxid($oBasket);
         $iOrderNotChecked = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoordernotchecked');
         if (!$iOrderNotChecked || $iOrderNotChecked != 1) {
             $iOrderNotChecked = 0;
         }
         $this->_fcpoSaveOrderValues($sTxid, $iOrderNotChecked);
         $this->_fcpoCheckUserAgent();
-
-        return $blAppointedError;
     }
 
     /**
@@ -577,7 +581,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $oLang = $this->_oFcpoHelper->fcpoGetLang();
             $this->oxorder__oxremark->value .= $oLang->translateString('FCPO_REMARK_APPOINTED_MISSING');
         }
-
+        $this->_fcpoSetAppointedError($blAppointedError);
         return $blAppointedError;
     }
 
@@ -1191,4 +1195,22 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         return $blReturn;
     }
 
+    /**
+     * Returns true if appointed error occured
+     * 
+     * @return bool
+     */
+    protected function _fcpoGetAppointedError() {
+        return $this->_blFcPayoneAppointedError;
+    }
+    
+    /**
+     * Sets appointed error 
+     * 
+     * @param bool $blError appointed error indicator
+     * @return void
+     */
+    protected function _fcpoSetAppointedError($blError = false) {
+        $this->_blFcPayoneAppointedError = $blError;
+    }
 }
