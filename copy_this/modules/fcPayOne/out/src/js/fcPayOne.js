@@ -835,6 +835,6 @@ function fcSetPayoneInputFields(oForm) {
         if(document.getElementById('fcpoCreditcard') && typeof PayoneRequest == 'function') {
             document.getElementById('fcpoCreditcard').style.display = '';
         }
-    }, 200);
+    }, 2000);
     
 }(document, 'script'));

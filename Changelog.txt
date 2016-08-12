@@ -1,4 +1,14 @@
+==2.0.9==
+  Releasedate: 2016-08-12
+  * Use the LGPL (Lesser General Public License) instead of GPL.
+
+==2.0.8==  
+  Releasedate: 2016-07-22
+  * Optimized  markdown readme.md for Github.
+  * Fixed payment creditcard-form in 'flow'-theme.
+
 ==2.0.7==
+  Releasedate: 2016-07-18
   * Added Flow Theme Support
   * Restructring and relocation of payment templates
   * Fixes JS Error caused by some special configurations

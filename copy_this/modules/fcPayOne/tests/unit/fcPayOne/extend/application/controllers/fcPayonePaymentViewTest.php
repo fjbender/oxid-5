@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -748,25 +748,6 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
         $sResponse = $sExpect = $oTestObject->getHashCC('test');
 
         $this->assertEquals($sExpect, $sResponse);
-    }
-
-    /**
-     * Testing fcpoGetCCFields for coverage
-     * 
-     * @param void
-     * @return void
-     */
-    public function test_fcpoGetCCFields_Coverage() {
-        $oTestObject = oxNew('fcPayOnePaymentView');
-
-        $aExpect = array(
-            'cardpan',
-            'cardcvc2',
-            'cardexpiremonth',
-            'cardexpireyear',
-        );
-
-        $this->assertEquals($aExpect, $oTestObject->fcpoGetCCFields());
     }
 
     /**

@@ -2,16 +2,16 @@
 
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -24,7 +24,7 @@ $aModule = array(
     'title'         => 'PAYONE FinanceGate',
     'description'   => 'PAYONE bietet Ihnen mit dem Payment-Modul f&uuml;r Oxid eShops &uuml;ber 20 Zahlarten aus einer Hand. Das Payment-Modul von PAYONE bietet eine nahtlose Integration in den Checkout-Prozess des OXID eShops.',
     'thumbnail'     => 'picture.gif',
-    'version'       => '2.0.7_5_5761',
+    'version'       => '2.0.9_5_5824',
     'author'        => 'FATCHIP GmbH',
     'email'         => 'kontakt@fatchip.de',
     'url'           => 'http://wiki.fatchip.de/fc/mod_oxid_payone/start',

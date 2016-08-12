@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-push-3">
-                        <div id="errorOutput" class="alert alert-danger"></div>
+                        <div id="errorOutput" class="alert-danger"></div>
                     </div>
                 </div>
                 [{oxid_include_dynamic file=$oViewConf->fcpoGetAbsModuleTemplateFrontendPath('fcpo_payment_creditcard_script.tpl')}]
