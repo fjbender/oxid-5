@@ -1,5 +1,6 @@
 <?php
-/** 
+
+/**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,32 +18,29 @@
  * @copyright (C) Payone GmbH
  * @version   OXID eShop CE
  */
- 
 class fcpoklarna extends oxBase {
-    
+
     /**
      * Helper object for dealing with different shop versions
      * @var object
      */
     protected $_oFcpoHelper = null;
-    
+
     /**
      * Centralized Database instance
      * @var object
      */
     protected $_oFcpoDb = null;
 
-    
     /**
      * Init needed data
      */
     public function __construct() {
         parent::__construct();
         $this->_oFcpoHelper = oxNew('fcpohelper');
-        $this->_oFcpoDb     = oxDb::getDb();
+        $this->_oFcpoDb = oxDb::getDb();
     }
-    
-    
+
     /**
      * Returns stored store ids
      * 
@@ -62,7 +60,6 @@ class fcpoklarna extends oxBase {
 
         return $aStoreIds;
     }
-    
 
     /**
      * Add/Update klarna campaigns into database
@@ -90,8 +87,7 @@ class fcpoklarna extends oxBase {
             }
         }
     }
-    
-    
+
     /**
      * Add/Update klarna storeid into database
      * 
@@ -101,7 +97,7 @@ class fcpoklarna extends oxBase {
     public function fcpoInsertStoreIds($aStoreIds) {
         if (is_array($aStoreIds) && count($aStoreIds) > 0) {
             foreach ($aStoreIds as $iId => $aStoreIdData) {
-                
+
                 if (array_key_exists('delete', $aStoreIdData) !== false) {
                     $sQuery = "DELETE FROM fcpopayment2country WHERE fcpo_paymentid = 'KLV' AND fcpo_type = " . oxDb::getDb()->quote($iId);
                     $this->_oFcpoDb->Execute($sQuery);
@@ -112,9 +108,8 @@ class fcpoklarna extends oxBase {
                 $this->_oFcpoDb->Execute($sQuery);
             }
         }
-    }    
-    
-    
+    }
+
     /**
      * Add Klarna store id
      * 
@@ -124,10 +119,8 @@ class fcpoklarna extends oxBase {
     public function fcpoAddKlarnaStoreId() {
         $sQuery = "INSERT INTO fcpoklarnastoreids (fcpo_storeid) VALUES ('')";
         $this->_oFcpoDb->Execute($sQuery);
-    }    
-    
+    }
 
-    
     /**
      * Add Klarna campaign id
      * 
@@ -138,4 +131,5 @@ class fcpoklarna extends oxBase {
         $sQuery = "INSERT INTO fcpoklarnacampaigns (fcpo_campaign_code, fcpo_campaign_title) VALUES ('', '')";
         $this->_oFcpoDb->Execute($sQuery);
     }
+
 }

@@ -120,4 +120,33 @@ class Unit_fcPayOne_Extend_Core_fcPayOneViewConf extends OxidTestCase {
         $this->assertEquals(4800, $oTestObject->fcpoGetIntShopVersion());
     }
 
+    /**
+     * Testing fcpoGetModuleCssPath for coverage
+     */
+    public function test_fcpoGetModuleCssPath_Coverage() {
+        $sMockFile = 'someFile';
+        $oTestObject = $this->getMock('fcPayOneViewConf', array('fcpoGetModuleUrl'));
+        $oTestObject->expects($this->any())->method('fcpoGetModuleUrl')->will($this->returnValue('http://example.org/modules/'));
+
+        $this->assertEquals('http://example.org/modules/out/src/css/someFile', $oTestObject->fcpoGetModuleCssPath($sMockFile));
+    }
+    
+    /**
+     * Testing fcpoGetAbsModuleTemplateFrontendPath for coverage
+     */
+    public function test_fcpoGetAbsModuleTemplateFrontendPath_Coverage() {
+        $sMockFile = 'someFile';
+        $oTestObject = $this->getMock('fcPayOneViewConf', array('fcpoGetModulePath'));
+        $oTestObject->expects($this->any())->method('fcpoGetModulePath')->will($this->returnValue('someValue/'));
+
+        $this->assertEquals('someValue/application/views/frontend/tpl/someFile', $oTestObject->fcpoGetAbsModuleTemplateFrontendPath($sMockFile));
+    }
+    
+    /**
+     * Testing fcpoGetHostedPayoneJs for coverage
+     */
+    public function test_fcpoGetHostedPayoneJs_Coverage() {
+        $oTestObject = oxNew('fcPayOneViewConf');
+        $this->assertEquals('https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js', $oTestObject->fcpoGetHostedPayoneJs());
+    }
 }

@@ -363,6 +363,13 @@ $aLang = array(
     
 'FCPO_CC_IFRAME_STANDARD'                   => 'Standard',
 'FCPO_CC_IFRAME_CUSTOM'                     => 'Benutzerdefiniert',
+
+'FCPO_CONFIG_GROUP_PAYOLUTION'              => 'Payolution',
+'FCPO_PAYOLUTION_B2BMODE'                   => 'Payolution im B2B-Modus betreiben',
+'FCPO_HELP_PAYOLUTION_B2BMODE'              => 'Bei aktiviertem B2B Modus und vom Benutzer angegebenem Firmennamen wird die USt-IdNr. abgefragt. Bei B2C Kunden wird stattdessen das Geburtsdatum abgefragt.',
+'FCPO_PAYOLUTION_COMPANY'                   => 'Firmenname',
+'FCPO_HELP_PAYOLUTION_COMPANY'              => 'Der hier eingegebene Firmenname wird beim einblenden des Einwilligungstextes verwendet.',
+'FCPO_PAYOLUTION_MODE'                      => 'Payolution im Testmodus betreiben',
     
 );
 

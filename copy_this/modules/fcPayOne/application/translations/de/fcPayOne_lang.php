@@ -124,6 +124,25 @@ $aLang = array(
     
 'FCPO_CC_IFRAME_HEADER'                         => 'Bezahlung mit Kreditkarte',
 'FCPO_OR'                                       => 'oder',
+'FCPO_PAYOLUTION_USTID'                         => 'Umsatzsteueridentifiationsnummer (USt-IdNr.)',
+'FCPO_PAYOLUTION_PHONE'                         => 'Telefonnummer',
+'FCPO_PAYOLUTION_BIRTHDATE'                     => 'Geburtsdatum',
+'FCPO_PAYOLUTION_PRECHECK_FAILED'               => 'Die Transaktion wurde vom Finanzierungs-Dienstleister abgelehnt. Bitte wählen Sie eine andere Zahlart',
+'FCPO_PAYOLUTION_YEAR'                          => 'Jahr',
+'FCPO_PAYOLUTION_MONTH'                         => 'Monat',
+'FCPO_PAYOLUTION_DAY'                           => 'Tag',
+'FCPO_PAYOLUTION_AGREEMENT_PART_1'              => 'Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.<br>Meine',
+'FCPO_PAYOLUTION_AGREEMENT_PART_2'              => 'kann ich jederzeit mit Wirkung für die Zukunft wiederrufen',
+'FCPO_PAYOLUTION_AGREE'                         => 'Einwilligung',
+'FCPO_PAYOLUTION_EMAIL_CLEARING'                => 'Payolution Referenzcode:',
+'FCPO_PAYOLUTION_NOT_AGREED'                    => 'Sie haben die Einwilligung zur Übertragung der erforderlichen Daten an payolution nicht bestätigt.',
+'FCPO_PAYOLUTION_SEPA_NOT_AGREED'               => 'Sie haben das SEPA Lastschriftmandat noch nicht erteilt.',
+'FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1'         => 'Hiermit erteile ich das',
+'FCPO_PAYOLUTION_SEPA_AGREE'                    => 'SEPA-Lastschriftmandat',
+'FCPO_PAYOLUTION_ACCOUNTHOLDER'                 => 'Kontoinhaber',
+'FCPO_BANK_IBAN'                                => 'IBAN',
+'FCPO_BANK_BIC'                                 => 'BIC',
+'FCPO_PAYOLUTION_BANKDATA_INCOMPLETE'           => 'Ihre eingebenen Kontodaten sind nicht vollständig.',
 );
 
 /*

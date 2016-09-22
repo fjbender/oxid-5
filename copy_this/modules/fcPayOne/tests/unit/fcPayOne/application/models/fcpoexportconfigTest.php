@@ -117,6 +117,22 @@ class Unit_fcPayOne_Application_Models_fcpoexportconfig extends OxidTestCase {
     }
 
     /**
+     * Testing fcpoExportConfig with false xml
+     */
+    public function test_fcpoExportConfig_FalseXml() {
+        $oTestObject = $this->getMock('fcpoconfigexport', array('fcpoGetConfigXml'));
+        $oTestObject->expects($this->any())->method('fcpoGetConfigXml')->will($this->returnValue(false));
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoHeader')->will($this->returnValue(true));
+        $oHelper->expects($this->any())->method('fcpoExit')->will($this->returnValue(true));
+        $oHelper->expects($this->any())->method('fcpoProcessResultString')->will($this->returnValue(true));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+
+        $this->assertEquals(null, $oTestObject->fcpoExportConfig());
+    }
+
+    /**
      * Tests _getChecksumErrors returning result is valid
      * 
      * @param void

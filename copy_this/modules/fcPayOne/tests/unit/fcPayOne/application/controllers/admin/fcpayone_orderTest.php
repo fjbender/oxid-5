@@ -175,8 +175,9 @@ class Unit_fcPayOne_Application_Controllers_Admin_fcpayone_order extends OxidTes
         $oTestObject = $this->getMock('fcpayone_order', array('getOrder', 'fcpoGetStatusOxid'));
         $oTestObject->expects($this->any())->method('fcpoGetStatusOxid')->will($this->returnValue('someId'));
 
-        $oMockOxOrder = $this->getMock('oxOrder', array('load'));
+        $oMockOxOrder = $this->getMock('oxOrder', array('load','fcpoGetStatus'));
         $oMockOxOrder->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockOxOrder->expects($this->any())->method('fcpoGetStatus')->will($this->returnValue(true));
         $oMockOxOrder->oxorder__fcpotxid = new oxField('156452317');
 
         $oMockTransactionStatus = $this->getMock('fcpotransactionstatus', array('load'));
@@ -196,6 +197,42 @@ class Unit_fcPayOne_Application_Controllers_Admin_fcpayone_order extends OxidTes
 
         $this->_fcpoTruncateTable('fcpotransactionstatus');
     }
+
+    /**
+     * Testing getStatus for returning value
+     * 
+     * @param void
+     * @return void
+     */
+    public function test_getStatus_ReturnValue() {
+        $this->_fcpoPrepareTransactionstatusTable();
+
+        $oTestObject = $this->getMock('fcpayone_order', array('getOrder', 'fcpoGetStatusOxid'));
+        $oTestObject->expects($this->any())->method('fcpoGetStatusOxid')->will($this->returnValue('someId'));
+
+        $oMockOxOrder = $this->getMock('oxOrder', array('load','fcpoGetStatus'));
+        $oMockOxOrder->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockOxOrder->expects($this->any())->method('fcpoGetStatus')->will($this->returnValue(true));
+        $oMockOxOrder->oxorder__fcpotxid = new oxField('156452317');
+
+        $oMockTransactionStatus = $this->getMock('fcpotransactionstatus', array('load'));
+        $oMockTransactionStatus->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockTransactionStatus->fcpotransactionstatus__fcpo_txid = new oxField('4321');
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue('1'));
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->onConsecutiveCalls($oMockOxOrder, $oMockTransactionStatus));
+
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        $this->invokeSetAttribute($oTestObject, '_aStatus', array('someValue','someOtherValue'));
+
+        $aResponse = $aExpect = $oTestObject->getStatus();
+
+        $this->assertEquals($aExpect, $aResponse);
+
+        $this->_fcpoTruncateTable('fcpotransactionstatus');
+    }
+
 
     /**
      * Testing capture method on having a certain amount

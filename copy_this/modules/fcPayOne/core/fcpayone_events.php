@@ -203,6 +203,7 @@ class fcpayone_events
     public static $sQueryAlterOxorderVoucherdiscountDebited = "ALTER TABLE oxorder ADD COLUMN FCPOVOUCHERDISCOUNTDEBITED TINYINT(1) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderDiscountDebited = "ALTER TABLE oxorder ADD COLUMN FCPODISCOUNTDEBITED TINYINT(1) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderNotChecked = "ALTER TABLE oxorder ADD COLUMN FCPOORDERNOTCHECKED TINYINT(1) DEFAULT '0' NOT NULL;";
+    public static $sQueryAlterOxorderWorkOrderId = "ALTER TABLE oxorder ADD COLUMN FCPOWORKORDERID VARCHAR(16) DEFAULT '' NOT NULL;";
     public static $sQueryChangeToVarchar1 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_USERID FCPO_USERID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeToVarchar2 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_TXID FCPO_TXID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeRefNrToVarchar = "ALTER TABLE oxorder CHANGE FCPOREFNR FCPOREFNR VARCHAR( 32 ) NOT NULL DEFAULT '0'";
@@ -222,6 +223,8 @@ class fcpayone_events
         'fcpoklarna_installment' => 'Klarna Ratenkauf',
         'fcpobarzahlen' => 'Barzahlen',
         'fcpopaydirekt' => 'Paydirekt',
+        'fcpopo_bill' => 'Payolution Rechnung',
+        'fcpopo_debitnote' => 'Payolution Lastschrift',
     );
 
     /**
@@ -378,6 +381,7 @@ class fcpayone_events
         self::addColumnIfNotExists('oxorder', 'FCPOVOUCHERDISCOUNTDEBITED', self::$sQueryAlterOxorderVoucherdiscountDebited);
         self::addColumnIfNotExists('oxorder', 'FCPODISCOUNTDEBITED', self::$sQueryAlterOxorderDiscountDebited);
         self::addColumnIfNotExists('oxorder', 'FCPOORDERNOTCHECKED', self::$sQueryAlterOxorderNotChecked);
+        self::addColumnIfNotExists('oxorder', 'FCPOWORKORDERID', self::$sQueryAlterOxorderWorkOrderId);
 
         self::addColumnIfNotExists('oxorderarticles', 'FCPOCAPTUREDAMOUNT', self::$sQueryAlterOxorderarticlesCapturedAmount);
         self::addColumnIfNotExists('oxorderarticles', 'FCPODEBITEDAMOUNT', self::$sQueryAlterOxorderarticlesDebitedAmount);
@@ -542,29 +546,11 @@ class fcpayone_events
     /**
      * Get the OXID eShop version.
      * 
-     * @return int versionnumber
+     * @return string versionnumber
      */
     public static function getCurrentVersion()
     {
-        return versionToInt(self::$_oFcpoHelper->fcpoGetConfig()->getActiveShop()->oxshops__oxversion->value);
-    }
-
-    /**
-     * Cast a version string to an integer.
-     * 
-     * @param string $sVersion versionnumber with dots and numbers
-     * 
-     * @todo Does this work with beta versions?
-     * 
-     * @return int verssionnumber
-     */
-    public static function versionToInt($sVersion)
-    {
-        $iVersion = (int) str_replace('.', '', $sVersion);
-        while ($iVersion < 1000) {
-            $iVersion = $iVersion * 10;
-        }
-        return $iVersion;
+        return self::$_oFcpoHelper->fcpoGetConfig()->getActiveShop()->oxshops__oxversion->value;
     }
 
     /**
@@ -576,12 +562,10 @@ class fcpayone_events
      */
     public static function isUnderVersion($sMaxVersion)
     {
-        $iMaxVersion = self::versionToInt($sMaxVersion);
-        $iCurrVersion = self::getCurrentVersion();
-        if ($iCurrVersion < $iMaxVersion) {
-            return true;
-        }
-        return false;
+        $sCurrVersion = self::getCurrentVersion();
+        $blReturn = (version_compare($sCurrVersion, $sMaxVersion, '<')) ? true : false;
+        
+        return $blReturn;
     }
 
     /**
@@ -594,18 +578,12 @@ class fcpayone_events
      */  
     public static function isOverVersion($sMinVersion, $blEqualOrGreater = false)
     {
-        $iMinVersion = self::versionToInt($sMinVersion);
-        $iCurrVersion = self::getCurrentVersion();
-        if ($blEqualOrGreater === false) {
-            if ($iCurrVersion > $iMinVersion) {
-                return true;
-            }
-        } else {
-            if ($iCurrVersion >= $iMinVersion) {
-                return true;
-            }
-        }
-        return false;
+        $sCompareOperator = ($blEqualOrGreater) ? '>=' : '>';
+        $sCurrVersion = self::getCurrentVersion();
+        
+        $blReturn = (version_compare($sCurrVersion, $sMinVersion, $sCompareOperator)) ? true : false;        
+        
+        return $blReturn;
     }
 
     /**

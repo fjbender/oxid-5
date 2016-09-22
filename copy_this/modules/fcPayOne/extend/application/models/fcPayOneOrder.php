@@ -550,6 +550,10 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         $this->oxorder__fcpoauthmode = new oxField($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoAuthMode'), oxField::T_RAW);
         $this->oxorder__fcpomode = new oxField($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMode'), oxField::T_RAW);
         $this->oxorder__fcpoordernotchecked = new oxField($iOrderNotChecked, oxField::T_RAW);
+        $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
+        if ($sWorkorderId) {
+            $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);
+        }
         $this->_oFcpoDb->Execute("UPDATE fcporefnr SET fcpo_txid = '" . $sTxid . "' WHERE fcpo_refnr = '" . $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') . "'");
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('fcpoOrderNr');
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('fcpoTxid');
@@ -1151,16 +1155,29 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      */
     protected function _fcpoHandleAuthorizationApproved($aResponse, $sRefNr, $sAuthorizationType, $sMode) {
         $iOrderNotChecked = $this->_fcpoGetOrderNotChecked();
-
+        $sPaymentId = $this->oxorder__oxpaymenttype->value;
+        
         $this->oxorder__fcpotxid = new oxField($aResponse['txid'], oxField::T_RAW);
         $this->oxorder__fcporefnr = new oxField($sRefNr, oxField::T_RAW);
         $this->oxorder__fcpoauthmode = new oxField($sAuthorizationType, oxField::T_RAW);
         $this->oxorder__fcpomode = new oxField($sMode, oxField::T_RAW);
         $this->oxorder__fcpoordernotchecked = new oxField($iOrderNotChecked, oxField::T_RAW);
         $this->_oFcpoDb->Execute("UPDATE fcporefnr SET fcpo_txid = '{$aResponse['txid']}' WHERE fcpo_refnr = '" . $sRefNr . "'");
-        if ($this->oxorder__oxpaymenttype->value == 'fcpobarzahlen' && isset($aResponse['add_paydata[instruction_notes]'])) {
+        if ($sPaymentId == 'fcpobarzahlen' && isset($aResponse['add_paydata[instruction_notes]'])) {
             $sBarzahlenHtml = urldecode($aResponse['add_paydata[instruction_notes]']);
             $this->_oFcpoHelper->fcpoSetSessionVariable('sFcpoBarzahlenHtml', $sBarzahlenHtml);
+        }
+        if (in_array($sPaymentId, array('fcpopo_bill', 'fcpopo_debitnote'))) {
+            $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
+            if ($sWorkorderId) {
+                $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);
+                $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_workorderid');
+            }
+            // save clearing_reference into session
+            $sClearingReference = (isset($aResponse['add_paydata[clearing_reference]'])) ? $aResponse['add_paydata[clearing_reference]'] : false;
+            if ($sClearingReference) {
+                $this->_oFcpoHelper->fcpoSetSessionVariable('payolution_clearing', $sClearingReference);
+            }
         }
     }
 

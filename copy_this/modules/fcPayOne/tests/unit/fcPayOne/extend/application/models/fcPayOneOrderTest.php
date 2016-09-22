@@ -765,7 +765,7 @@ class Unit_fcPayOne_Extend_Application_Models_fcPayOneOrder extends OxidTestCase
 
         $blResponse = $this->invokeMethod($oTestObject, '_fcpoProcessOrder', array($oMockBasket, 'someTxid'));
 
-        $this->assertEquals(true, $blResponse);
+        $this->assertEquals(null, $blResponse);
     }
 
     /**
@@ -1017,20 +1017,22 @@ class Unit_fcPayOne_Extend_Application_Models_fcPayOneOrder extends OxidTestCase
      * Testing _fcpoSetOrderStatus for state ok
      */
     public function test__fcpoSetOrderStatus_Ok() {
-        $oTestObject = $this->getMock('fcPayOneOrder', array('_setOrderStatus'));
+        $oTestObject = $this->getMock('fcPayOneOrder', array('_setOrderStatus', '_fcpoGetAppointedError'));
         $oTestObject->expects($this->any())->method('_setOrderStatus')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoGetAppointedError')->will($this->returnValue(false));
 
-        $this->assertEquals(null, $oTestObject->_fcpoSetOrderStatus(false));
+        $this->assertEquals(null, $oTestObject->_fcpoSetOrderStatus());
     }
 
     /**
      * Testing _fcpoSetOrderStatus for state error
      */
     public function test__fcpoSetOrderStatus_Error() {
-        $oTestObject = $this->getMock('fcPayOneOrder', array('_setOrderStatus'));
+        $oTestObject = $this->getMock('fcPayOneOrder', array('_setOrderStatus', '_fcpoGetAppointedError'));
         $oTestObject->expects($this->any())->method('_setOrderStatus')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoGetAppointedError')->will($this->returnValue(true));
 
-        $this->assertEquals(null, $oTestObject->_fcpoSetOrderStatus(true));
+        $this->assertEquals(null, $oTestObject->_fcpoSetOrderStatus());
     }
 
     public function test__fcpoMarkVouchers_Coverage() {
@@ -2058,12 +2060,12 @@ class Unit_fcPayOne_Extend_Application_Models_fcPayOneOrder extends OxidTestCase
     }
 
     /**
-     * Testing _fcpoHandleAuthorizationApproved for coverage
+     * Testing _fcpoHandleAuthorizationApproved for Barzahlen
      * 
      * @param void
      * @return void
      */
-    public function test__fcpoHandleAuthorizationApproved_Coverage() {
+    public function test__fcpoHandleAuthorizationApproved_Barzahlen() {
         $oTestObject = $this->getMock('fcPayOneOrder', array('_fcpoGetOrderNotChecked'));
         $oTestObject->expects($this->any())->method('_fcpoGetOrderNotChecked')->will($this->returnValue(1));
         $oTestObject->oxorder__oxpaymenttype = new oxField('fcpobarzahlen');
@@ -2076,7 +2078,34 @@ class Unit_fcPayOne_Extend_Application_Models_fcPayOneOrder extends OxidTestCase
         $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
         $this->invokeSetAttribute($oTestObject, '_oFcpoDb', $oMockDb);
 
-        $aMockResponse = array('add_paydata[instruction_notes]' => 'someValue', 'txid' => 'someTxid');
+        $aMockResponse = array('add_paydata[instruction_notes]' => 'someValue', 'txid' => 'someTxid', 'add_paydata[clearing_reference]' => 'someReference');
+        $sMockRefNr = $sMockMode = $sMockAuthorizationType = 'someValue';
+
+        $this->assertEquals(null, $oTestObject->_fcpoHandleAuthorizationApproved($aMockResponse, $sMockRefNr, $sMockAuthorizationType, $sMockMode));
+    }
+
+    /**
+     * Testing _fcpoHandleAuthorizationApproved for payolution payments
+     * 
+     * @param void
+     * @return void
+     */
+    public function test__fcpoHandleAuthorizationApproved_Payolution() {
+        $oTestObject = $this->getMock('fcPayOneOrder', array('_fcpoGetOrderNotChecked'));
+        $oTestObject->expects($this->any())->method('_fcpoGetOrderNotChecked')->will($this->returnValue(1));
+        $oTestObject->oxorder__oxpaymenttype = new oxField('fcpopo_bill');
+
+        $oMockDb = $this->getMock('oxDb', array('Execute'));
+        $oMockDb->expects($this->any())->method('Execute')->will($this->returnValue(true));
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoSetSessionVariable')->will($this->returnValue(true));
+        $oHelper->expects($this->any())->method('fcpoGetSessionVariable')->will($this->returnValue('someWorkerId'));
+        
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        $this->invokeSetAttribute($oTestObject, '_oFcpoDb', $oMockDb);
+
+        $aMockResponse = array('add_paydata[instruction_notes]' => 'someValue', 'txid' => 'someTxid', 'add_paydata[clearing_reference]' => 'someReference');
         $sMockRefNr = $sMockMode = $sMockAuthorizationType = 'someValue';
 
         $this->assertEquals(null, $oTestObject->_fcpoHandleAuthorizationApproved($aMockResponse, $sMockRefNr, $sMockAuthorizationType, $sMockMode));

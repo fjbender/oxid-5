@@ -10,7 +10,7 @@
         </td>
     </tr>
     <tr>
-    [{if $edit->oxpayments__oxid->value != 'fcpocommerzfinanz' && $edit->oxpayments__oxid->value != 'fcpobarzahlen'}]
+    [{if $edit->fcpoAuthorizeAllowed()}]
         <td class="edittext" width="70">
             [{oxmultilang ident="FCPO_AUTHORIZATION_METHOD"}]
         </td>

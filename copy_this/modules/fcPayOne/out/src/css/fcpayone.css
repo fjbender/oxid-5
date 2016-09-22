@@ -47,3 +47,8 @@
 .fcpoSEPAMandateCheckbox.fcpoMobile{
      margin-bottom: 50px;
 }
+
+.fcpoPayolutionAgreeRed {
+    font-weight:bold;
+    color:red;
+}

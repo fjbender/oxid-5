@@ -732,10 +732,37 @@
             </dl>    
         </div>
     </div>
+                
+    <div class="groupExp">
+        <div>
+            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{oxmultilang ident="FCPO_CONFIG_GROUP_PAYOLUTION"}]</b></a>
+            <dl>
+                <dt>
+                    <input type="hidden" name="confbools[blFCPOPayolutionB2BMode]" value="false">
+                    <input type="checkbox" class="txt" name="confbools[blFCPOPayolutionB2BMode]" value="true" [{if $confbools.blFCPOPayolutionB2BMode}]checked[{/if}] [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_B2BMODE"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_B2BMODE"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionCompany]" value="[{$confstrs.sFCPOPayolutionCompany}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_COMPANY"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_COMPANY"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+        </div>
+    </div>
     
     <br>
-    <input type="submit" class="edittext" name="save" value="[{ oxmultilang ident="GENERAL_SAVE" }]" onClick="Javascript:document.myedit.fnc.value='save'" [{ $readonly}]>
-    <input type="submit" class="edittext" name="export" value="[{ oxmultilang ident="FCPO_EXPORT_CONFIG" }]" target="_blank" onClick="Javascript:document.myedit.fnc.value='export'" [{ $readonly}]>
+    <input type="submit" class="edittext" name="save" value="[{oxmultilang ident="GENERAL_SAVE"}]" onClick="Javascript:document.myedit.fnc.value='save'" [{ $readonly}]>
+    <input type="submit" class="edittext" name="export" value="[{oxmultilang ident="FCPO_EXPORT_CONFIG"}]" target="_blank" onClick="Javascript:document.myedit.fnc.value='export'" [{ $readonly}]>
 </form>
 
 [{include file="bottomnaviitem.tpl"}]

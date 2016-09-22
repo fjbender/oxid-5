@@ -32,7 +32,6 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     protected $_oFcpoDb = null;
 
-
     /*
      * Array of all payment method IDs belonging to PAYONE
      *
@@ -54,12 +53,22 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpoklarna_installment',
         'fcpobarzahlen',
         'fcpopaydirekt',
+        'fcpopo_bill',
+        'fcpopo_debitnote',
     );
+    
     protected static $_aIframePaymentTypes = array(
         'fcpocreditcard_iframe',
     );
     protected static $_aFrontendApiPaymentTypes = array(
         'fcpocreditcard_iframe',
+    );
+    
+    protected $_aPaymentsNoAuthorize = array(
+        'fcpocommerzfinanz',
+        'fcpobarzahlen',
+        'fcpopo_bill',
+        'fcpopo_debitnote',
     );
 
     /**
@@ -288,11 +297,11 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $aMandate = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMandate');
 
         $blMandateTextValid = (
-            $aMandate &&
-            array_key_exists('mandate_status', $aMandate) !== false &&
-            $aMandate['mandate_status'] == 'pending' &&
-            array_key_exists('mandate_text', $aMandate) !== false
-        );
+                $aMandate &&
+                array_key_exists('mandate_status', $aMandate) !== false &&
+                $aMandate['mandate_status'] == 'pending' &&
+                array_key_exists('mandate_text', $aMandate) !== false
+                );
 
         $mReturn = false;
         if ($blMandateTextValid) {
@@ -518,6 +527,20 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $sPayments = rtrim($sPayments, ',');
 
         return $sPayments;
+    }
+    
+    /**
+     * Public getter for checking if current payment is allowed for authorization
+     * 
+     * @param void
+     * @return bool
+     */
+    public function fcpoAuthorizeAllowed() {
+        $sPaymentId = $this->oxpayments__oxid->value;
+        $blCurrentPaymentAffected = in_array($sPaymentId, $this->_aPaymentsNoAuthorize);
+        $blAllowed = ($blCurrentPaymentAffected) ? false : true;
+        
+        return $blAllowed;
     }
 
 }

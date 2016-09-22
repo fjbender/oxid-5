@@ -1,3 +1,6 @@
+  * Added payolution invoice and debit payment types
+  * Updated unit tests to current version
+
 ==2.0.9==
   Releasedate: 2016-08-12
   * Use the LGPL (Lesser General Public License) instead of GPL.
