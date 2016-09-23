@@ -5,6 +5,9 @@
     </dt>
     <dd class="[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
         <input type="hidden" name="fcpo_mode_[{$sPaymentID}]" value="[{$paymentmethod->fcpoGetOperationMode()}]">
+        <link href="[{$oViewConf->fcpoGetModuleCssPath('lightview.css')}]" rel="stylesheet">
+        <script src="[{$oViewConf->fcpoGetModuleJsPath('jquery-1.10.1.min.js')}]"></script>
+        <script src="[{$oViewConf->fcpoGetModuleJsPath()}]lightview/lightview.js"></script>
         <ul class="form">
             <li id="fcpo_elv_error">
                 <div class="oxValidateError" style="display: block;padding: 0;">
@@ -32,6 +35,12 @@
                         [{oxmultilang ident="FCPO_BIC_INVALID"}]
                     </p>
                 </div>
+            </li>
+            <li>
+                <input name="dynvalue[fcpo_payolution_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionAgreementLink()}]' class="lightview fcpoPayolutionAgreeRed" data-lightview-type="iframe" data-lightview-options="width: 800, height: 600, viewport: 'scale',background: { color: '#fff', opacity: 1 },skin: 'light'">[{oxmultilang ident="FCPO_PAYOLUTION_AGREE"}]</a> [{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_2"}]
+            </li>
+            <li>
+                <input name="dynvalue[fcpo_payolution_sepa_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionSepaAgreementLink()}]' class="fcpoPayolutionAgreeRed" onClick="javascript:open('', 'SEPA', 'height=800,width=600')">[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREE"}]</a>
             </li>
         </ul>
         [{block name="checkout_payment_longdesc"}]
