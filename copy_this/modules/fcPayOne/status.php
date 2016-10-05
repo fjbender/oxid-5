@@ -31,9 +31,11 @@ if(file_exists(dirname(__FILE__)."/config.ipwhitelist.php")) {
 }
 
 $sClientIp = null;
-if($_SERVER['HTTP_X_FORWARDED_FOR']) {
-    $aIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-    $sClientIp = trim($aIps[0]);
+if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    if($_SERVER['HTTP_X_FORWARDED_FOR']) {
+        $aIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $sClientIp = trim($aIps[0]);
+    }
 }
 
 $sRemoteIp = isset($sClientIp) ? $sClientIp : $_SERVER['REMOTE_ADDR'];
