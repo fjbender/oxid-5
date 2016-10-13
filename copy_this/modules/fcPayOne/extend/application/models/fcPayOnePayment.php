@@ -47,10 +47,8 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpoonlineueberweisung',
         'fcpopaypal',
         'fcpopaypal_express',
-        'fcpocommerzfinanz',
         'fcpobillsafe',
         'fcpoklarna',
-        'fcpoklarna_installment',
         'fcpobarzahlen',
         'fcpopaydirekt',
         'fcpopo_bill',
@@ -65,7 +63,6 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
     );
     
     protected $_aPaymentsNoAuthorize = array(
-        'fcpocommerzfinanz',
         'fcpobarzahlen',
         'fcpopo_bill',
         'fcpopo_debitnote',

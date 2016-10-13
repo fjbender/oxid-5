@@ -403,73 +403,6 @@ function checkKlarna() {
     return true;
 }
 
-function checkKlarnaInstallment() {
-    resetErrorContainers();
-    var oForm = getPaymentForm();
-
-    if(oForm['fcpo_klarna_no_campaign']) {
-        return false;
-    }
-
-    if(oForm['fcpo_klarna_campaign']) {
-        var sValue = '';
-        if(oForm['fcpo_klarna_campaign'].length) {
-            for(var i = 0; i < oForm['fcpo_klarna_campaign'].length; i++) {
-                if(oForm['fcpo_klarna_campaign'][i].checked) {
-                    sValue = oForm['fcpo_klarna_campaign'][i].value;
-                }
-            }
-        } else {
-            sValue = oForm['fcpo_klarna_campaign'].value;
-        }
-        if(sValue == '') {
-            document.getElementById('fcpo_klarna_campaign_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_fon]']) {
-        oForm['dynvalue[fcpo_kls_fon]'].value = oForm['dynvalue[fcpo_kls_fon]'].value.trim();
-        if(oForm['dynvalue[fcpo_kls_fon]'].value == '') {
-            document.getElementById('fcpo_kls_fon_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_birthday][month]']) {
-        if(oForm['dynvalue[fcpo_kls_birthday][month]'].value == '' || oForm['dynvalue[fcpo_kls_birthday][day]'].value == '' || oForm['dynvalue[fcpo_kls_birthday][year]'].value == '') {
-            document.getElementById('fcpo_kls_birthday_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_addinfo]']) {
-        oForm['dynvalue[fcpo_kls_addinfo]'].value = oForm['dynvalue[fcpo_kls_addinfo]'].value.trim();
-        if(oForm['dynvalue[fcpo_kls_addinfo]'].value == '') {
-            document.getElementById('fcpo_kls_addinfo_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_del_addinfo]']) {
-        oForm['dynvalue[fcpo_kls_del_addinfo]'].value = oForm['dynvalue[fcpo_kls_del_addinfo]'].value.trim();
-        if(oForm['dynvalue[fcpo_kls_del_addinfo]'].value == '') {
-            document.getElementById('fcpo_kls_del_addinfo_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_personalid]']) {
-        oForm['dynvalue[fcpo_kls_personalid]'].value = oForm['dynvalue[fcpo_kls_personalid]'].value.trim();
-        if(oForm['dynvalue[fcpo_kls_personalid]'].value == '') {
-            document.getElementById('fcpo_kls_personalid_invalid').style.display = 'block';
-            return false;
-        }
-    }
-    if(oForm['dynvalue[fcpo_kls_confirm]']) {
-        if(!oForm['dynvalue[fcpo_kls_confirm]'][1].checked) {
-            document.getElementById('fcpo_kls_confirmation_missing').style.display = 'block';
-            return false;        
-        }
-    }
-    return true;
-}
-
 function fcpoGetElvCountry() {
     var oForm = getPaymentForm();
     var sElvCountry = 'DE';
@@ -586,9 +519,7 @@ function fcCheckPaymentSelection() {
             return checkOnlineUeberweisung();
         } else if(sCheckedValue == 'fcpoklarna') {
             return checkKlarna();
-        } else if(sCheckedValue == 'fcpoklarna_installment') {
-            return checkKlarnaInstallment();
-        }
+        } 
     }
     return true;
 }

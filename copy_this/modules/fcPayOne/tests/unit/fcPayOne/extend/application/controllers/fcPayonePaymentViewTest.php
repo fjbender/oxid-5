@@ -1081,7 +1081,6 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
 
         $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
         $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue(false));
-        $oHelper->expects($this->any())->method('fcpoGetSessionVariable')->will($this->returnValue('fcpoklarna_installment'));
         $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockAddress));
 
         $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);

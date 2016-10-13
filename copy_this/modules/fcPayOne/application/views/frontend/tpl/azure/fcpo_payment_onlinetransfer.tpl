@@ -14,7 +14,7 @@
                 </li>
                 <li>
                     <label>[{oxmultilang ident="FCPO_ONLINE_UEBERWEISUNG_TYPE"}]</label>
-                    <select name="dynvalue[fcpo_sotype]" onchange="fcCheckOUType(this);
+                    <select name="dynvalue[fcpo_sotype]" onchange="fcCheckOUType(this, '[{$oView->fcpoGetSofoShowIban()}]');
                             return false;">
                         [{foreach from=$aFcPoOnlinePaymentMetaData item="oPaymentMetaData"}]
                             <option value="[{$oPaymentMetaData->sShortcut}]" [{if $oPaymentMetaData->blSelected}]selected[{/if}]>[{$oPaymentMetaData->sCaption}]</option>
@@ -22,6 +22,7 @@
                     </select>
                 </li>
                 <li id="fcpo_ou_iban">
+                    <input id="fcpoSofoShowIban" type="hidden" value="[{$oView->fcpoGetSofoShowIban()}]">
                     <label>[{oxmultilang ident="FCPO_BANK_IBAN"}]</label>
                     <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_iban]" value="[{$dynvalue.fcpo_ou_iban}]">
                     <div id="fcpo_ou_iban_invalid" class="fcpo_check_error">

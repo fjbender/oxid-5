@@ -4,9 +4,9 @@
         <td class="edittext" colspan="2">
             <img src="[{$oViewConf->fcpoGetAdminModuleImgUrl()}]logoclaim.gif" alt="PAYONE"><br><br>
             [{oxmultilang ident="FC_IS_PAYONE"}]
-			[{if $edit->oxpayments__oxid->value == 'fcpocommerzfinanz' || $edit->oxpayments__oxid->value == 'fcpobarzahlen'}]
-				<input type="hidden" name="editval[oxpayments__fcpoauthmode]" value="preauthorization">
-			[{/if}]
+            [{if $edit->oxpayments__oxid->value == 'fcpobarzahlen'}]
+                    <input type="hidden" name="editval[oxpayments__fcpoauthmode]" value="preauthorization">
+            [{/if}]
         </td>
     </tr>
     <tr>

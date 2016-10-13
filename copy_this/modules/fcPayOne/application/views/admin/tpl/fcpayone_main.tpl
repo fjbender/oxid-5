@@ -482,6 +482,8 @@
                     [{ oxinputhelp ident="FCPO_HELP_ASSIGNCOUNTRIES_2" }]
                     <input type="radio" name="confbools[blFCPOSBPNTLive]" value="1" [{if $confbools.blFCPOSBPNTLive == '1'}]checked[{/if}]> <strong>Live</strong>
                     <input type="radio" name="confbools[blFCPOSBPNTLive]" value="0" [{if $confbools.blFCPOSBPNTLive == '0' || !$confbools.blFCPOSBPNTLive}]checked[{/if}]> Test
+                    <input type=hidden name="confbools[blFCPOSofoShowIban]" value="false">
+                    <input type="checkbox" name="confbools[blFCPOSofoShowIban]" value="true"  [{if ($confbools.blFCPOSofoShowIban)}]checked[{/if}]> <strong>[{oxmultilang ident="FCPO_SHOW_SOFO_IBAN_FIELDS"}]</strong>
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -754,6 +756,26 @@
                 </dt>
                 <dd>
                     [{oxmultilang ident="FCPO_PAYOLUTION_COMPANY"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionAuthUser]" value="[{$confstrs.sFCPOPayolutionAuthUser}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_AUTH_USER"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_AUTH_USER"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionAuthSecret]" value="[{$confstrs.sFCPOPayolutionAuthSecret}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_AUTH_SECRET"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_AUTH_SECRET"}]
                 </dd>
                 <div class="spacer"></div>
             </dl>

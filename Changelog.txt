@@ -1,8 +1,15 @@
+==2.1.1==
+	Releasedate: 2016-10-13
+  * Removed commerz finanz and klarna installment payment methods
+  * Added option to show iban/bic fields for Sofortüberweisung
+  * Added payolution installment payment type
   * Added payolution invoice and debit payment types
   * Updated unit tests to current version
 
 ==2.0.9==
-  Releasedate: 2016-08-12
+
+  * Fixed Bug #0027477
+Releasedate: 2016-08-12
   * Use the LGPL (Lesser General Public License) instead of GPL.
 
 ==2.0.8==  

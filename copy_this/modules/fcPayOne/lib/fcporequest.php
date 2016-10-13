@@ -410,11 +410,6 @@ class fcpoRequest extends oxSuperCfg {
             case 'fcpopaypal_express':
                 $blAddRedirectUrls = $this->_setPaymentParamsPayPal($oOrder, $sRefNr);
                 break;
-            case 'fcpocommerzfinanz':
-                $this->addParameter('clearingtype', 'fnc'); //Payment method
-                $this->addParameter('financingtype', 'CFR');
-                $blAddRedirectUrls = true;
-                break;
             case 'fcpobillsafe':
                 $this->addParameter('clearingtype', 'fnc'); //Payment method
                 $this->addParameter('financingtype', 'BSV');
@@ -424,8 +419,6 @@ class fcpoRequest extends oxSuperCfg {
                 $this->addParameter('clearingtype', 'fnc'); //Payment method
                 $this->addParameter('financingtype', 'KLV');
                 break;
-            case 'fcpoklarna_installment':
-                $blAddRedirectUrls = $this->_setPaymentParamsKlarna();
                 break;
             case 'fcpobarzahlen':
                 $this->addParameter('clearingtype', 'csh'); //Payment method
@@ -835,6 +828,87 @@ class fcpoRequest extends oxSuperCfg {
         
         return false;
     }
+    
+    /**
+     * Performs a refund_anouncement call
+     * 
+     * @param oxOrder $oOrder
+     * @return array
+     */
+    public function sendRequestPayolutionRefundAnnouncement($oOrder) {
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $oSession = $this->_oFcpoHelper->fcpoGetSession();
+        $sTxid = $oOrder->oxorder__fcpotxid->value;
+        $sWorkorderId = $oOrder->oxorder__fcpoworkorderid->value;
+        $sPaymentId = $oOrder->oxorder__oxpaymenttype->value;
+        
+        $this->addParameter('request', 'genericpayment'); //Request method
+        $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
+        $this->addParameter('aid', $oConfig->getConfigParam('sFCPOSubAccountID')); //ID of PayOne Sub-Account
+        $this->addParameter('clearingtype', 'fnc');
+        $oCurr = $oConfig->getActShopCurrencyObject();
+        $this->addParameter('currency', $oCurr->name);
+        $this->addParameter('add_paydata[action]', 'refund_announcement');
+        $this->addParameter('api_version', '3.10');
+        $this->addParameter('txid', $sTxid);
+        $this->addParameter('workorderid', $sWorkorderId);
+        
+        ksort($this->_aParameters);
+
+        return $this->send();
+    }
+    
+    /**
+     * 
+     * @param string $sPaymentId
+     * @param oxUser $oUser
+     * @param array $aBankData
+     * @param string $sAction
+     * @param string $sWorkorderId
+     * @return array
+     */
+    public function sendRequestPayolutionInstallment($sPaymentId, $oUser, $aBankData = null, $sAction = 'calculation', $sWorkorderId = null, $sDuration = null) {
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $oSession = $this->_oFcpoHelper->fcpoGetSession();
+        $oApplicationServer = oxNew('oxApplicationServer');
+
+        $this->addParameter('request', 'genericpayment'); //Request method
+        $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
+        $this->addParameter('aid', $oConfig->getConfigParam('sFCPOSubAccountID')); //ID of PayOne Sub-Account
+
+        $this->addParameter('clearingtype', 'fnc');
+        
+        $oBasket = $oSession->getBasket();
+        $oPrice = $oBasket->getPrice();
+        $this->addParameter('amount', number_format($oPrice->getBruttoPrice(), 2, '.', '') * 100);
+
+        $oCurr = $oConfig->getActShopCurrencyObject();
+        $this->addParameter('currency', $oCurr->name);
+        $sFinancingType = $this->_fcpoGetPayolutionFinancingType($sPaymentId);
+        $this->addParameter('financingtype', $sFinancingType);
+        if ($sAction == 'preauthorization' && $sDuration) {
+            $this->addParameter('add_paydata[installment_duration]', $sDuration);
+        }
+        else {
+            $this->addParameter('add_paydata[action]', $sAction);
+        }
+        $this->addParameter('api_version', '3.10');
+        
+        if ($sWorkorderId !== null) {
+            $this->addParameter('workorderid', $sWorkorderId);
+        }
+        
+        if ($oConfig->isUtf()) {
+            $this->addParameter('encoding', 'UTF-8'); 
+        }
+        else {
+            $this->addParameter('encoding', 'ISO-8859-1'); 
+        }
+        
+        ksort($this->_aParameters);
+        
+        return $this->send();
+    }
 
     /**
      * Sends a payolution precheck request to 
@@ -907,7 +981,6 @@ class fcpoRequest extends oxSuperCfg {
         }
 
         ksort($this->_aParameters);
-
         return $this->send();
     }
     
@@ -954,6 +1027,7 @@ class fcpoRequest extends oxSuperCfg {
         $aMap = array(
             'fcpopo_bill' => 'PYV',
             'fcpopo_debitnote' => 'PYD',
+            'fcpopo_installment' => 'PYS',
         );
         
         $blPaymentIdMatch = isset($aMap[$sPaymentId]);
@@ -978,6 +1052,7 @@ class fcpoRequest extends oxSuperCfg {
         $aPayolutionPaymentMap = array(
             'fcpopo_bill' => 'Payolution-Invoicing',
             'fcpopo_debitnote' => 'Payolution-Debit',
+            'fcpopo_installment' => 'Payolution-Installment',
         );
 
         if (isset($aPayolutionPaymentMap[$sPaymentId])) {
@@ -1702,13 +1777,13 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('telephonenumber', $oOrder->oxorder__oxbillfon->value, $blIsUpdateUser);
 
         if ((
-                in_array($oOrder->oxorder__oxpaymenttype->value, array('fcpoklarna', 'fcpoklarna_installment')) &&
+                in_array($oOrder->oxorder__oxpaymenttype->value, array('fcpoklarna')) &&
                 in_array($oCountry->oxcountry__oxisoalpha2->value, array('DE', 'NL', 'AT'))
                 ) || ($blIsUpdateUser || ($oUser->oxuser__oxbirthdate != '0000-00-00' && $oUser->oxuser__oxbirthdate != ''))
         ) {
             $this->addParameter('birthday', str_ireplace('-', '', $oUser->oxuser__oxbirthdate->value), $blIsUpdateUser);
         }
-        if (in_array($oOrder->oxorder__oxpaymenttype->value, array('fcpoklarna', 'fcpoklarna_installment'))) {
+        if (in_array($oOrder->oxorder__oxpaymenttype->value, array('fcpoklarna'))) {
             if ($blIsUpdateUser || $oUser->oxuser__fcpopersonalid->value != '')
                 $this->addParameter('personalid', $oUser->oxuser__fcpopersonalid->value, $blIsUpdateUser);
         }

@@ -63,9 +63,7 @@ $aLang = array(
 'fcpo_clearingtype_fnc'                     => 'Finanzierung',
 'fcpo_clearingtype_csh'                     => 'Barzahlen',
 'fcpo_clearingtype_fcpobillsafe'            => 'BillSAFE',
-'fcpo_clearingtype_fcpocommerzfinanz'       => 'Commerz Finanz',
 'fcpo_clearingtype_fcpoklarna'              => 'Klarna Rechnung',
-'fcpo_clearingtype_fcpoklarna_install'      => 'Klarna Ratenkauf',
 'FCPO_CAPTURE_APPROVED'                     => 'Buchung war erfolgreich',
 'FCPO_CAPTURE_ERROR'                        => 'Fehler bei Buchung: ',
 'FCPO_DEBIT_APPROVED'                       => 'Gutschrift war erfolgreich',
@@ -370,7 +368,11 @@ $aLang = array(
 'FCPO_PAYOLUTION_COMPANY'                   => 'Firmenname',
 'FCPO_HELP_PAYOLUTION_COMPANY'              => 'Der hier eingegebene Firmenname wird beim einblenden des Einwilligungstextes verwendet.',
 'FCPO_PAYOLUTION_MODE'                      => 'Payolution im Testmodus betreiben',
-    
+'FCPO_PAYOLUTION_AUTH_USER'                 => 'Payolution Benutzername',
+'FCPO_HELP_PAYOLUTION_AUTH_USER'            => 'Benutzername, der benötigt wird um Vertragsinhalte (z. B. Ratenkauf) über einen sicheren Kanalabzufragen',
+'FCPO_PAYOLUTION_AUTH_SECRET'               => 'Payolution Passwort',
+'FCPO_HELP_PAYOLUTION_AUTH_SECRET'          => 'Passwort, welches benötigt wird um Vertragsinhalte (z. B. Ratenkauf) über einen sicheren Kanalabzufragen.',
+'FCPO_SHOW_SOFO_IBAN_FIELDS'                => 'IBAN/BIC - Felder anzeigen',
 );
 
 /*

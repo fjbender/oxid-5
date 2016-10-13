@@ -65,7 +65,7 @@ class fcPayOneOrderarticle extends fcPayOneOrderarticle_parent {
         $blBefore = $this->_fcpoGetBefore($blFinishingSave);
         
         // ordered articles
-        if ( $blBefore === false || ( $blSave = oxBase::save() ) && $this->isNewOrderItem() ) {
+        if ( ( $blSave = oxBase::save() ) && $this->isNewOrderItem() || $blBefore === false ) {
             if ( $oConfig->getConfigParam( 'blUseStock' ) ) {
                 if ($oConfig->getConfigParam( 'blPsBasketReservationEnabled' )) {
                     $this->getSession()

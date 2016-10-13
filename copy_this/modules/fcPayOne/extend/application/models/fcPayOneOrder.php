@@ -754,15 +754,15 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * Checks based on the payment method whether
      * the detailed product list is needed.
      * 
+     * @param void
      * @return bool
      */
     public function isDetailedProductInfoNeeded() {
         $blReturn = (
-                $this->oxorder__oxpaymenttype->value == 'fcpobillsafe' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpoklarna' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpoklarna_installment' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpocreditcard_iframe'
-                );
+            $this->oxorder__oxpaymenttype->value == 'fcpobillsafe' ||
+            $this->oxorder__oxpaymenttype->value == 'fcpoklarna' ||
+            $this->oxorder__oxpaymenttype->value == 'fcpocreditcard_iframe'
+        );
 
         return $blReturn;
     }

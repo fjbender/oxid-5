@@ -14,7 +14,7 @@
 [{elseif $sPaymentID == "fcpoonlineueberweisung"}]
     [{assign var="sFcPoTemplatePath" value=$sFcPoTemplatePath|cat:'/fcpo_payment_onlinetransfer.tpl'}]
     [{include file=$oViewConf->fcpoGetAbsModuleTemplateFrontendPath($sFcPoTemplatePath)}]
-[{elseif $sPaymentID == "fcpoklarna" || $sPaymentID == "fcpoklarna_installment"}]
+[{elseif $sPaymentID == "fcpoklarna" || $sPaymentID}]
     [{assign var="sFcPoTemplatePath" value=$sFcPoTemplatePath|cat:'/fcpo_payment_klarna.tpl'}]
     [{include file=$oViewConf->fcpoGetAbsModuleTemplateFrontendPath($sFcPoTemplatePath)}]
 [{elseif $sPaymentID == "fcpopo_bill"}]
