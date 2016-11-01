@@ -74,7 +74,10 @@ function fcCheckDebitCountry() {
     fcHandleDebitInputs();    
 }
 
-function fcCheckOUType(select) {
+function fcCheckOUType(select, SofoShowIban) {
+    if (typeof SofoShowIban === 'undefined') {
+        SofoShowIban = $('#fcpoSofoShowIban').val();
+    }
     var oForm = getPaymentForm();
     if(document.getElementById('fcpo_ou_iban')) {
         document.getElementById('fcpo_ou_iban').style.display = 'none';
@@ -95,15 +98,16 @@ function fcCheckOUType(select) {
         document.getElementById('fcpo_ou_idl').style.display = 'none';
     }
     if(oForm['dynvalue[fcpo_sotype]'].value == 'PNT') {
-        if(oForm.fcpo_bill_country.value == 'CH' && oForm.fcpo_currency.value == 'CHF') {
-            document.getElementById('fcpo_ou_blz').style.display = '';
-            document.getElementById('fcpo_ou_ktonr').style.display = '';
-        } else {
-            document.getElementById('fcpo_ou_iban').style.display = '';
-            document.getElementById('fcpo_ou_bic').style.display = '';            
+        if (SofoShowIban == 'true') {
+            if(oForm.fcpo_bill_country.value == 'CH' && oForm.fcpo_currency.value == 'CHF') {
+                document.getElementById('fcpo_ou_blz').style.display = '';
+                document.getElementById('fcpo_ou_ktonr').style.display = '';
+            } else {
+                document.getElementById('fcpo_ou_iban').style.display = '';
+                document.getElementById('fcpo_ou_bic').style.display = '';            
+            }
         }
     }
-
     if(oForm['dynvalue[fcpo_sotype]'].value == 'GPY') {
         document.getElementById('fcpo_ou_iban').style.display = '';
         document.getElementById('fcpo_ou_bic').style.display = '';
@@ -317,7 +321,8 @@ function getCleanedNumberIBAN(sDirtyNumber) {
 function checkOnlineUeberweisung() {
     resetErrorContainers();
     var oForm = getPaymentForm();
-    if(oForm['dynvalue[fcpo_sotype]'].value == 'PNT' || oForm['dynvalue[fcpo_sotype]'].value == 'GPY') {
+    var fcpoSofoShowIban = $('#fcpoSofoShowIban').val();
+    if((oForm['dynvalue[fcpo_sotype]'].value == 'PNT' || oForm['dynvalue[fcpo_sotype]'].value == 'GPY') && fcpoSofoShowIban == 'true') {
         if(oForm['dynvalue[fcpo_sotype]'].value == 'PNT' && oForm.fcpo_bill_country.value != 'DE' && oForm.fcpo_bill_country.value != 'AT' && oForm.fcpo_bill_country.value != 'CH' && oForm.fcpo_bill_country.value != 'NL') {
             document.getElementById('fcpo_ou_error_content').innerHTML = 'Zahlart ist nur in Deutschland, &Ouml;sterreich, Niederlande und der Schweiz verf&uuml;gbar.';
             document.getElementById('fcpo_ou_error').style.display = 'block';
@@ -433,8 +438,20 @@ function startELVRequest() {
         oForm['dynvalue[fcpo_elv_bic]'].value = getCleanedNumberIBAN(oForm['dynvalue[fcpo_elv_bic]'].value);
     }
 
+    if(oForm['dynvalue[fcpo_payolution_iban]']) {
+        oForm['dynvalue[fcpo_payolution_iban]'].value = getCleanedNumberIBAN(oForm['dynvalue[fcpo_payolution_iban]'].value);
+    }
+    if(oForm['dynvalue[fcpo_payolution_bic]']) {
+        oForm['dynvalue[fcpo_payolution_bic]'].value = getCleanedNumberIBAN(oForm['dynvalue[fcpo_payolution_bic]'].value);
+    }
+
     if(oForm['dynvalue[fcpo_elv_iban]'].value == '' && oForm['dynvalue[fcpo_elv_bic]'].value == '' && (!oForm['dynvalue[fcpo_elv_blz]'] || oForm['dynvalue[fcpo_elv_blz]'].value == '') && (!oForm['dynvalue[fcpo_elv_ktonr]'] || oForm['dynvalue[fcpo_elv_ktonr]'].value == '')) {
         document.getElementById('fcpo_elv_iban_invalid').style.display = 'block';
+        return false;
+    }
+
+    if(oForm['dynvalue[fcpo_payolution_iban]'].value == '' && oForm['dynvalue[fcpo_payolution_bic]'].value == '' ) {
+        document.getElementById('fcpo_payolution_iban_invalid').style.display = 'block';
         return false;
     }
 
@@ -564,7 +581,10 @@ function processPayoneResponseCC(response) {
     }
 }
 
-function fcHandleDebitInputs() {    
+function fcHandleDebitInputs(sDebitBICMandatory) {
+    if (typeof(sDebitBICMandatory) == undefined) {
+        sDebitBICMandatory = 'true';
+    }
     fcHandleDebitInputsTypeIban();
     fcHandleDebitInputsTypeBlz();
 }
@@ -698,13 +718,42 @@ function startCCHostedRequest() { // Function called by submitting PAY-button
 
 function processPayoneResponseCCHosted(response) {
     console.debug(response);
-    if (response.status === "VALID") {
+    var validExpiration = validateCardExpireDate(response);
+    if (response.status === "VALID" && validExpiration) {
         var oForm = getPaymentForm();
         oForm["dynvalue[fcpo_pseudocardpan]"].value = response.pseudocardpan;
         oForm["dynvalue[fcpo_ccmode]"].value = getOperationMode(fcpoGetCreditcardType());
         oForm["dynvalue[fcpo_kknumber]"].value = response.truncatedcardpan;
         oForm.submit();
     }
+}
+
+/**
+ * validates the expiredate given in response
+ * 
+ * @param object response
+ * @returns bool
+ */
+function validateCardExpireDate(response) {
+    // current year month string has to be set into format YYMM
+    var fullMonth = new Array("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+    var currentDate = new Date();
+    var fullYear = currentDate.getFullYear(); // need to use full year because getYear() is broken due to Y2K-Bug
+    var month = currentDate.getMonth();
+    month = fullMonth[month];
+    var year = fullYear.toString();
+    year = year.substr(2,4);
+    
+    var currentYearMonth = year + month;
+    var responseYearMonth = response.cardexpiredate;
+    responseYearMonth = responseYearMonth.toString();
+    
+    var expireDateValid = false;
+    if (responseYearMonth > currentYearMonth) {
+        expireDateValid = true;
+    }
+    
+    return expireDateValid;
 }
 
 
@@ -739,6 +788,84 @@ function fcSetPayoneInputFields(oForm) {
          fcSetPayoneInput(oForm, sInputName, sInputValue);
     }
 }
+
+/**
+ * Triggers precheck for payolution installment via ajax
+ * 
+ * @param void
+ */
+$('#payolution_installment_check_availability').click(function(){
+    // trigger loading animation and disable button
+    $('#payolution_installment_calculation_selection').html('<div id="payolution_center_animation"><img src="modules/fcPayOne/out/img/ajax-loader.gif"</div>');
+    $('#payolution_installment_check_availability').attr('disabled', true);
+    
+    // collect data from form to pass it through to controller
+    var formParams = '{';
+    $('[name^="dynvalue"]').each(function(key, value) {
+        var formType = $(this).attr('type'); 
+        var rawName = $(this).attr("name");
+        var regExp = /\[([^)]+)\]/;
+        var matches = regExp.exec(rawName);
+        var nameInBrackets = matches[1];
+        if (key > 0) {
+            formParams += ', ';
+        }
+        
+        if (formType == 'checkbox') {
+            var inputValue = '';
+            if ($(this).prop('checked')) {
+                inputValue = $(this).val();
+            }
+        }
+        else {
+            var inputValue = $(this).val();
+        }
+        
+        formParams += '"' + nameInBrackets + '":"' + inputValue + '"';
+    });
+    formParams += '}';
+    
+    $.ajax({
+        url: 'modules/fcPayOne/application/models/fcpayone_ajax.php',
+        method: 'POST',
+        type: 'POST',
+        dataType: 'text',
+        data: { paymentid: "fcpopo_installment", action: "precheck", params: formParams },
+        success: function(Response) {
+            $('#payolution_installment_calculation_selection').html(Response);
+            $('#payolution_installment_check_availability').attr('disabled', false);
+            var numberOfInstallments = $('#payolution_no_installments').val();
+            $('#payolution_sum_number_installments').html(numberOfInstallments);
+            $('input[name=payolution_installment_selection]').on( 'change', function() {
+                // selected interest data will be set into summary box
+                var selectedInstallmentIndex = $('input[name=payolution_installment_selection]:checked').val();
+                // disable all installment details and enable selected
+                for (i=1;i<=numberOfInstallments;i++) {
+                    $('#payolution_rates_details_'+i).removeClass('payolution_rates_visible');
+                    $('#payolution_rates_details_'+i).addClass('payolution_rates_invisible');
+                }
+                $('#payolution_rates_details_'+selectedInstallmentIndex).addClass('payolution_rates_visible');
+                $('#payolution_rates_details_'+selectedInstallmentIndex).removeClass('payolution_rates_invisible');
+                // set needed values to foreseen fields
+                $('#payolution_sum_number_installments').html(numberOfInstallments);
+                $('#payolution_financing_sum').html($('#payolution_installment_total_amount_' + selectedInstallmentIndex).val());
+                $('#payolution_sum_interest_rate').html($('#payolution_installment_interest_rate_' + selectedInstallmentIndex).val());
+                $('#payolution_sum_eff_interest_rate').html($('#payolution_installment_eff_interest_rate_' + selectedInstallmentIndex).val());
+                $('#payolution_sum_monthly_rate').html($('#payolution_installment_value_' + selectedInstallmentIndex).val());
+                $('#payolution_selected_installment_index').val(selectedInstallmentIndex);
+            });
+        }
+    });    
+});
+
+/**
+ * Reaction on changes on radio interest selection
+ * 
+ * @param void
+ * @return void
+ */
+
+
 
 (function(d, t) {
     var g = d.createElement(t),

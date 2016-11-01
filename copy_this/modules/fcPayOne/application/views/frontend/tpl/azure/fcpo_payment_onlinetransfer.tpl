@@ -1,4 +1,5 @@
 [{if $oView->hasPaymentMethodAvailableSubTypes('sb')}]
+    <input id="fcpoSofoShowIban" type="hidden" value="[{$oView->fcpoGetSofoShowIban()}]">
     <dl>
         <dt>
             <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]checked[{/if}]>
@@ -21,25 +22,26 @@
                         [{/foreach}]
                     </select>
                 </li>
-                <li id="fcpo_ou_iban">
-                    <input id="fcpoSofoShowIban" type="hidden" value="[{$oView->fcpoGetSofoShowIban()}]">
-                    <label>[{oxmultilang ident="FCPO_BANK_IBAN"}]</label>
-                    <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_iban]" value="[{$dynvalue.fcpo_ou_iban}]">
-                    <div id="fcpo_ou_iban_invalid" class="fcpo_check_error">
-                        <p class="oxValidateError" style="display: block;">
-                            [{oxmultilang ident="FCPO_IBAN_INVALID"}]
-                        </p>
-                    </div>
-                </li>
-                <li id="fcpo_ou_bic">
-                    <label>[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
-                    <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_bic]" value="[{$dynvalue.fcpo_ou_bic}]">
-                    <div id="fcpo_ou_bic_invalid" class="fcpo_check_error">
-                        <p class="oxValidateError" style="display: block;">
-                            [{oxmultilang ident="FCPO_BIC_INVALID"}]
-                        </p>
-                    </div>
-                </li>
+                [{if $oPaymentMetaData->sShortcut != 'PNT' || ($oPaymentMetaData->sShortcut == 'PNT' && $oView->fcpoGetSofoShowIban() == 'true')}]
+                    <li id="fcpo_ou_iban">
+                        <label>[{oxmultilang ident="FCPO_BANK_IBAN"}]</label>
+                        <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_iban]" value="[{$dynvalue.fcpo_ou_iban}]">
+                        <div id="fcpo_ou_iban_invalid" class="fcpo_check_error">
+                            <p class="oxValidateError" style="display: block;">
+                                [{oxmultilang ident="FCPO_IBAN_INVALID"}]
+                            </p>
+                        </div>
+                    </li>
+                    <li id="fcpo_ou_bic">
+                        <label>[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
+                        <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_bic]" value="[{$dynvalue.fcpo_ou_bic}]">
+                        <div id="fcpo_ou_bic_invalid" class="fcpo_check_error">
+                            <p class="oxValidateError" style="display: block;">
+                                [{oxmultilang ident="FCPO_BIC_INVALID"}]
+                            </p>
+                        </div>
+                    </li>
+                [{/if}]
                 <li id="fcpo_ou_blz">
                     <label>[{oxmultilang ident="FCPO_BANK_CODE"}]</label>
                     <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_blz]" value="[{$dynvalue.fcpo_ou_blz}]">

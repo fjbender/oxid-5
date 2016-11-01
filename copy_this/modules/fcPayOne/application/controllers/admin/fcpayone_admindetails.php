@@ -71,6 +71,7 @@ class fcpayone_admindetails extends oxAdminDetails {
         $this->_oFcpoPayPal = oxNew('fcpopaypal');
         $this->_oFcpoKlarna = oxNew('fcpoklarna');
         $this->_oFcpoMapping = oxNew('fcpomapping');
+        $this->_oFcpoErrorMapping = oxNew('fcpoerrormapping');
         $this->_oFcpoForwarding = oxNew('fcpoforwarding');
     }
     

@@ -198,10 +198,9 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      */
     public function fcpoGetSofoShowIban() {
         $oConfig = $this->getConfig();
-        $blblFCPOSofoShowIban = $oConfig->getConfigParam('blFCPOSofoShowIban');
+        $blFCPOSofoShowIban = $oConfig->getConfigParam('blFCPOSofoShowIban');
         
         $sReturn = ($blFCPOSofoShowIban) ? 'true': 'false';
-                
         return $sReturn;
     }
     
@@ -770,15 +769,15 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      */
     public function getHashELVWithChecktype() {
         $sHash = md5(
-                $this->getSubAccountId() .
-                $this->getChecktype() .
-                $this->getEncoding() .
-                $this->getMerchantId() .
-                $this->_getOperationModeELV() .
-                $this->getPortalId() .
-                'bankaccountcheck' .
-                'JSON' .
-                $this->getPortalKey()
+            $this->getSubAccountId() .
+            $this->getChecktype() .
+            $this->getEncoding() .
+            $this->getMerchantId() .
+            $this->_getOperationModeELV() .
+            $this->getPortalId() .
+            'bankaccountcheck' .
+            'JSON' .
+            $this->getPortalKey()
         );
         return $sHash;
     }
@@ -790,14 +789,14 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      */
     public function getHashELVWithoutChecktype() {
         $sHash = md5(
-                $this->getSubAccountId() .
-                $this->getEncoding() .
-                $this->getMerchantId() .
-                $this->_getOperationModeELV() .
-                $this->getPortalId() .
-                'bankaccountcheck' .
-                'JSON' .
-                $this->getPortalKey()
+            $this->getSubAccountId() .
+            $this->getEncoding() .
+            $this->getMerchantId() .
+            $this->_getOperationModeELV() .
+            $this->getPortalId() .
+            'bankaccountcheck' .
+            'JSON' .
+            $this->getPortalKey()
         );
         return $sHash;
     }
@@ -832,7 +831,35 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         }
         return $this->_oPaymentList;
     }
-
+    
+    /**
+     * Returns if CVC
+     * 
+     * @param void
+     * @return bool
+     */
+    public function fcpoUseCVC() {
+        $oConfig = $this->getConfig();
+        $blUseCVC = $oConfig->getConfigParam('blFCPOCCUseCvc');
+        
+        return $blUseCVC;
+    }
+    
+    /**
+     * Returns if option for BIC is set mandatory as string to handle it with javascript checks
+     * 
+     * @param void
+     * @return string
+     */
+    public function fcpoGetBICMandatory() {
+        $oConfig = $this->getConfig();
+        $blFCPODebitBICMandatory = $oConfig->getConfigParam('blFCPODebitBICMandatory');
+        
+        $sReturn = ($blFCPODebitBICMandatory) ? 'true' : 'false';
+        
+        return $sReturn;
+    }
+    
     /**
      * Returns creditcard type
      * 

@@ -222,6 +222,7 @@ $aLang = array(
 'FCPO_ORDERNOTCHECKED'                      => "The customer did not accept the<br>consumerscore check for this order!",
 'fcpo_admin_config_status_forwarding'       => "Transactionsstatus - forwarding",
 'fcpo_admin_config_status_mapping'          => "Transactionsstatus - mapping",
+'fcpo_admin_config_error_mapping'           => "Errormessage - Mapping",
 'fcpo_admin_config_add'                     => "add",
 'fcpo_admin_config_delete'                  => "delete",
 'fcpo_admin_config_delete_confirm'          => "Do you really want to delete this entry?",
@@ -338,7 +339,8 @@ $aLang = array(
     
 'FCPO_CC_IFRAME_STANDARD'                   => 'Standard',
 'FCPO_CC_IFRAME_CUSTOM'                     => 'Custom',
-    
+'FCPO_CC_USE_CVC'                           => 'Use CVC as mandatory field',
+'FCPO_CONFIG_DEBIT_BIC_MANDATORY'           => 'Entering BIC is mandatory',
 );
 
 /*

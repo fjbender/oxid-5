@@ -41,6 +41,8 @@ class fcpayone_events
      */
     public static $_aRemovedPaymentMethods = array(
         'fcpoyapital',
+        'fcpocommerzfinanz',
+        'fcpoklarna_installment',
     );
     public static $sQueryTableFcporefnr = "
         CREATE TABLE fcporefnr (
@@ -135,6 +137,14 @@ class fcpayone_events
 			FCPO_PAYMENTID CHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
 			FCPO_PAYONESTATUS VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
 			FCPO_FOLDER VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+			PRIMARY KEY (`OXID`)
+		);";
+    public static $sQueryTableFcpoErrorMapping = "
+		CREATE TABLE fcpoerrormapping(
+			OXID INT(11) NOT NULL AUTO_INCREMENT ,
+			FCPO_ERROR_CODE CHAR(6) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+			FCPO_LANG_ID VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+			FCPO_MAPPED_MESSAGE TEXT CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
 			PRIMARY KEY (`OXID`)
 		);";
     public static $sQueryTableFcpoklarnastoreids = "
@@ -358,6 +368,7 @@ class fcpayone_events
         self::addTableIfNotExists('fcpocheckedaddresses', self::$sQueryTableFcpocheckedaddresses);
         self::addTableIfNotExists('fcpostatusforwarding', self::$sQueryTableFcpoStatusForwarding);
         self::addTableIfNotExists('fcpostatusmapping', self::$sQueryTableFcpoStatusMapping);
+        self::addTableIfNotExists('fcpoerrormapping', self::$sQueryTableFcpoErrorMapping);
         self::addTableIfNotExists('fcpoklarnastoreids', self::$sQueryTableFcpoklarnastoreids);
         self::addTableIfNotExists('fcpoklarnacampaigns', self::$sQueryTableFcpoklarnacampaigns);
         self::addTableIfNotExists('fcpopdfmandates', self::$sQueryTableFcpoPdfMandates);

@@ -1,5 +1,6 @@
 [{if $oView->hasPaymentMethodAvailableSubTypes('sb')}]
     <div class="well well-sm">
+        <input id="fcpoSofoShowIban" type="hidden" value="[{$oView->fcpoGetSofoShowIban()}]">
         <dl>
             <dt>
                 <input id="payment_[{$sPaymentID}]" type="radio" name="paymentid" value="[{$sPaymentID}]" [{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]checked[{/if}]>
@@ -19,39 +20,41 @@
                 <div class="form-group">
                     <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_ONLINE_UEBERWEISUNG_TYPE"}]</label>
                     <div class="col-lg-9">
-                        <select name="dynvalue[fcpo_sotype]" onchange="fcCheckOUType(this);return false;" class="form-control selectpicker">
+                        <select name="dynvalue[fcpo_sotype]" onchange="fcCheckOUType(this, '[{$oView->fcpoGetSofoShowIban()}]');return false;" class="form-control selectpicker">
                             [{foreach from=$aFcPoOnlinePaymentMetaData item="oPaymentMetaData"}]
                                 <option value="[{$oPaymentMetaData->sShortcut}]" [{if $oPaymentMetaData->blSelected}]selected[{/if}]>[{$oPaymentMetaData->sCaption}]</option>
                             [{/foreach}]
                         </select>
                     </div>
                 </div>
-                <div class="form-group" id="fcpo_ou_iban">
-                    <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_BANK_IBAN"}]</label>
-                    <div class="col-lg-9">
-                        <input class="form-control" autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_iban]" value="[{$dynvalue.fcpo_ou_iban}]">
-                        <div id="fcpo_ou_iban_invalid" class="fcpo_check_error">
-                            <span class="help-block ">
-                                <ul role="alert" class="list-unstyled text-danger">
-                                    <li>[{oxmultilang ident="FCPO_IBAN_INVALID"}]</li>
-                                </ul>
-                            </span>
+                [{if $oPaymentMetaData->sShortcut != 'PNT' || ($oPaymentMetaData->sShortcut == 'PNT' && $oView->fcpoGetSofoShowIban() == 'true')}]
+                    <div class="form-group" id="fcpo_ou_iban">
+                        <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_BANK_IBAN"}]</label>
+                        <div class="col-lg-9">
+                            <input class="form-control" autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_iban]" value="[{$dynvalue.fcpo_ou_iban}]">
+                            <div id="fcpo_ou_iban_invalid" class="fcpo_check_error">
+                                <span class="help-block ">
+                                    <ul role="alert" class="list-unstyled text-danger">
+                                        <li>[{oxmultilang ident="FCPO_IBAN_INVALID"}]</li>
+                                    </ul>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group" id="fcpo_ou_bic">
-                    <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
-                    <div class="col-lg-9">
-                        <input class="form-control" autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_bic]" value="[{$dynvalue.fcpo_ou_bic}]">
-                        <div id="fcpo_ou_bic_invalid" class="fcpo_check_error">
-                            <span class="help-block ">
-                                <ul role="alert" class="list-unstyled text-danger">
-                                    <li>[{oxmultilang ident="FCPO_BIC_INVALID"}]</li>
-                                </ul>
-                            </span>
+                    <div class="form-group" id="fcpo_ou_bic">
+                        <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
+                        <div class="col-lg-9">
+                            <input class="form-control" autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_ou_bic]" value="[{$dynvalue.fcpo_ou_bic}]">
+                            <div id="fcpo_ou_bic_invalid" class="fcpo_check_error">
+                                <span class="help-block ">
+                                    <ul role="alert" class="list-unstyled text-danger">
+                                        <li>[{oxmultilang ident="FCPO_BIC_INVALID"}]</li>
+                                    </ul>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                [{/if}]
                 <div class="form-group" id="fcpo_ou_blz">
                     <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_BANK_CODE"}]</label>
                     <div class="col-lg-9">

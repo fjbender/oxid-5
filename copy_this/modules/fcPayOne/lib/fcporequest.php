@@ -314,17 +314,29 @@ class fcpoRequest extends oxSuperCfg {
      * @return boolean
      */
     protected function _setPaymentParamsDebitNote($aDynvalue) {
+        $oConfig = $this->getConfig();
+        $blFCPODebitBICMandatory = $oConfig->getConfigParam('blFCPODebitBICMandatory');
+        
         $this->addParameter('clearingtype', 'elv'); //Payment method
         $this->addParameter('bankcountry', $aDynvalue['fcpo_elv_country']);
-        if (isset($aDynvalue['fcpo_elv_iban']) && $aDynvalue['fcpo_elv_iban'] != '' && isset($aDynvalue['fcpo_elv_bic']) && $aDynvalue['fcpo_elv_bic'] != '') {
+        
+        $blBICConfirmed = (
+            (
+                isset($aDynvalue['fcpo_elv_bic']) && 
+                $aDynvalue['fcpo_elv_bic'] != '' 
+            ) ||
+            !$blFCPODebitBICMandatory
+        );
+        
+        if (isset($aDynvalue['fcpo_elv_iban']) && $aDynvalue['fcpo_elv_iban'] != '' && $blBICConfirmed) {
             $this->addParameter('iban', $aDynvalue['fcpo_elv_iban']);
-            $this->addParameter('bic', $aDynvalue['fcpo_elv_bic']);
+            if ($blFCPODebitBICMandatory) {
+                $this->addParameter('bic', $aDynvalue['fcpo_elv_bic']);
+            }
         } elseif (isset($aDynvalue['fcpo_elv_ktonr']) && $aDynvalue['fcpo_elv_ktonr'] != '' && isset($aDynvalue['fcpo_elv_blz']) && $aDynvalue['fcpo_elv_blz'] != '') {
             $this->addParameter('bankaccount', $aDynvalue['fcpo_elv_ktonr']);
             $this->addParameter('bankcode', $aDynvalue['fcpo_elv_blz']);
-        } else {
-            throw Exception('No bankdata found, which is mandatory for debitnote');
-        }
+        } 
 
         $aMandate = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMandate');
         if ($aMandate && array_key_exists('mandate_identification', $aMandate) !== false && $aMandate['mandate_status'] == 'pending') {
@@ -1644,10 +1656,33 @@ class fcpoRequest extends oxSuperCfg {
 
         if (is_array($aResponse)) {
             $aOutput = $this->_getResponseOutput($aResponse);
+            $aOutput = $this->_addMappedErrorIfAvailable($aOutput);
         }
 
         $sResponse = serialize($aOutput);
         $this->_logRequest($sResponse, $aOutput['status']);
+        
+        return $aOutput;
+    }
+    
+    /**
+     * Adds mapped error message to response if available
+     * 
+     * @param array $aInput
+     * @return array
+     */
+    protected function _addMappedErrorIfAvailable($aInput) {
+        $aOutput = $aInput;
+        
+        if ($aInput['status'] == 'ERROR') {
+            $sErrorCode = $aInput['errorcode'];
+            $oErrorMapping = oxNew('fcpoerrormapping'); 
+            $sMappedErrorMessage = $oErrorMapping->fcpoFetchMappedErrorMessage($sErrorCode);
+            if ($sMappedErrorMessage) {
+                $aOutput['origincustomermessage'] = $aInput['customermessage'];
+                $aOutput['customermessage'] = $sMappedErrorMessage;
+            }
+        }
         
         return $aOutput;
     }

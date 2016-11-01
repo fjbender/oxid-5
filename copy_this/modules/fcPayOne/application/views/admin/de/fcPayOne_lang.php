@@ -227,6 +227,7 @@ $aLang = array(
 'FCPO_ORDERNOTCHECKED'                      => "Der Kunde hat der Bonitäts-Prüfung nicht zugestimmt!",
 'fcpo_admin_config_status_forwarding'       => "Transaktionsstatus - Weiterleitung",
 'fcpo_admin_config_status_mapping'          => "Transaktionsstatus - Mapping",
+'fcpo_admin_config_error_mapping'           => "Fehlermeldungs - Mapping",
 'fcpo_admin_config_add'                     => "Hinzufügen",
 'fcpo_admin_config_delete'                  => "löschen",
 'fcpo_admin_config_delete_confirm'          => "Möchten Sie diesen Eintrag wirklich l&ouml;schen?",
@@ -373,6 +374,11 @@ $aLang = array(
 'FCPO_PAYOLUTION_AUTH_SECRET'               => 'Payolution Passwort',
 'FCPO_HELP_PAYOLUTION_AUTH_SECRET'          => 'Passwort, welches benötigt wird um Vertragsinhalte (z. B. Ratenkauf) über einen sicheren Kanalabzufragen.',
 'FCPO_SHOW_SOFO_IBAN_FIELDS'                => 'IBAN/BIC - Felder anzeigen',
+'FCPO_CC_USE_CVC'                           => 'Kartenprüfziffer als Pflichtfeld abfragen',
+'fcpo_admin_config_payone_error_message'    => 'Payone Fehlermeldung',
+'fcpo_admin_config_status_language'         => 'Sprache',
+'fcpo_admin_config_status_own_error_message'=> 'Eigene Fehlermeldung',
+'FCPO_CONFIG_DEBIT_BIC_MANDATORY'           => 'BIC abfragen',
 );
 
 /*

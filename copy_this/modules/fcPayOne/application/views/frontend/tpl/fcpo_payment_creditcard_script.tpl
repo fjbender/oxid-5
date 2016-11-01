@@ -17,21 +17,23 @@
                     }
                 [{/if}]
             },
-            cardcvc2: {
-                selector: "cardcvc2", // put name of your div-container here
-                type: "[{$oView->getConfigParam('sFCPOCCCVCType')}]", // select(default), text, password, tel
-                size: "[{$oView->getConfigParam('sFCPOCCCVCCount')}]",
-                maxlength: "[{$oView->getConfigParam('sFCPOCCCVCMax')}]",
-                [{if $oView->getConfigParam('sFCPOCCCVCStyle') == "custom"}]
-                    style: "[{$oView->getConfigParam('sFCPOCCCVCCSS')}]",
-                [{/if}]
-                [{if $oView->getConfigParam('sFCPOCCCVCIframe') == "custom"}]
-                    iframe: {
-                        width: "[{$oView->getConfigParam('sFCPOCCCVCWidth')}]",
-                        height: "[{$oView->getConfigParam('sFCPOCCCVCHeight')}]"
-                    }
-                [{/if}]
-            },
+            [{if $oView->getConfigParam('blFCPOCCUseCvc')}]
+                cardcvc2: {
+                    selector: "cardcvc2", // put name of your div-container here
+                    type: "[{$oView->getConfigParam('sFCPOCCCVCType')}]", // select(default), text, password, tel
+                    size: "[{$oView->getConfigParam('sFCPOCCCVCCount')}]",
+                    maxlength: "[{$oView->getConfigParam('sFCPOCCCVCMax')}]",
+                    [{if $oView->getConfigParam('sFCPOCCCVCStyle') == "custom"}]
+                        style: "[{$oView->getConfigParam('sFCPOCCCVCCSS')}]",
+                    [{/if}]
+                    [{if $oView->getConfigParam('sFCPOCCCVCIframe') == "custom"}]
+                        iframe: {
+                            width: "[{$oView->getConfigParam('sFCPOCCCVCWidth')}]",
+                            height: "[{$oView->getConfigParam('sFCPOCCCVCHeight')}]"
+                        }
+                    [{/if}]
+                },
+            [{/if}]
             cardexpiremonth: {
                 selector: "cardexpiremonth", // put name of your div-container here
                 type: "select", // select(default), text, password, tel
