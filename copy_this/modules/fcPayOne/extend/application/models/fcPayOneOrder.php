@@ -57,6 +57,12 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @var bool
      */
     protected $_blFcPayoneAppointedError = false;
+    
+    /**
+     * List of IDs matching payolution type payments
+     * @var array
+     */
+    protected $_aPayolutionPayments = array('fcpopo_bill', 'fcpopo_debitnote', 'fcpopo_installment');
 
     /**
      * init object construction
@@ -291,7 +297,6 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         if ($mRet !== null) {
             return $mRet;
         }
-
 
         // copies user info
         $this->_setUser($oUser);
@@ -1167,7 +1172,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $sBarzahlenHtml = urldecode($aResponse['add_paydata[instruction_notes]']);
             $this->_oFcpoHelper->fcpoSetSessionVariable('sFcpoBarzahlenHtml', $sBarzahlenHtml);
         }
-        if (in_array($sPaymentId, array('fcpopo_bill', 'fcpopo_debitnote'))) {
+        if (in_array($sPaymentId, $this->_aPayolutionPayments)) {
             $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
             if ($sWorkorderId) {
                 $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);

@@ -53,6 +53,7 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpopaydirekt',
         'fcpopo_bill',
         'fcpopo_debitnote',
+        'fcpopo_installment',
     );
     
     protected static $_aIframePaymentTypes = array(

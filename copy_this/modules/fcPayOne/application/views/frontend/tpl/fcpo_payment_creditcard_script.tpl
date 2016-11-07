@@ -83,7 +83,12 @@
         [{/if}]
     };
     [{capture name="fcpoCCIframes"}]
-    var iframes = fcInitCCIframes();
+        [{foreach from=$oViewConf->fcpoGetIframeMappings() item='oMapping'}]
+            [{assign var='sLangId' value=$oMapping->sLangId}]
+            [{assign var='sLangAbbr' value=$oViewConf->fcpoGetLangAbbrById($sLangId)}]
+            Payone.ClientApi.Language.[{$sLangAbbr}].[{$oMapping->sErrorCode}] = '[{$oMapping->sMappedMessage}]';
+        [{/foreach}]
+        var iframes = fcInitCCIframes();
     [{/capture}]
     [{oxscript add=$smarty.capture.fcpoCCIframes}]
 </script>

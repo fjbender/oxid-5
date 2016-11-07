@@ -798,16 +798,20 @@ $('#payolution_installment_check_availability').click(function(){
     // trigger loading animation and disable button
     $('#payolution_installment_calculation_selection').html('<div id="payolution_center_animation"><img src="modules/fcPayOne/out/img/ajax-loader.gif"</div>');
     $('#payolution_installment_check_availability').attr('disabled', true);
-    
     // collect data from form to pass it through to controller
     var formParams = '{';
     $('[name^="dynvalue"]').each(function(key, value) {
         var formType = $(this).attr('type'); 
         var rawName = $(this).attr("name");
+        
         var regExp = /\[([^)]+)\]/;
         var matches = regExp.exec(rawName);
+        if (matches === null) {
+            return true;
+        }
+        
         var nameInBrackets = matches[1];
-        if (key > 0) {
+        if (key > 0 && formParams != '{') {
             formParams += ', ';
         }
         
@@ -820,7 +824,6 @@ $('#payolution_installment_check_availability').click(function(){
         else {
             var inputValue = $(this).val();
         }
-        
         formParams += '"' + nameInBrackets + '":"' + inputValue + '"';
     });
     formParams += '}';

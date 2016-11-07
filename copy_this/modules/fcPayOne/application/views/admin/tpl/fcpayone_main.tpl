@@ -425,6 +425,9 @@
                 <dd>
                     [{oxmultilang ident="FCPO_CONFIG_DEBIT_SHOW_OLD_FIELDS"}]
                 </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl style="border-top:0px;">
                 <dt>
                     <input type="hidden" name="confbools[blFCPODebitBICMandatory]" value="false">
                     <input type="checkbox" name="confbools[blFCPODebitBICMandatory]" value="true"  [{if ($confbools.blFCPODebitBICMandatory)}]checked[{/if}]>

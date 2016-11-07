@@ -1,5 +1,7 @@
 ==2.1.2==
 	Releasedate: 2016-10-21
+
+  * Added error mapping for hosted iframe
   * Added error mapping feature
   * Added optional cvc check
   * Added direct check of cardexpiredate before sending to API

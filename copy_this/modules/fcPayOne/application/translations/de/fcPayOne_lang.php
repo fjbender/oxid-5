@@ -119,9 +119,6 @@ $aLang = array(
     
 'FCPO_PAYPALEXPRESS_USER_SECURITY_ERROR'        => 'Bitte loggen Sie sich im Shop ein und führen Sie den PayPal Express Checkout nochmal durch. Ihre PayPal-Lieferadresse stimmt nicht mit den im Shop hinterlegten Adressdaten &uuml;berein.',
     
-'FCPO_YAPITAL_HEADER'                           => 'Bezahlung mit Yapital',
-'FCPO_YAPITAL_TEXT'                             => 'Sie haben zwei M&ouml;glichkeiten mit Yapital zu bezahlen. Entweder &ouml;ffnen Sie die Yapital-App, w&auml;hlen Bezahlen aus dem App-Men&uuml; und scannen den unten aufgef&uuml;hrten QR-Code. Oder Sie loggen sich mit Ihren Yapital-Zugangsdaten &uuml;ber den orangen LOG IN Button auf dieser Seite ein. Nach erfolgreicher Transaktion gelangen Sie automatisch zur&uuml;ck in den Shop.<br><br>Alle Transaktionen werden in Echtzeit &uuml;ber Ihren Yapital-Account abgewickelt. Ihre Bankdaten werden nicht von Yapital weitergeleitet, sondern lediglich die erforderlichen Transaktionsdaten.<br><br>Sollten Sie per QR-Code bezahlen, klicken Sie bitte <b>NICHT</b> auf die Links in dem Fenster! Sie werden automatisch weitergeleitet.',
-    
 'FCPO_CC_IFRAME_HEADER'                         => 'Bezahlung mit Kreditkarte',
 'FCPO_OR'                                       => 'oder',
 'FCPO_PAYOLUTION_USTID'                         => 'Umsatzsteueridentifiationsnummer (USt-IdNr.)',
@@ -154,12 +151,12 @@ $aLang = array(
 'FCPO_PAYOLUTION_INSTALLMENT_MONTHLY_RATES'     => 'Monatliche Raten',
 'FCPO_PAYOLUTION_INSTALLMENT_INTEREST_RATE'     => 'Nominalzins',
 'FCPO_PAYOLUTION_INSTALLMENT_EFF_INTEREST_RATE' => 'Effektivzins',
-'FCPO_PAYOLUTION_INSTALLMENT_DUE_AT'            => 'fällig am',
+'FCPO_PAYOLUTION_INSTALLMENT_DUE_AT'            => 'f&auml;llig am',
 'FCPO_PAYOLUTION_INSTALLMENT_DOWNLOAD_DRAFT'    => 'Vertragsentwurf herunterladen',
 'FCPO_PAYOLUTION_INSTALLMENTS_NUMBER'           => 'Anzahl mögl. Ratenzahlungen',
 'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_AMOUNT'  => 'Zu finanzierender Betrag',
 'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_SUM'     => 'Total',
-'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Bitte auswählen',
+'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Bitte ausw&auml;hlen',
 'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED'       => 'Sie haben keine Ratenkaufoption ausgewählt',
 );
 

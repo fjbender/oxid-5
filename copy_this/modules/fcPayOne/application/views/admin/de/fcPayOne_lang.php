@@ -379,6 +379,8 @@ $aLang = array(
 'fcpo_admin_config_status_language'         => 'Sprache',
 'fcpo_admin_config_status_own_error_message'=> 'Eigene Fehlermeldung',
 'FCPO_CONFIG_DEBIT_BIC_MANDATORY'           => 'BIC abfragen',
+'fcpo_admin_config_error_iframe_mapping'    => 'Eigene Fehlermeldungen für Hosted iFrame',
+'fcpo_admin_config_payone_error_code'       => 'Fehlerkennung',
 );
 
 /*

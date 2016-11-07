@@ -162,5 +162,30 @@ class fcPayOneViewConf extends fcPayOneViewConf_parent {
     public function fcpoGetHostedPayoneJs() {
         return $this->_sFcPoHostedJsUrl;
     }
+    
+    /**
+     * Returns Iframe mappings
+     * 
+     * @param void
+     * @return array
+     */
+    public function fcpoGetIframeMappings() {
+        $oErrorMapping = oxNew('fcpoerrormapping');
+        $aExistingErrorMappings = $oErrorMapping->fcpoGetExistingMappings('iframe');
+
+        return $aExistingErrorMappings;
+    }
+    
+    /**
+     * Returns abbroviation by given id
+     * 
+     * @param string $sLangId
+     * @return string
+     */
+    public function fcpoGetLangAbbrById($sLangId) {
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+        return $oLang->getLanguageAbbr($sLangId);
+    }
+    
 
 }

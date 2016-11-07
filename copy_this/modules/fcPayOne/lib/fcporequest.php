@@ -447,6 +447,7 @@ class fcpoRequest extends oxSuperCfg {
                 break;
             case 'fcpopo_bill':
             case 'fcpopo_debitnote':
+            case 'fcpopo_installment':
                 $blAddRedirectUrls = $this->_fcpoAddPayolutionParameters($oOrder);
                 break;
             default:
@@ -789,6 +790,7 @@ class fcpoRequest extends oxSuperCfg {
         $oUser = $oOrder->getOrderUser();
         $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
         $aBankData = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_bankdata');
+        $sInstallmentDuration = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_installment_duration');
         
         $this->addParameter('clearingtype', 'fnc');
         $sPaymentType = $this->_fcpoGetPayolutionPaymentTypeById($sPaymentId);
@@ -804,18 +806,23 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('workorderid', $sWorkorderId);
         }
         
+        $sBankDataAdd = '';
+        if ($sPaymentId == 'fcpopo_installment') {
+            $sBankDataAdd = '_installment';
+        }
+        
         $blValidBankData = (
             isset($aBankData) && 
             is_array($aBankData) && 
             count($aBankData) == 3 && 
-            $aBankData['fcpo_payolution_accountholder'] && 
-            $aBankData['fcpo_payolution_iban'] && 
-            $aBankData['fcpo_payolution_bic']                
+            $aBankData['fcpo_payolution'.$sBankDataAdd.'_accountholder'] && 
+            $aBankData['fcpo_payolution'.$sBankDataAdd.'_iban'] && 
+            $aBankData['fcpo_payolution'.$sBankDataAdd.'_bic']                
         );
         
         if ($blValidBankData) {
-            $this->addParameter('iban', $aBankData['fcpo_payolution_iban']);
-            $this->addParameter('bic', $aBankData['fcpo_payolution_bic']);
+            $this->addParameter('iban', $aBankData['fcpo_payolution'.$sBankDataAdd.'_iban']);
+            $this->addParameter('bic', $aBankData['fcpo_payolution'.$sBankDataAdd.'_bic']);
         }
         
         if ($oConfig->isUtf()) {
@@ -835,12 +842,19 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('add_paydata[b2b]', 'yes');
         }
         
+        if ($sInstallmentDuration) {
+            $this->addParameter('add_paydata[installment_duration]', $sInstallmentDuration);
+        }
+        
+        
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_workorderid');
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_bankdata');
+        $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_installment_duration');
         
         return false;
     }
     
+
     /**
      * Performs a refund_anouncement call
      * 
@@ -883,8 +897,10 @@ class fcpoRequest extends oxSuperCfg {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oSession = $this->_oFcpoHelper->fcpoGetSession();
         $oApplicationServer = oxNew('oxApplicationServer');
-
-        $this->addParameter('request', 'genericpayment'); //Request method
+        
+        $sRequestMethod = 'genericpayment';
+        $sRequestMethod = ($sAction == 'preauthorization') ? 'preauthorization' : 'genericpayment';
+        $this->addParameter('request', $sRequestMethod); //Request method
         $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
         $this->addParameter('aid', $oConfig->getConfigParam('sFCPOSubAccountID')); //ID of PayOne Sub-Account
 
@@ -897,12 +913,12 @@ class fcpoRequest extends oxSuperCfg {
         $oCurr = $oConfig->getActShopCurrencyObject();
         $this->addParameter('currency', $oCurr->name);
         $sFinancingType = $this->_fcpoGetPayolutionFinancingType($sPaymentId);
+        $this->_fcpoAddPayolutionUserData($oUser);
         $this->addParameter('financingtype', $sFinancingType);
+        $this->addParameter('add_paydata[action]', $sAction);
         if ($sAction == 'preauthorization' && $sDuration) {
             $this->addParameter('add_paydata[installment_duration]', $sDuration);
-        }
-        else {
-            $this->addParameter('add_paydata[action]', $sAction);
+            
         }
         $this->addParameter('api_version', '3.10');
         
@@ -917,8 +933,31 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('encoding', 'ISO-8859-1'); 
         }
         
-        ksort($this->_aParameters);
+        $sIp = $this->_fcpoGetRemoteAddress();
+        if ($sIp != '')
+            $this->addParameter('ip', $sIp);
         
+        $this->addParameter('language', $this->_oFcpoHelper->fcpoGetLang()->getLanguageAbbr());
+
+        $blValidBankData = (
+            isset($aBankData) && 
+            is_array($aBankData) && 
+            count($aBankData) == 3 && 
+            $aBankData['fcpo_payolution_installment_accountholder'] && 
+            $aBankData['fcpo_payolution_installment_iban'] && 
+            $aBankData['fcpo_payolution_installment_bic']                
+        );
+        
+        if ($blValidBankData) {
+            $this->addParameter('iban', $aBankData['fcpo_payolution_installment_iban']);
+            $this->addParameter('bic', $aBankData['fcpo_payolution_installment_bic']);
+        }
+        
+        if ($this->fcpoIsB2B($oUser)) {
+            $this->addParameter('add_paydata[b2b]', 'yes');
+        }
+        
+        ksort($this->_aParameters);
         return $this->send();
     }
 
@@ -1017,8 +1056,10 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('company', $oUser->oxuser__oxcompany->value);
         }
         
-        $sBirthday = str_replace('-', '', $oUser->oxuser__oxbirthdate->value);
-        $this->addParameter('birthday', $sBirthday);
+        if ($oUser->oxuser__oxbirthdate->value != '0000-00-00') {
+            $sBirthday = str_replace('-', '', $oUser->oxuser__oxbirthdate->value);
+            $this->addParameter('birthday', $sBirthday);
+        }
         
         $sCountry = '';
         $oCountry = oxNew('oxcountry');

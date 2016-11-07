@@ -42,10 +42,10 @@
             </div>
         </li>
         <li>
-            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_accountholder]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_accountholder}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_IBAN"}]" />
+            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_debitnote_accountholder]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_debitnote_accountholder}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_IBAN"}]" />
         </li>
         <li>
-            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_iban]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_iban}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_IBAN"}]" />
+            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_debitnote_iban]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_debitnote_iban}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_IBAN"}]" />
             <div id="fcpo_elv_iban_invalid" class="fcpo_check_error">
                 <p class="validation-error" style="display: block;">
                     [{oxmultilang ident="FCPO_IBAN_INVALID"}]
@@ -53,7 +53,7 @@
             </div>
         </li>
         <li>
-            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_bic]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_bic}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_BIC"}]" />
+            <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_debitnote_bic]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_debitnote_bic}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_BIC"}]" />
             <div id="fcpo_elv_bic_invalid" class="fcpo_check_error">
                 <p class="validation-error" style="display: block;">
                     [{oxmultilang ident="FCPO_BIC_INVALID"}]
@@ -61,10 +61,10 @@
             </div>
         </li>
         <li>
-            <input name="dynvalue[fcpo_payolution_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionAgreementLink()}]' class="lightview fcpoPayolutionAgreeRed" data-lightview-type="iframe" data-lightview-options="width: 800, height: 600, viewport: 'scale',background: { color: '#fff', opacity: 1 },skin: 'light'">[{oxmultilang ident="FCPO_PAYOLUTION_AGREE"}]</a> [{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_2"}]
+            <input name="dynvalue[fcpo_payolution_debitnote_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionAgreementLink()}]' class="lightview fcpoPayolutionAgreeRed" data-lightview-type="iframe" data-lightview-options="width: 800, height: 600, viewport: 'scale',background: { color: '#fff', opacity: 1 },skin: 'light'">[{oxmultilang ident="FCPO_PAYOLUTION_AGREE"}]</a> [{oxmultilang ident="FCPO_PAYOLUTION_AGREEMENT_PART_2"}]
         </li>
         <li>
-            <input name="dynvalue[fcpo_payolution_sepa_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionSepaAgreementLink()}]' class="fcpoPayolutionAgreeRed" onClick="javascript:open('', 'SEPA', 'height=800,width=600')">[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREE"}]</a>
+            <input name="dynvalue[fcpo_payolution_debitnote_sepa_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionSepaAgreementLink()}]' class="fcpoPayolutionAgreeRed" onClick="javascript:open('', 'SEPA', 'height=800,width=600')">[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREE"}]</a>
         </li>
         [{block name="checkout_payment_longdesc"}]
             [{if $paymentmethod->oxpayments__oxlongdesc->value}]
