@@ -61,7 +61,7 @@
     <h2>[{oxmultilang ident="fcpo_admin_config_error_iframe_mapping"}]</h2>
     
     [{assign var=oIframeMappings value=$oView->getIframeMappings()}]
-    [{if $oMappings|@count > 0}]
+    [{if $oIframeMappings|@count > 0}]
         <br>
         <table>        
             <tr>

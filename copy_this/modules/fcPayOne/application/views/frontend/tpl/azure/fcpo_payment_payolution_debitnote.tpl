@@ -14,6 +14,28 @@
                     [{oxmultilang ident="FCPO_ERROR"}]<div id="fcpo_elv_error_content"></div>
                 </div>
             </li>
+            [{if $oView->fcpoShowB2C()}]
+                <li>
+                    <label>[{oxmultilang ident="FCPO_PAYOLUTION_BIRTHDATE"}]</label>
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_day]">
+                        [{foreach from=$oView->fcpoGetDayRange() item='sDay'}]
+                            <option value="[{$sDay}]" [{if $sDay == $oView->fcpoGetBirthdayField('day')}]selected[{/if}]>[{$sDay}]</option>
+                        [{/foreach}]
+                    </select>
+                    &nbsp;
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_month]">
+                        [{foreach from=$oView->fcpoGetMonthRange() item='sMonth'}]
+                            <option value="[{$sMonth}]" [{if $sMonth == $oView->fcpoGetBirthdayField('month')}]selected[{/if}]>[{$sMonth}]</option>
+                        [{/foreach}]
+                    </select>
+                    &nbsp;
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_year]">
+                        [{foreach from=$oView->fcpoGetYearRange() item='sYear'}]
+                            <option value="[{$sYear}]" [{if $sYear == $oView->fcpoGetBirthdayField('year')}]selected[{/if}]>[{$sYear}]</option>
+                        [{/foreach}]
+                    </select>
+                </li>
+            [{/if}]
             <li>
                 <label>[{oxmultilang ident="FCPO_PAYOLUTION_ACCOUNTHOLDER"}]</label>
                 <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_debitnote_accountholder]" value="[{$dynvalue.fcpo_payolution_debitnote_accountholder}]" onkeyup="fcHandleDebitInputs();return false;">

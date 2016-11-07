@@ -7,6 +7,30 @@
         <script src="[{$oViewConf->fcpoGetModuleJsPath('jquery-1.10.1.min.js')}]"></script>
         <script src="[{$oViewConf->fcpoGetModuleJsPath()}]lightview/lightview.js"></script>
         <input type="hidden" name="fcpo_mode_[{$sPaymentID}]" value="[{$paymentmethod->fcpoGetOperationMode()}]">
+        [{if $oView->fcpoShowB2C()}]
+            <div class="form-group">
+                <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_PAYOLUTION_BIRTHDATE"}]</label>
+                <div class="col-lg-9">
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_day]">
+                        [{foreach from=$oView->fcpoGetDayRange() item='sDay'}]
+                            <option value="[{$sDay}]" [{if $sDay == $oView->fcpoGetBirthdayField('day')}]selected[{/if}]>[{$sDay}]</option>
+                        [{/foreach}]
+                    </select>
+                    &nbsp;
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_month]">
+                        [{foreach from=$oView->fcpoGetMonthRange() item='sMonth'}]
+                            <option value="[{$sMonth}]" [{if $sMonth == $oView->fcpoGetBirthdayField('month')}]selected[{/if}]>[{$sMonth}]</option>
+                        [{/foreach}]
+                    </select>
+                    &nbsp;
+                    <select name="dynvalue[fcpo_payolution_debitnote_birthdate_year]">
+                        [{foreach from=$oView->fcpoGetYearRange() item='sYear'}]
+                            <option value="[{$sYear}]" [{if $sYear == $oView->fcpoGetBirthdayField('year')}]selected[{/if}]>[{$sYear}]</option>
+                        [{/foreach}]
+                    </select>
+                </div>
+            </div>
+        [{/if}]
         <div class="form-group">
             <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_PAYOLUTION_ACCOUNTHOLDER"}]</label>
             <div class="col-lg-9">

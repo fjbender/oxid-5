@@ -41,6 +41,13 @@
                 [{/if}]
             </div>
         </li>
+        [{if $oView->fcpoShowB2C()}]
+            <li>
+                <input placceholder="[{oxmultilang ident="FCPO_PAYOLUTION_YEAR"}]" type="text" size="5" maxlength="4" name="dynvalue[fcpo_payolution_birthdate_year]" value="[{$oView->fcpoGetBirthdayField('year')}]">&nbsp;
+                <input placceholder="[{oxmultilang ident="FCPO_PAYOLUTION_MONTH"}]" type="text" size="3" maxlength="2" name="dynvalue[fcpo_payolution_birthdate_month]" value="[{$oView->fcpoGetBirthdayField('month')}]">&nbsp;
+                <input placceholder="[{oxmultilang ident="FCPO_PAYOLUTION_DAY"}]" type="text" size="3" maxlength="2" name="dynvalue[fcpo_payolution_birthdate_day]" value="[{$oView->fcpoGetBirthdayField('day')}]">
+            </li>
+        [{/if}]
         <li>
             <input type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_debitnote_accountholder]" autocomplete="off" value="[{$dynvalue.fcpo_payolution_debitnote_accountholder}]" onkeyup="fcHandleDebitInputs(); return false;" placeholder="[{oxmultilang ident="FCPO_BANK_IBAN"}]" />
         </li>

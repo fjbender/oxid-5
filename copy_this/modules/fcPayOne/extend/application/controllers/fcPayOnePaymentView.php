@@ -1299,6 +1299,9 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
             elseif ($sPaymentId == 'fcpopo_installment') {
                 $sRequestBirthdate = $aRequestedValues['fcpo_payolution_installment_birthdate_year'] . "-" . $aRequestedValues['fcpo_payolution_installment_birthdate_month'] . "-" . $aRequestedValues['fcpo_payolution_installment_birthdate_day'];
             }
+            elseif ($sPaymentId == 'fcpopo_debitnote') {
+                $sRequestBirthdate = $aRequestedValues['fcpo_payolution_debitnote_birthdate_year'] . "-" . $aRequestedValues['fcpo_payolution_debitnote_birthdate_month'] . "-" . $aRequestedValues['fcpo_payolution_debitnote_birthdate_day'];
+            }
             $blRefreshBirthdate = ($sCurrentBirthdate != $sRequestBirthdate && $sRequestBirthdate != '0000-00-00' && $sRequestBirthdate != '--');
             if ($blRefreshBirthdate) {
                 $oUser->oxuser__oxbirthdate = new oxField($sRequestBirthdate, oxField::T_RAW);
@@ -1331,9 +1334,12 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
     protected function _fcpoValidateBirthdayData($sPaymentId, $aRequestedValues) {
         $sBirthdateYear = $aRequestedValues['fcpo_payolution_birthdate_year'];
         $sBirthdateYearInstallment = $aRequestedValues['fcpo_payolution_installment_birthdate_year'];
-        $blValidPayments = in_array($sPaymentId, array('fcpopo_bill', 'fcpopo_installment'));
+        $sBirthdateYearDebitnote = $aRequestedValues['fcpo_payolution_debitnote_birthdate_year'];
+        $blValidPayments = in_array($sPaymentId, array('fcpopo_bill', 'fcpopo_installment', 'fcpopo_debitnote'));
         $blValidRequestData = (
-            (isset($sBirthdateYear) && !empty($sBirthdateYear)) || (isset($sBirthdateYearInstallment) && !empty($sBirthdateYearInstallment))
+            (isset($sBirthdateYear) && !empty($sBirthdateYear)) || 
+            (isset($sBirthdateYearInstallment) && !empty($sBirthdateYearInstallment)) ||
+            (isset($sBirthdateYearDebitnote) && !empty($sBirthdateYearDebitnote))
         );
         
         $blReturn = false;
