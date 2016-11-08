@@ -16,7 +16,7 @@
  *
  * @link      http://www.payone.de
  * @copyright (C) Payone GmbH
- * @version   OXID eShop CE
+ * @version   OXID eShop CEPYD
  */
 class fcpoRequest extends oxSuperCfg {
 
@@ -809,6 +809,9 @@ class fcpoRequest extends oxSuperCfg {
         $sBankDataAdd = '';
         if ($sPaymentId == 'fcpopo_installment') {
             $sBankDataAdd = '_installment';
+        }
+        elseif ($sPaymentId == 'fcpopo_debitnote') {
+            $sBankDataAdd = '_debitnote';
         }
         
         $blValidBankData = (
