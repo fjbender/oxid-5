@@ -791,6 +791,7 @@ class fcpoRequest extends oxSuperCfg {
         $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
         $aBankData = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_bankdata');
         $sInstallmentDuration = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_installment_duration');
+        $sFieldNameAddition = str_replace("fcpopo_", "", $sPaymentId);
         
         $this->addParameter('clearingtype', 'fnc');
         $sPaymentType = $this->_fcpoGetPayolutionPaymentTypeById($sPaymentId);
@@ -800,32 +801,24 @@ class fcpoRequest extends oxSuperCfg {
         $this->addParameter('api_version', '3.10');
         $this->addParameter('mode', $this->getOperationMode($oOrder->oxorder__oxpaymenttype->value));
         
-        $this->_fcpoAddPayolutionUserData($oUser);
+        $this->_fcpoAddPayolutionUserData($oUser, $sPaymentId);
 
         if ($sWorkorderId !== null) {
             $this->addParameter('workorderid', $sWorkorderId);
-        }
-        
-        $sBankDataAdd = '';
-        if ($sPaymentId == 'fcpopo_installment') {
-            $sBankDataAdd = '_installment';
-        }
-        elseif ($sPaymentId == 'fcpopo_debitnote') {
-            $sBankDataAdd = '_debitnote';
         }
         
         $blValidBankData = (
             isset($aBankData) && 
             is_array($aBankData) && 
             count($aBankData) == 3 && 
-            $aBankData['fcpo_payolution'.$sBankDataAdd.'_accountholder'] && 
-            $aBankData['fcpo_payolution'.$sBankDataAdd.'_iban'] && 
-            $aBankData['fcpo_payolution'.$sBankDataAdd.'_bic']                
+            $aBankData['fcpo_payolution_'.$sFieldNameAddition.'_accountholder'] && 
+            $aBankData['fcpo_payolution_'.$sFieldNameAddition.'_iban'] && 
+            $aBankData['fcpo_payolution_'.$sFieldNameAddition.'_bic']                
         );
         
         if ($blValidBankData) {
-            $this->addParameter('iban', $aBankData['fcpo_payolution'.$sBankDataAdd.'_iban']);
-            $this->addParameter('bic', $aBankData['fcpo_payolution'.$sBankDataAdd.'_bic']);
+            $this->addParameter('iban', $aBankData['fcpo_payolution_'.$sFieldNameAddition.'_iban']);
+            $this->addParameter('bic', $aBankData['fcpo_payolution_'.$sFieldNameAddition.'_bic']);
         }
         
         if ($oConfig->isUtf()) {
@@ -841,14 +834,9 @@ class fcpoRequest extends oxSuperCfg {
         
         $this->addParameter('language', $this->_oFcpoHelper->fcpoGetLang()->getLanguageAbbr());
         
-        if ($this->fcpoIsB2B($oUser)) {
-            $this->addParameter('add_paydata[b2b]', 'yes');
-        }
-        
         if ($sInstallmentDuration) {
             $this->addParameter('add_paydata[installment_duration]', $sInstallmentDuration);
         }
-        
         
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_workorderid');
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_bankdata');
@@ -916,13 +904,9 @@ class fcpoRequest extends oxSuperCfg {
         $oCurr = $oConfig->getActShopCurrencyObject();
         $this->addParameter('currency', $oCurr->name);
         $sFinancingType = $this->_fcpoGetPayolutionFinancingType($sPaymentId);
-        $this->_fcpoAddPayolutionUserData($oUser);
+        $this->_fcpoAddPayolutionUserData($oUser, $sPaymentId);
         $this->addParameter('financingtype', $sFinancingType);
         $this->addParameter('add_paydata[action]', $sAction);
-        if ($sAction == 'preauthorization' && $sDuration) {
-            $this->addParameter('add_paydata[installment_duration]', $sDuration);
-            
-        }
         $this->addParameter('api_version', '3.10');
         
         if ($sWorkorderId !== null) {
@@ -954,10 +938,6 @@ class fcpoRequest extends oxSuperCfg {
         if ($blValidBankData) {
             $this->addParameter('iban', $aBankData['fcpo_payolution_installment_iban']);
             $this->addParameter('bic', $aBankData['fcpo_payolution_installment_bic']);
-        }
-        
-        if ($this->fcpoIsB2B($oUser)) {
-            $this->addParameter('add_paydata[b2b]', 'yes');
         }
         
         ksort($this->_aParameters);
@@ -992,7 +972,7 @@ class fcpoRequest extends oxSuperCfg {
 
         $sPaymentType = $this->_fcpoGetPayolutionPaymentTypeById($sPaymentId);
         $sFinancignType = $this->_fcpoGetPayolutionFinancingType($sPaymentId);
-        $this->_fcpoAddPayolutionUserData($oUser);
+        $this->_fcpoAddPayolutionUserData($oUser,$sPaymentId);
         
         $this->addParameter('financingtype', $sFinancignType);
         $this->addParameter('add_paydata[action]', 'pre_check');
@@ -1029,10 +1009,6 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('iban', $aBankData['fcpo_payolution_iban']);
             $this->addParameter('bic', $aBankData['fcpo_payolution_bic']);
         }
-        
-        if ($this->fcpoIsB2B($oUser)) {
-            $this->addParameter('add_paydata[b2b]', 'yes');
-        }
 
         ksort($this->_aParameters);
         return $this->send();
@@ -1043,20 +1019,21 @@ class fcpoRequest extends oxSuperCfg {
      * Adds userdata by offering a user object
      * 
      * @param object $oUser
+     * @param string $sPaymentId
      * @return void
      */
-    protected function _fcpoAddPayolutionUserData($oUser) {
-        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
-        $blB2BModeActive = $oConfig->getConfigParam('blFCPOPayolutionB2BMode');
-
+    protected function _fcpoAddPayolutionUserData($oUser, $sPaymentId) {
         $this->addParameter('email', $oUser->oxuser__oxusername->value);
         $this->addParameter('firstname', $oUser->oxuser__oxfname->value);
         $this->addParameter('lastname', $oUser->oxuser__oxlname->value);
         $this->addParameter('street', $oUser->oxuser__oxstreet->value." ".$oUser->oxuser__oxstreetnr->value); // and number
         $this->addParameter('zip', $oUser->oxuser__oxzip->value);
         $this->addParameter('city', $oUser->oxuser__oxcity->value);
-        if ($blB2BModeActive && $oUser->oxuser__oxcompany->value) {
+        $blAddCompanyData = $this->_fcpoCheckAddCompanyData($oUser, $sPaymentId);
+        if ($blAddCompanyData) {
             $this->addParameter('company', $oUser->oxuser__oxcompany->value);
+            $this->addParameter('add_paydata[company_uid]', $oUser->oxuser__oxustid->value);
+            $this->addParameter('add_paydata[b2b]', 'yes');
         }
         
         if ($oUser->oxuser__oxbirthdate->value != '0000-00-00') {
@@ -1070,6 +1047,22 @@ class fcpoRequest extends oxSuperCfg {
             $sCountry = $oCountry->oxcountry__oxisoalpha2->value;
         }
         $this->addParameter('country', strtoupper($sCountry));
+    }
+    
+    /**
+     * Returns if company data should be added to call deepending on settings and payment type
+     * 
+     * @param oxUser $oUser
+     * @param string $sPaymentId
+     * @return bool
+     */
+    protected function _fcpoCheckAddCompanyData($oUser, $sPaymentId) {
+        $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $blB2BModeActive = $oConfig->getConfigParam('blFCPOPayolutionB2BMode');
+        $blValidPaymentForCompanyData = in_array($sPaymentId, array('fcpopo_bill'));
+        $blReturn = ($blB2BModeActive && $oUser->oxuser__oxcompany->value && $blValidPaymentForCompanyData);
+        
+        return $blReturn;
     }
     
     

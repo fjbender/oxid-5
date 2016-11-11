@@ -94,15 +94,14 @@
                             </div>
                         </p>
                         <p>
-                                <label>[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
-                                <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_installment_bic]" value="[{$dynvalue.fcpo_payolution_installment_bic}]" onkeyup="fcHandleDebitInputs();return false;">
-                                <div id="fcpo_payolution_bic_invalid" class="fcpo_check_error">
-                                    <p class="oxValidateError" style="display: block;">
-                                        [{oxmultilang ident="FCPO_BIC_INVALID"}]
-                                    </p>
-                                </div>
+                            <label>[{oxmultilang ident="FCPO_BANK_BIC"}]</label>
+                            <input autocomplete="off" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_installment_bic]" value="[{$dynvalue.fcpo_payolution_installment_bic}]" onkeyup="fcHandleDebitInputs();return false;">
+                            <div id="fcpo_payolution_bic_invalid" class="fcpo_check_error">
+                                <p class="oxValidateError" style="display: block;">
+                                    [{oxmultilang ident="FCPO_BIC_INVALID"}]
+                                </p>
+                            </div>
                         </p>
-                        <input name="dynvalue[fcpo_payolution_installment_sepa_agreed]" value="agreed" type="checkbox">&nbsp;[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1"}] <a href='[{$oView->fcpoGetPayolutionSepaAgreementLink()}]' class="lightview fcpoPayolutionAgreeRed" data-lightview-type="iframe" data-lightview-options="width: 800, height: 600, viewport: 'scale',background: { color: '#fff', opacity: 1 },skin: 'light'">[{oxmultilang ident="FCPO_PAYOLUTION_SEPA_AGREE"}]</a>
                     </p>
                 </div>
             </div>

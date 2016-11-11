@@ -1173,7 +1173,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $this->_oFcpoHelper->fcpoSetSessionVariable('sFcpoBarzahlenHtml', $sBarzahlenHtml);
         }
         if (in_array($sPaymentId, $this->_aPayolutionPayments)) {
-            $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
+            $sWorkorderId = (isset($aResponse['add_paydata[workorderid]'])) ? $aResponse['add_paydata[workorderid]'] : false; // 
             if ($sWorkorderId) {
                 $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);
                 $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_workorderid');
@@ -1181,7 +1181,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             // save clearing_reference into session
             $sClearingReference = (isset($aResponse['add_paydata[clearing_reference]'])) ? $aResponse['add_paydata[clearing_reference]'] : false;
             if ($sClearingReference) {
-                $this->_oFcpoHelper->fcpoSetSessionVariable('payolution_clearing', $sClearingReference);
+                $this->oxorder__fcpoclearingreference = new oxField($sClearingReference, oxField::T_RAW);
             }
         }
     }

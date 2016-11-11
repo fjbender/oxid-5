@@ -44,6 +44,7 @@ else {
 
 // receive params
 $sLoadUrl = filter_input( INPUT_GET, 'loadurl' );
+$sDuration = filter_input( INPUT_GET, 'duration' );
 $sUseLogin = filter_input( INPUT_GET, 'login' );
 
 
@@ -71,6 +72,12 @@ class fcpopopup_content extends oxBase {
      * @var bool
      */
     protected $_blPdfHeader = null;
+    
+    /**
+     * Duration for installment
+     * @var string 
+     */
+    protected $_sDuration = null;
 
     /**
      * Initialization
@@ -78,10 +85,11 @@ class fcpopopup_content extends oxBase {
      * @param string $sUrl
      * @param bool $blUseLogin
      */
-    public function __construct($sUrl, $blPdfHeader=true, $blUseLogin=false) {
+    public function __construct($sUrl, $sDuration, $blPdfHeader=true, $blUseLogin=false) {
         $this->_sUrl = $sUrl;
         $this->_blUseLogin = $blUseLogin;
         $this->_blPdfHeader = $blPdfHeader;
+        $this->_sDuration = $sDuration;
     }
 
     /**
@@ -92,8 +100,9 @@ class fcpopopup_content extends oxBase {
      */
     public function fcpo_fetch_content() {
         $resCurl = curl_init();
+        $sUrl = $this->_sUrl."&duration=".$this->_sDuration;
         
-        curl_setopt($resCurl, CURLOPT_URL,$this->_sUrl);
+        curl_setopt($resCurl, CURLOPT_URL, $sUrl);
         curl_setopt($resCurl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($resCurl, CURLOPT_FOLLOWLOCATION, true);
          
@@ -161,5 +170,5 @@ class fcpopopup_content extends oxBase {
     
 }
 
-$oPopupContent = new fcpopopup_content($sLoadUrl, true, (bool)$sUseLogin);
+$oPopupContent = new fcpopopup_content($sLoadUrl, $sDuration, true, (bool)$sUseLogin);
 echo $oPopupContent->fcpo_fetch_content();

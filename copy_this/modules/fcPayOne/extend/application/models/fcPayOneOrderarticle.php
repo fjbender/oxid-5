@@ -82,7 +82,7 @@ class fcPayOneOrderarticle extends fcPayOneOrderarticle_parent {
                 }
             }
 
-            if($this->_oFcpoHelper->fcpoGetIntShopVersion() >= 4600) {
+            if(version_compare($oConfig->getVersion(), '4.6.0', '>=')) {
                 // seting downloadable products article files
                 $this->_setOrderFiles();
             }

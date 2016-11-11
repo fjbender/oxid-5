@@ -158,6 +158,7 @@ $aLang = array(
 'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_SUM'     => 'Total',
 'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Bitte ausw&auml;hlen',
 'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED'       => 'Sie haben keine Ratenkaufoption ausgewählt',
+'FCPO_PAYOLUTION_NO_USTID'                      => 'Bei Firmenbestellungen ist die Angabe der Umsatzsteueridentifiationsnummer (USt-IdNr.) notwendig',
 );
 
 /*
