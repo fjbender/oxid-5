@@ -255,7 +255,17 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $oSession = $this->_oFcpoHelper->fcpoGetSession();
             $oBasket = $oSession->getBasket();
             $sPaymentId = $oBasket->getPaymentId();
-            if ($this->_oFcpoHelper->fcpoGetRequestParameter('fcposuccess') && $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') && ($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoTxid') || $sPaymentId == 'fcpocreditcard_iframe' )) {
+            
+            $blUseRedirectAfterSave = (
+                $this->_oFcpoHelper->fcpoGetRequestParameter('fcposuccess') && 
+                $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') && 
+                (
+                    $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoTxid') || 
+                    $sPaymentId == 'fcpocreditcard_iframe' 
+                )
+            );
+            
+            if ($blUseRedirectAfterSave) {
                 $this->_blIsRedirectAfterSave = true;
             }
         }
@@ -933,7 +943,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
 
             if ($blCheckProduct === true) {
                 // check if its still available
-                if ($this->_fcGetCurrentVersion() < 4300) {
+                if (version_compare($oConfig->getVersion(), '4.3.0', '<')) {
                     $dArtStockAmount = $this->fcGetArtStockInBasket($oBasket, $oProd->getId(), $key);
                 } else {
                     $dArtStockAmount = $oBasket->getArtStockInBasket($oProd->getId(), $key);

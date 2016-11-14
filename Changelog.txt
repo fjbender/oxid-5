@@ -2,11 +2,10 @@
 	Releasedate: 2016-11-14
 
  * Fixed presave order bug which avoided usage of oxordernr as refnr
+ * Fixed VATID requirement if B2B is deactivated
 
 ==2.1.2==
 	Releasedate: 2016-10-21
-
-
   * Fixed error which avoided saving orderarticles under certain circumstances	
   * Added error mapping for hosted iframe
   * Added error mapping feature

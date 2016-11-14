@@ -1164,7 +1164,7 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         if ($blB2BModeActive && $blValidPaymentForCompanyData) {
             $blReturn = ($oUser->oxuser__oxustid->value != '') ? true : false;
         }
-        elseif (!$blValidPaymentForCompanyData) {
+        elseif (!$blB2BModeActive || !$blValidPaymentForCompanyData) {
             $blReturn = true;
         }
         
