@@ -203,7 +203,7 @@ class fcpayone_main extends fcpayone_admindetails {
             $sType = $this->_oFcpoHelper->fcpoGetRequestParameter("type");
             $this->_aViewData["type"] = $sType;
 
-            if ($oConfig->getVersion() >= 4.6) {
+            if (version_compare($oConfig->getVersion(), '4.6.0', '>=')) {
                 $oPayOneAjax = oxNew('fcpayone_main_ajax');
                 $aColumns = $oPayOneAjax->getColumns();
             } else {

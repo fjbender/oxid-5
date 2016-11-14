@@ -330,7 +330,7 @@ class fcpohelper extends oxBase {
      * @return string
      */
     public function fcpoGetModuleVersion() {
-        return '2.1.2_5';
+        return '2.1.3_5';
     }
 
     /**

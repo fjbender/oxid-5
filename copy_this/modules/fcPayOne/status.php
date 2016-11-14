@@ -54,6 +54,7 @@ if(array_search($sRemoteIp, $aWhitelist) === false) {
             }
         }
     }
+    
     if($blMatch === false) {
         echo 'Access denied';
         exit;
@@ -102,21 +103,6 @@ if(file_exists(dirname(__FILE__)."/../../bootstrap.php")) {
 class fcPayOneTransactionStatusHandler extends oxBase {
 
     protected $_aShopList = null;
-    
-    /**
-     * Instance of helper object
-     * @var object
-     */
-    protected $_oFcpoHelper = null;
-
-    
-    /**
-     * Do initialization
-     */
-    public function __construct() {
-        parent::__construct();
-        $this->_oFcpoHelper = oxNew( 'fcpohelper' );
-    }
     
     /**
      * Check and return post parameter
@@ -288,11 +274,10 @@ class fcPayOneTransactionStatusHandler extends oxBase {
     public function handle() {
         if($this->_isKeyValid()) {
             $this->log();
-            $sOrderId = oxDb::getDb()->GetOne("SELECT oxid FROM oxorder WHERE fcpotxid = '".$this->fcGetPostParam('txid')."'");
+            $sTxid = $this->fcGetPostParam('txid');
+            $sOrderId = oxDb::getDb()->GetOne("SELECT oxid FROM oxorder WHERE fcpotxid = '".$sTxid."'");
             if($sOrderId) {
-                $oOrder = oxNew('oxorder');
-                $oOrder->load($sOrderId);
-                if($oOrder->allowDebit()) {
+                if($this->_allowDebit($sTxid)) {
                     $query = "UPDATE oxorder SET oxpaid = NOW() WHERE oxid = '{$sOrderId}'";
                     oxDb::getDb()->Execute($query);
                 }
@@ -310,6 +295,27 @@ class fcPayOneTransactionStatusHandler extends oxBase {
             echo 'Key wrong or missing!';
         }
     }
+    
+    /**
+     * Checks based on the transaction status received by PAYONE whether
+     * the debit request is available for this order at the moment.
+     * 
+     * @param void
+     * @return bool
+     */
+    protected function _allowDebit($sTxid) {
+        $sAuthMode = oxDb::getDb()->GetOne("SELECT fcpoauthmode FROM oxorder WHERE fcpotxid = '".$sTxid."'");
+        if ($sAuthMode == 'authorization') {
+            $blReturn = true;
+        } else {
+            $iCount = oxDb::getDb()->GetOne("SELECT COUNT(*) FROM fcpotransactionstatus WHERE fcpo_txid = '{$sTxid}' AND fcpo_txaction = 'capture'");
+            if ($iCount == 0) {
+                $blReturn = false;
+            }
+        }
+        return $blReturn;
+    }
+    
 
 }
 

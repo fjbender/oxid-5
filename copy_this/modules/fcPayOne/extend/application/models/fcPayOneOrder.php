@@ -620,11 +620,12 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return bool
      */
     protected function _insert() {
-        if ($this->_fcGetCurrentVersion() < 4700) {
+        $oConfig = $this->getConfig();
+        $sShopVersion = $oConfig->getVersion();
+        if (version_compare($sShopVersion, '4.7.0', '<')) {
             return parent::_insert();
         }
 
-        $myConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oUtilsDate = $this->_oFcpoHelper->fcpoGetUtilsDate();
 
         //V #M525 orderdate must be the same as it was
@@ -634,7 +635,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $this->oxorder__oxorderdate = new oxField($oUtilsDate->formatDBDate($this->oxorder__oxorderdate->value, true));
         }
 
-        $this->oxorder__oxshopid = new oxField($myConfig->getShopId(), oxField::T_RAW);
+        $this->oxorder__oxshopid = new oxField($oConfig->getShopId(), oxField::T_RAW);
         $this->oxorder__oxsenddate = new oxField($oUtilsDate->formatDBDate($this->oxorder__oxsenddate->value, true));
 
         if (( $blInsert = parent::_insert())) {
@@ -1039,12 +1040,19 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return boolean
      */
     public function fcHandleAuthorization($blReturnRedirectUrl = false, $oPayGateway = null) {
+        $oConfig = $this->getConfig();
         $aDynvalue = $this->_oFcpoHelper->fcpoGetSessionVariable('dynvalue');
         $aDynvalue = $aDynvalue ? $aDynvalue : $this->_oFcpoHelper->fcpoGetRequestParameter('dynvalue');
+        
+        $blPresaveOrder = (bool) $oConfig->getConfigParam('blFCPOPresaveOrder');
+        if ($blPresaveOrder === true) {
+            $sOrderNr = $this->_fcpoGetNextOrderNr();
+            $this->oxorder__oxordernr = new oxField($sOrderNr, oxField::T_RAW);
+        }
 
         $oPORequest = $this->_oFcpoHelper->getFactoryObject('fcporequest');
         $oPayment = $this->_oFcpoHelper->getFactoryObject('oxpayment');
-        $oPayment->load($this->oxorder__oxpaymenttype->value);
+        $oPayment->load($this->oxorder__oxpaymenttype->value); 
         $sAuthorizationType = $oPayment->oxpayments__fcpoauthmode->value;
 
         $sRefNr = $oPORequest->getRefNr($this);
@@ -1055,6 +1063,27 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         $mResult = $this->_fcpoHandleAuthorizationResponse($aResponse, $oPayGateway, $sRefNr, $sMode, $sAuthorizationType, $blReturnRedirectUrl);
 
         return $mResult;
+    }
+    
+    /**
+     * Returns new valid ordernr. Method depends on shop version
+     * 
+     * @param void
+     * @return string
+     */
+    protected function _fcpoGetNextOrderNr() {
+        $oConfig = $this->getConfig();
+        $sShopVersion = $oConfig->getVersion();
+        
+        if (version_compare($sShopVersion, '4.6.0', '>=')) {
+            $oCounter = oxNew('oxCounter');
+            $sOrderNr = $oCounter->getNext($this->_getCounterIdent());
+        } else {
+            $sQuery = "SELECT MAX(oxordernr)+1 FROM oxorder LIMIT 1";
+            $sOrderNr = $this->_oFcpoDb->GetOne($sQuery);
+        }
+        
+        return $sOrderNr;
     }
 
     /**
