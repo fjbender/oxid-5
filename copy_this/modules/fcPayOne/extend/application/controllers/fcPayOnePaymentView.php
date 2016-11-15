@@ -1159,13 +1159,11 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         $oUser = $this->getUser();
         $blB2BModeActive = $oConfig->getConfigParam('blFCPOPayolutionB2BMode');
         $blValidPaymentForCompanyData = in_array($sPaymentId, array('fcpopo_bill'));
-
-        $blReturn = false;
-        if ($blB2BModeActive && $blValidPaymentForCompanyData) {
+        $blIsCompany = ($oUser->oxuser__oxcompany->value != '') ? true : false;
+        
+        $blReturn = true;
+        if ($blIsCompany && $blB2BModeActive && $blValidPaymentForCompanyData) {
             $blReturn = ($oUser->oxuser__oxustid->value != '') ? true : false;
-        }
-        elseif (!$blB2BModeActive || !$blValidPaymentForCompanyData) {
-            $blReturn = true;
         }
         
         return $blReturn;
