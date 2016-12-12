@@ -48,6 +48,10 @@ $aLang = array(
 'FCPO_ADDRESSCHECK_PNZ'                         => 'nicht (mehr) zustellbar',
 'FCPO_ADDRESSCHECK_PPV'                         => 'Person verstorben',
 'FCPO_ADDRESSCHECK_PPF'                         => 'Adresse postalisch falsch',
+'FCPO_ADDRESSCHECK_UKN'                         => 'Unbekannte Rückgabewerte',
+'FCPO_ADDRESSCHECK_PUG'                         => 'Adresse postalisch korrekt aber Gebäude ist unbekannt',
+'FCPO_ADDRESSCHECK_PNZ'                         => 'Kann nicht mehr beliefert werden',
+'FCPO_ADDRESSCHECK_PNP'                         => 'Adresse kann nicht geprüft werden. Ein falscher Name wurde benutzt',
 'FCPO_ONLINE_UEBERWEISUNG_TYPE'                 => 'Typ:',
 'FCPO_BANKGROUPTYPE'                            => 'Bankgruppe:',
 'FCPO_BANKACCOUNTHOLDER'                        => 'Kontoinhaber:',
@@ -159,6 +163,11 @@ $aLang = array(
 'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Bitte ausw&auml;hlen',
 'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED'       => 'Sie haben keine Ratenkaufoption ausgewählt',
 'FCPO_PAYOLUTION_NO_USTID'                      => 'Bei Firmenbestellungen ist die Angabe der Umsatzsteueridentifiationsnummer (USt-IdNr.) notwendig',
+'FCPO_RATEPAY_FON'                              => 'Telefonnummer',
+'FCPO_RATEPAY_BIRTHDATE'                        => 'Geburtsdatum',
+'FCPO_RATEPAY_USTID'                            => 'Umsatzsteueridentifiationsnummer (USt-IdNr.)',
+'FCPO_RATEPAY_NO_USTID'                         => 'Bei Firmenbestellungen ist die Angabe der Umsatzsteueridentifiationsnummer (USt-IdNr.) notwendig',
+'FCPO_RATEPAY_NO_SUFFICIENT_DATA'               => 'Es fehlen einige persönliche Angaben zu Ihrer Person. Bitte füllen Sie die eingeblendeten Felder aus.',
 );
 
 /*

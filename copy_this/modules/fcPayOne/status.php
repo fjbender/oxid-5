@@ -277,6 +277,8 @@ class fcPayOneTransactionStatusHandler extends oxBase {
             $sTxid = $this->fcGetPostParam('txid');
             $sOrderId = oxDb::getDb()->GetOne("SELECT oxid FROM oxorder WHERE fcpotxid = '".$sTxid."'");
             if($sOrderId) {
+                $oOrder = oxNew('oxorder');
+                $oOrder->load($sOrderId);
                 if($this->_allowDebit($sTxid)) {
                     $query = "UPDATE oxorder SET oxpaid = NOW() WHERE oxid = '{$sOrderId}'";
                     oxDb::getDb()->Execute($query);
