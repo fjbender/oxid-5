@@ -10,6 +10,16 @@ function handlePresaveOrderCheckbox(oCheckbox) {
     }
 }
 
+function handleRatePayShowDetails(oCheckbox) {
+    var sOxid = oCheckbox.value;
+    var sId = 'ratepay_profile_details_' + sOxid;
+    if(oCheckbox.checked) {
+        document.getElementById(sId).style.display = 'block';
+    } else {
+        document.getElementById(sId).style.display = 'none';
+    }
+}
+
 function _groupExp(oElement) {
     var _cur = oElement.parentNode;
 
@@ -60,6 +70,3 @@ function handleCss(oSelect, sRowName) {
         inputDisable('input_css_' + sRowName);
     }
 }
-
-
-

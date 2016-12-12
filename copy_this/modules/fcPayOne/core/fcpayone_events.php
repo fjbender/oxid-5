@@ -124,31 +124,31 @@ class fcpayone_events
           KEY `FCPO_TYPE` (`FCPO_TYPE`)
         ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
     public static $sQueryTableFcpoStatusForwarding = "
-		CREATE TABLE fcpostatusforwarding(
-			OXID INT(11) NOT NULL AUTO_INCREMENT ,
-			FCPO_PAYONESTATUS VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			FCPO_URL VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			FCPO_TIMEOUT DOUBLE NOT NULL DEFAULT '0' ,
-			PRIMARY KEY (`OXID`)
-		);";
+        CREATE TABLE fcpostatusforwarding(
+                OXID INT(11) NOT NULL AUTO_INCREMENT ,
+                FCPO_PAYONESTATUS VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                FCPO_URL VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                FCPO_TIMEOUT DOUBLE NOT NULL DEFAULT '0' ,
+                PRIMARY KEY (`OXID`)
+        );";
     public static $sQueryTableFcpoStatusMapping = "
-		CREATE TABLE fcpostatusmapping(
-			OXID INT(11) NOT NULL AUTO_INCREMENT ,
-			FCPO_PAYMENTID CHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
-			FCPO_PAYONESTATUS VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			FCPO_FOLDER VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			PRIMARY KEY (`OXID`)
-		);";
+        CREATE TABLE fcpostatusmapping(
+                OXID INT(11) NOT NULL AUTO_INCREMENT ,
+                FCPO_PAYMENTID CHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+                FCPO_PAYONESTATUS VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                FCPO_FOLDER VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                PRIMARY KEY (`OXID`)
+        );";
     public static $sQueryTableFcpoErrorMapping = "
-		CREATE TABLE fcpoerrormapping(
-			OXID INT(11) NOT NULL AUTO_INCREMENT ,
-			FCPO_ERROR_CODE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
-			FCPO_LANG_ID VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			FCPO_MAPPED_MESSAGE TEXT CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
-			FCPO_ERROR_TYPE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
-			PRIMARY KEY (`OXID`),
-                        KEY `FCPO_ERROR_TYPE` (`FCPO_ERROR_TYPE`)
-		);";
+        CREATE TABLE fcpoerrormapping(
+                OXID INT(11) NOT NULL AUTO_INCREMENT ,
+                FCPO_ERROR_CODE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+                FCPO_LANG_ID VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                FCPO_MAPPED_MESSAGE TEXT CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+                FCPO_ERROR_TYPE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+                PRIMARY KEY (`OXID`),
+                KEY `FCPO_ERROR_TYPE` (`FCPO_ERROR_TYPE`)
+        );";
     public static $sQueryTableFcpoklarnastoreids = "
         CREATE TABLE fcpoklarnastoreids (
           OXID int(11) NOT NULL AUTO_INCREMENT,
@@ -183,6 +183,73 @@ class fcpayone_events
           fcpo_checkdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           PRIMARY KEY (fcpo_address_hash)
         ) ENGINE=INNODB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;";
+    
+    public static $sQueryTableRatePay = "
+        CREATE TABLE `fcporatepay` (
+          `OXID` char(32) NOT NULL,
+          `OXPAYMENTID` char(32) NOT NULL,
+          `shopid` int(11) NOT NULL,
+          `merchant_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `merchant_status` int(11) DEFAULT NULL,
+          `shop_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `currency` char(32) NOT NULL,
+          `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `activation_status_elv` int(11) DEFAULT NULL,
+          `activation_status_installment` int(11) DEFAULT NULL,
+          `activation_status_invoice` int(11) DEFAULT NULL,
+          `activation_status_prepayment` int(11) DEFAULT NULL,
+          `amount_min_longrun` double DEFAULT NULL,
+          `b2b_pq_full` tinyint(1) DEFAULT NULL,
+          `b2b_pq_light` tinyint(1) DEFAULT NULL,
+          `b2b_elv` tinyint(1) DEFAULT NULL,
+          `b2b_installment` tinyint(1) DEFAULT NULL,
+          `b2b_invoice` tinyint(1) DEFAULT NULL,
+          `b2b_prepayment` tinyint(1) DEFAULT NULL,
+          `country_code_billing` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `country_code_delivery` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `delivery_address_pq_full` tinyint(1) DEFAULT NULL,
+          `delivery_address_pq_light` tinyint(1) DEFAULT NULL,
+          `delivery_address_elv` tinyint(1) DEFAULT NULL,
+          `delivery_address_installment` tinyint(1) DEFAULT NULL,
+          `delivery_address_invoice` tinyint(1) DEFAULT NULL,
+          `delivery_address_prepayment` tinyint(1) DEFAULT NULL,
+          `device_fingerprint_snippet_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `eligibility_device_fingerprint` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_elv` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_installment` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_invoice` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_pq_full` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_pq_light` tinyint(1) DEFAULT NULL,
+          `eligibility_ratepay_prepayment` tinyint(1) DEFAULT NULL,
+          `interest_rate_merchant_towards_bank` double DEFAULT NULL,
+          `interestrate_default` double DEFAULT NULL,
+          `interestrate_max` double DEFAULT NULL,
+          `interestrate_min` double DEFAULT NULL,
+          `min_difference_dueday` int(11) DEFAULT NULL,
+          `month_allowed` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+          `month_longrun` int(11) DEFAULT NULL,
+          `month_number_max` int(11) DEFAULT NULL,
+          `month_number_min` int(11) DEFAULT NULL,
+          `payment_amount` double DEFAULT NULL,
+          `payment_firstday` int(11) DEFAULT NULL,
+          `payment_lastrate` double DEFAULT NULL,
+          `rate_min_longrun` double DEFAULT NULL,
+          `rate_min_normal` double DEFAULT NULL,
+          `service_charge` double DEFAULT NULL,
+          `tx_limit_elv_max` double DEFAULT NULL,
+          `tx_limit_elv_min` double DEFAULT NULL,
+          `tx_limit_installment_max` double DEFAULT NULL,
+          `tx_limit_installment_min` double DEFAULT NULL,
+          `tx_limit_invoice_max` double DEFAULT NULL,
+          `tx_limit_invoice_min` double DEFAULT NULL,
+          `tx_limit_prepayment_max` double DEFAULT NULL,
+          `txLimitPrepaymentMin` double DEFAULT NULL,
+          `valid_payment_firstdays` int(11) DEFAULT NULL,
+          PRIMARY KEY (OXID)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+    ";
+    
     public static $sQueryAlterOxorderTxid = "ALTER TABLE oxorder ADD COLUMN FCPOTXID VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL;";
     public static $sQueryAlterOxorderRefNr = "ALTER TABLE oxorder ADD COLUMN FCPOREFNR INT(11) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderAuthMode = "ALTER TABLE oxorder ADD COLUMN FCPOAUTHMODE VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL;";
@@ -217,6 +284,7 @@ class fcpayone_events
     public static $sQueryAlterOxorderNotChecked = "ALTER TABLE oxorder ADD COLUMN FCPOORDERNOTCHECKED TINYINT(1) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderWorkOrderId = "ALTER TABLE oxorder ADD COLUMN FCPOWORKORDERID VARCHAR(16) DEFAULT '' NOT NULL;";
     public static $sQueryAlterOxorderClearingReference = "ALTER TABLE oxorder ADD COLUMN FCPOCLEARINGREFERENCE VARCHAR(32) DEFAULT '' NOT NULL;";
+    public static $sQueryAlterOxorderProfileIdent = "ALTER TABLE oxorder ADD COLUMN FCPOPROFILEIDENT VARCHAR(32) DEFAULT '' NOT NULL;";
     public static $sQueryChangeToVarchar1 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_USERID FCPO_USERID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeToVarchar2 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_TXID FCPO_TXID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeRefNrToVarchar = "ALTER TABLE oxorder CHANGE FCPOREFNR FCPOREFNR VARCHAR( 32 ) NOT NULL DEFAULT '0'";
@@ -237,6 +305,7 @@ class fcpayone_events
         'fcpopo_bill' => 'Payolution Rechnung',
         'fcpopo_debitnote' => 'Payolution Lastschrift',
         'fcpopo_installment' => 'Payolution Ratenkauf',
+        'fcporp_bill' => 'Ratepay Rechnungskauf',
     );
 
     /**
@@ -376,6 +445,7 @@ class fcpayone_events
         self::addTableIfNotExists('fcpoklarnacampaigns', self::$sQueryTableFcpoklarnacampaigns);
         self::addTableIfNotExists('fcpopdfmandates', self::$sQueryTableFcpoPdfMandates);
         self::addTableIfNotExists('fcpopayoneexpresslogos', self::$sQueryTableFcpopaypalexpresslogos);
+        self::addTableIfNotExists('fcporatepay', self::$sQueryTableRatePay);
 
         //ADD COLUMNS TO EXISTING TABLES
         self::addColumnIfNotExists('oxorder', 'FCPOTXID', self::$sQueryAlterOxorderTxid);
@@ -392,6 +462,7 @@ class fcpayone_events
         self::addColumnIfNotExists('oxorder', 'FCPOORDERNOTCHECKED', self::$sQueryAlterOxorderNotChecked);
         self::addColumnIfNotExists('oxorder', 'FCPOWORKORDERID', self::$sQueryAlterOxorderWorkOrderId);
         self::addColumnIfNotExists('oxorder', 'FCPOCLEARINGREFERENCE', self::$sQueryAlterOxorderClearingReference);
+        self::addColumnIfNotExists('oxorder', 'FCPOPROFILEIDENT', self::$sQueryAlterOxorderProfileIdent);
 
         self::addColumnIfNotExists('oxorderarticles', 'FCPOCAPTUREDAMOUNT', self::$sQueryAlterOxorderarticlesCapturedAmount);
         self::addColumnIfNotExists('oxorderarticles', 'FCPODEBITEDAMOUNT', self::$sQueryAlterOxorderarticlesDebitedAmount);

@@ -381,6 +381,17 @@ $aLang = array(
 'FCPO_CONFIG_DEBIT_BIC_MANDATORY'           => 'BIC abfragen',
 'fcpo_admin_config_error_iframe_mapping'    => 'Eigene Fehlermeldungen für Hosted iFrame',
 'fcpo_admin_config_payone_error_code'       => 'Fehlerkennung',
+'FCPO_CONFIG_GROUP_RATEPAY'                 => 'RatePay',
+'FCPO_PROFILES_RATEPAY'                     => 'RatePay Profile',
+'FCPO_RATEPAY_DELETE_PROFILE'               => 'Profil löschen',
+'FCPO_RATEPAY_ADD_PROFILE'                  => 'Profil hinzufügen',
+'FCPO_PROFILES_RATEPAY_CURRENCY'            => 'Währung',
+'FCPO_PROFILES_RATEPAY_PAYMENT'             => 'RatePay Zahlungsmethode',
+'FCPO_RATEPAY_PROFILE_TOGGLE_DETAILS'       => 'Konfigurationsdetails dieses Profils ein-/ausblenden',
+'FCPO_RATEPAY_PROFILE_DETAILS_FOR_ID'       => 'Profilkonfiguration für ShopID',
+'FCPO_RATEPAY_GENERAL_SETTINGS'             => 'RatePay Einstellungen',
+'FCPO_RATEPAY_B2BMODE'                      => 'RatePay im B2B-Modus betreiben',
+'FCPO_HELP_RATEPAY_B2BMODE'                 => 'Bei aktiviertem B2B Modus und vom Benutzer angegebenem Firmennamen wird die USt-IdNr. abgefragt. Bei B2C Kunden wird stattdessen das Geburtsdatum abgefragt.',
 );
 
 /*
