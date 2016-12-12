@@ -817,7 +817,7 @@ $('#payolution_installment_check_availability').click(function(){
         
         if (formType == 'checkbox') {
             var inputValue = '';
-            if ($(this).prop('checked')) {
+            if ($(this).attr('checked')) {
                 inputValue = $(this).val();
             }
         }
@@ -839,7 +839,7 @@ $('#payolution_installment_check_availability').click(function(){
             $('#payolution_installment_check_availability').attr('disabled', false);
             var numberOfInstallments = $('#payolution_no_installments').val();
             $('#payolution_sum_number_installments').html(numberOfInstallments);
-            $('input[name=payolution_installment_selection]').on( 'change', function() {
+            $('input[name=payolution_installment_selection]').bind( 'change', function() {
                 // selected interest data will be set into summary box
                 var selectedInstallmentIndex = $('input[name=payolution_installment_selection]:checked').val();
                 // disable all installment details and enable selected

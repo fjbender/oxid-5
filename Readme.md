@@ -6,8 +6,8 @@ The PAYONE-FinanceGate-Module offers more than 20 payment methods for your OXID-
 Paypal, Sofortueberweisung.de or eight Creditcards there is also the possibility to offer secure paying via bill or debit.
 
 ## Version
-2.1.3_5_6277  
-November 14 2016
+2.1.4_5_6374  
+December 11 2016
 
 ## Requirements
 Installed OXID eShop > v4.7.0

@@ -73,6 +73,7 @@ class fcpayone_admindetails extends oxAdminDetails {
         $this->_oFcpoMapping = oxNew('fcpomapping');
         $this->_oFcpoErrorMapping = oxNew('fcpoerrormapping');
         $this->_oFcpoForwarding = oxNew('fcpoforwarding');
+        $this->_oFcpoRatePay = oxNew('fcporatepay');
     }
     
     /**
