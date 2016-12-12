@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -57,6 +57,12 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @var bool
      */
     protected $_blFcPayoneAppointedError = false;
+    
+    /**
+     * List of IDs matching payolution type payments
+     * @var array
+     */
+    protected $_aPayolutionPayments = array('fcpopo_bill', 'fcpopo_debitnote', 'fcpopo_installment');
 
     /**
      * init object construction
@@ -249,7 +255,17 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $oSession = $this->_oFcpoHelper->fcpoGetSession();
             $oBasket = $oSession->getBasket();
             $sPaymentId = $oBasket->getPaymentId();
-            if ($this->_oFcpoHelper->fcpoGetRequestParameter('fcposuccess') && $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') && ($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoTxid') || $sPaymentId == 'fcpocreditcard_iframe' )) {
+            
+            $blUseRedirectAfterSave = (
+                $this->_oFcpoHelper->fcpoGetRequestParameter('fcposuccess') && 
+                $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') && 
+                (
+                    $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoTxid') || 
+                    $sPaymentId == 'fcpocreditcard_iframe' 
+                )
+            );
+            
+            if ($blUseRedirectAfterSave) {
                 $this->_blIsRedirectAfterSave = true;
             }
         }
@@ -291,7 +307,6 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         if ($mRet !== null) {
             return $mRet;
         }
-
 
         // copies user info
         $this->_setUser($oUser);
@@ -550,6 +565,10 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         $this->oxorder__fcpoauthmode = new oxField($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoAuthMode'), oxField::T_RAW);
         $this->oxorder__fcpomode = new oxField($this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMode'), oxField::T_RAW);
         $this->oxorder__fcpoordernotchecked = new oxField($iOrderNotChecked, oxField::T_RAW);
+        $sWorkorderId = $this->_oFcpoHelper->fcpoGetSessionVariable('payolution_workorderid');
+        if ($sWorkorderId) {
+            $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);
+        }
         $this->_oFcpoDb->Execute("UPDATE fcporefnr SET fcpo_txid = '" . $sTxid . "' WHERE fcpo_refnr = '" . $this->_oFcpoHelper->fcpoGetRequestParameter('refnr') . "'");
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('fcpoOrderNr');
         $this->_oFcpoHelper->fcpoDeleteSessionVariable('fcpoTxid');
@@ -611,11 +630,12 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return bool
      */
     protected function _insert() {
-        if ($this->_fcGetCurrentVersion() < 4700) {
+        $oConfig = $this->getConfig();
+        $sShopVersion = $oConfig->getVersion();
+        if (version_compare($sShopVersion, '4.7.0', '<')) {
             return parent::_insert();
         }
 
-        $myConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oUtilsDate = $this->_oFcpoHelper->fcpoGetUtilsDate();
 
         //V #M525 orderdate must be the same as it was
@@ -625,7 +645,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
             $this->oxorder__oxorderdate = new oxField($oUtilsDate->formatDBDate($this->oxorder__oxorderdate->value, true));
         }
 
-        $this->oxorder__oxshopid = new oxField($myConfig->getShopId(), oxField::T_RAW);
+        $this->oxorder__oxshopid = new oxField($oConfig->getShopId(), oxField::T_RAW);
         $this->oxorder__oxsenddate = new oxField($oUtilsDate->formatDBDate($this->oxorder__oxsenddate->value, true));
 
         if (( $blInsert = parent::_insert())) {
@@ -750,15 +770,15 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * Checks based on the payment method whether
      * the detailed product list is needed.
      * 
+     * @param void
      * @return bool
      */
     public function isDetailedProductInfoNeeded() {
         $blReturn = (
-                $this->oxorder__oxpaymenttype->value == 'fcpobillsafe' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpoklarna' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpoklarna_installment' ||
-                $this->oxorder__oxpaymenttype->value == 'fcpocreditcard_iframe'
-                );
+            $this->oxorder__oxpaymenttype->value == 'fcpobillsafe' ||
+            $this->oxorder__oxpaymenttype->value == 'fcpoklarna' ||
+            $this->oxorder__oxpaymenttype->value == 'fcpocreditcard_iframe'
+        );
 
         return $blReturn;
     }
@@ -923,7 +943,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
 
             if ($blCheckProduct === true) {
                 // check if its still available
-                if ($this->_fcGetCurrentVersion() < 4300) {
+                if (version_compare($oConfig->getVersion(), '4.3.0', '<')) {
                     $dArtStockAmount = $this->fcGetArtStockInBasket($oBasket, $oProd->getId(), $key);
                 } else {
                     $dArtStockAmount = $oBasket->getArtStockInBasket($oProd->getId(), $key);
@@ -1030,12 +1050,19 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return boolean
      */
     public function fcHandleAuthorization($blReturnRedirectUrl = false, $oPayGateway = null) {
+        $oConfig = $this->getConfig();
         $aDynvalue = $this->_oFcpoHelper->fcpoGetSessionVariable('dynvalue');
         $aDynvalue = $aDynvalue ? $aDynvalue : $this->_oFcpoHelper->fcpoGetRequestParameter('dynvalue');
+        
+        $blPresaveOrder = (bool) $oConfig->getConfigParam('blFCPOPresaveOrder');
+        if ($blPresaveOrder === true) {
+            $sOrderNr = $this->_fcpoGetNextOrderNr();
+            $this->oxorder__oxordernr = new oxField($sOrderNr, oxField::T_RAW);
+        }
 
         $oPORequest = $this->_oFcpoHelper->getFactoryObject('fcporequest');
         $oPayment = $this->_oFcpoHelper->getFactoryObject('oxpayment');
-        $oPayment->load($this->oxorder__oxpaymenttype->value);
+        $oPayment->load($this->oxorder__oxpaymenttype->value); 
         $sAuthorizationType = $oPayment->oxpayments__fcpoauthmode->value;
 
         $sRefNr = $oPORequest->getRefNr($this);
@@ -1046,6 +1073,27 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
         $mResult = $this->_fcpoHandleAuthorizationResponse($aResponse, $oPayGateway, $sRefNr, $sMode, $sAuthorizationType, $blReturnRedirectUrl);
 
         return $mResult;
+    }
+    
+    /**
+     * Returns new valid ordernr. Method depends on shop version
+     * 
+     * @param void
+     * @return string
+     */
+    protected function _fcpoGetNextOrderNr() {
+        $oConfig = $this->getConfig();
+        $sShopVersion = $oConfig->getVersion();
+        
+        if (version_compare($sShopVersion, '4.6.0', '>=')) {
+            $oCounter = oxNew('oxCounter');
+            $sOrderNr = $oCounter->getNext($this->_getCounterIdent());
+        } else {
+            $sQuery = "SELECT MAX(oxordernr)+1 FROM oxorder LIMIT 1";
+            $sOrderNr = $this->_oFcpoDb->GetOne($sQuery);
+        }
+        
+        return $sOrderNr;
     }
 
     /**
@@ -1151,16 +1199,29 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      */
     protected function _fcpoHandleAuthorizationApproved($aResponse, $sRefNr, $sAuthorizationType, $sMode) {
         $iOrderNotChecked = $this->_fcpoGetOrderNotChecked();
-
+        $sPaymentId = $this->oxorder__oxpaymenttype->value;
+        
         $this->oxorder__fcpotxid = new oxField($aResponse['txid'], oxField::T_RAW);
         $this->oxorder__fcporefnr = new oxField($sRefNr, oxField::T_RAW);
         $this->oxorder__fcpoauthmode = new oxField($sAuthorizationType, oxField::T_RAW);
         $this->oxorder__fcpomode = new oxField($sMode, oxField::T_RAW);
         $this->oxorder__fcpoordernotchecked = new oxField($iOrderNotChecked, oxField::T_RAW);
         $this->_oFcpoDb->Execute("UPDATE fcporefnr SET fcpo_txid = '{$aResponse['txid']}' WHERE fcpo_refnr = '" . $sRefNr . "'");
-        if ($this->oxorder__oxpaymenttype->value == 'fcpobarzahlen' && isset($aResponse['add_paydata[instruction_notes]'])) {
+        if ($sPaymentId == 'fcpobarzahlen' && isset($aResponse['add_paydata[instruction_notes]'])) {
             $sBarzahlenHtml = urldecode($aResponse['add_paydata[instruction_notes]']);
             $this->_oFcpoHelper->fcpoSetSessionVariable('sFcpoBarzahlenHtml', $sBarzahlenHtml);
+        }
+        if (in_array($sPaymentId, $this->_aPayolutionPayments)) {
+            $sWorkorderId = (isset($aResponse['add_paydata[workorderid]'])) ? $aResponse['add_paydata[workorderid]'] : false; // 
+            if ($sWorkorderId) {
+                $this->oxorder__fcpoworkorderid = new oxField($sWorkorderId, oxField::T_RAW);
+                $this->_oFcpoHelper->fcpoDeleteSessionVariable('payolution_workorderid');
+            }
+            // save clearing_reference into session
+            $sClearingReference = (isset($aResponse['add_paydata[clearing_reference]'])) ? $aResponse['add_paydata[clearing_reference]'] : false;
+            if ($sClearingReference) {
+                $this->oxorder__fcpoclearingreference = new oxField($sClearingReference, oxField::T_RAW);
+            }
         }
     }
 

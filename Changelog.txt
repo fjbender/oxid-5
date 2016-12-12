@@ -1,4 +1,38 @@
+==2.1.3
+	Releasedate: 2016-11-14
+
+ * Fixed presave order bug which avoided usage of oxordernr as refnr
+ * Fixed VATID requirement if B2B is deactivated
+
+==2.1.2==
+	Releasedate: 2016-10-21
+  * Fixed error which avoided saving orderarticles under certain circumstances	
+  * Added error mapping for hosted iframe
+  * Added error mapping feature
+  * Added optional cvc check
+  * Added direct check of cardexpiredate before sending to API
+
+==2.1.1==
+	Releasedate: 2016-10-13
+  * Removed commerz finanz and klarna installment payment methods
+  * Added option to show iban/bic fields for Sofortüberweisung
+  * Added payolution installment payment type
+  * Added payolution invoice and debit payment types
+  * Updated unit tests to current version
+
+==2.0.9==
+
+  * Fixed Bug #0027477
+Releasedate: 2016-08-12
+  * Use the LGPL (Lesser General Public License) instead of GPL.
+
+==2.0.8==  
+  Releasedate: 2016-07-22
+  * Optimized  markdown readme.md for Github.
+  * Fixed payment creditcard-form in 'flow'-theme.
+
 ==2.0.7==
+  Releasedate: 2016-07-18
   * Added Flow Theme Support
   * Restructring and relocation of payment templates
   * Fixes JS Error caused by some special configurations

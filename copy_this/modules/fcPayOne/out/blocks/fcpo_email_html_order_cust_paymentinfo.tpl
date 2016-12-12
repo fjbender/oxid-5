@@ -20,6 +20,10 @@
         <!-- FCPAYONE END -->
         [{/if}]
     </p>
+[{elseif $payment->oxuserpayments__oxpaymentsid->value == "fcpopo_bill" || $payment->oxuserpayments__oxpaymentsid->value == "fcpopo_debitnote"}]    
+    <p style="font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
+        <b>[{oxmultilang ident="FCPO_PAYOLUTION_EMAIL_CLEARING"}]:</b> [{$smarty.session.payolution_clearing}]
+    </p>
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]

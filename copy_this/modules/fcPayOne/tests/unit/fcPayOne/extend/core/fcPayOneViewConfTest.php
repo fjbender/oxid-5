@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -120,4 +120,33 @@ class Unit_fcPayOne_Extend_Core_fcPayOneViewConf extends OxidTestCase {
         $this->assertEquals(4800, $oTestObject->fcpoGetIntShopVersion());
     }
 
+    /**
+     * Testing fcpoGetModuleCssPath for coverage
+     */
+    public function test_fcpoGetModuleCssPath_Coverage() {
+        $sMockFile = 'someFile';
+        $oTestObject = $this->getMock('fcPayOneViewConf', array('fcpoGetModuleUrl'));
+        $oTestObject->expects($this->any())->method('fcpoGetModuleUrl')->will($this->returnValue('http://example.org/modules/'));
+
+        $this->assertEquals('http://example.org/modules/out/src/css/someFile', $oTestObject->fcpoGetModuleCssPath($sMockFile));
+    }
+    
+    /**
+     * Testing fcpoGetAbsModuleTemplateFrontendPath for coverage
+     */
+    public function test_fcpoGetAbsModuleTemplateFrontendPath_Coverage() {
+        $sMockFile = 'someFile';
+        $oTestObject = $this->getMock('fcPayOneViewConf', array('fcpoGetModulePath'));
+        $oTestObject->expects($this->any())->method('fcpoGetModulePath')->will($this->returnValue('someValue/'));
+
+        $this->assertEquals('someValue/application/views/frontend/tpl/someFile', $oTestObject->fcpoGetAbsModuleTemplateFrontendPath($sMockFile));
+    }
+    
+    /**
+     * Testing fcpoGetHostedPayoneJs for coverage
+     */
+    public function test_fcpoGetHostedPayoneJs_Coverage() {
+        $oTestObject = oxNew('fcPayOneViewConf');
+        $this->assertEquals('https://secure.pay1.de/client-api/js/v1/payone_hosted_min.js', $oTestObject->fcpoGetHostedPayoneJs());
+    }
 }

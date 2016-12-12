@@ -91,10 +91,10 @@
                 <dt>
                     <input type="hidden" name="confbools[blFCPOSendArticlelist]" value="false">
                     <input type="checkbox" name="confbools[blFCPOSendArticlelist]" value="true" [{if ($confbools.blFCPOSendArticlelist)}]checked[{/if}]>
-                    [{ oxinputhelp ident="FCPO_HELP_SEND_ARTICLELIST" }]
+                    [{oxinputhelp ident="FCPO_HELP_SEND_ARTICLELIST"}]
                 </dt>
                 <dd>
-                    [{ oxmultilang ident="FCPO_SEND_ARTICLELIST"}] 
+                    [{oxmultilang ident="FCPO_SEND_ARTICLELIST"}] 
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -102,10 +102,10 @@
                 <dt>
                     <input type="hidden" name="confbools[blFCPOPresaveOrder]" value="false">
                     <input type="checkbox" name="confbools[blFCPOPresaveOrder]" value="true" [{if ($confbools.blFCPOPresaveOrder)}]checked[{/if}] onclick="handlePresaveOrderCheckbox(this);">
-                    [{ oxinputhelp ident="FCPO_HELP_PRESAVE_ORDER" }]
+                    [{oxinputhelp ident="FCPO_HELP_PRESAVE_ORDER"}]
                 </dt>
                 <dd>
-                    [{ oxmultilang ident="FCPO_PRESAVE_ORDER"}]
+                    [{oxmultilang ident="FCPO_PRESAVE_ORDER"}]
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -244,7 +244,7 @@
     
     <div class="groupExp">
         <div>
-            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{ oxmultilang ident="FCPO_CONFIG_GROUP_CREDITCARD" }]</b></a>
+            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{oxmultilang ident="FCPO_CONFIG_GROUP_CREDITCARD"}]</b></a>
             <dl>
                 <dt>
                     <select name="confstrs[sFCPOCCType]">
@@ -274,32 +274,32 @@
                                 <th>[{ oxmultilang ident="FCPO_CC_HEADER_STYLE" }]</th>
                                 <th>[{ oxmultilang ident="FCPO_CC_HEADER_CSS" }]</th>
                             </tr>
-                            [{ foreach from=$oView->getCCFields() item=sField}]
+                            [{foreach from=$oView->getCCFields() item=sField}]
                                 <tr>
                                     <td>
                                         [{assign var="sIdent" value="FCPO_CC_ROW_CC_"|cat:$sField}]
-                                        [{ oxmultilang ident=$sIdent}]
+                                        [{oxmultilang ident=$sIdent}]
                                     </td>
                                     <td>
                                         [{assign var="sFieldIdent" value="sFCPOCC"|cat:$sField|cat:"Type"}]
                                         <select name="confstrs[[{$sFieldIdent}]]">
-                                            [{ foreach from=$oView->getCCTypes($sField) key=sType item=sTitle}]
+                                            [{foreach from=$oView->getCCTypes($sField) key=sType item=sTitle}]
                                                 <option value="[{$sType}]" [{if $sType == $confstrs.$sFieldIdent}]selected[{/if}]>[{$sTitle}]</option>
                                             [{/foreach}]
                                         </select>
                                     </td>
                                     <td>
                                         [{assign var="sFieldIdent" value="sFCPOCC"|cat:$sField|cat:"Count"}]                                        
-                                        <input type="text" class="txt" size="4" name="confstrs[[{$sFieldIdent}]]" value="[{$confstrs.$sFieldIdent}]" [{ $readonly}]>
+                                        <input type="text" class="txt" size="4" name="confstrs[[{$sFieldIdent}]]" value="[{$confstrs.$sFieldIdent}]" [{$readonly}]>
                                     </td>
                                     <td>
                                         [{assign var="sFieldIdent" value="sFCPOCC"|cat:$sField|cat:"Max"}]
-                                        <input type="text" class="txt" size="4" name="confstrs[[{$sFieldIdent}]]" value="[{$confstrs.$sFieldIdent}]" [{ $readonly}]>
+                                        <input type="text" class="txt" size="4" name="confstrs[[{$sFieldIdent}]]" value="[{$confstrs.$sFieldIdent}]" [{$readonly}]>
                                     </td>
                                     <td>
                                         [{assign var="sFieldIdentIframe" value="sFCPOCC"|cat:$sField|cat:"Iframe"}]
                                         <select name="confstrs[[{$sFieldIdentIframe}]]" onchange="handleSizeFields(this, '[{$sField}]')">
-                                            [{ foreach from=$oView->getCCStyles() key=sType item=sTitle}]
+                                            [{foreach from=$oView->getCCStyles() key=sType item=sTitle}]
                                                 <option value="[{$sType}]" [{if $sType == $confstrs.$sFieldIdentIframe}]selected[{/if}]>[{$sTitle}]</option>
                                             [{/foreach}]
                                         </select>
@@ -315,7 +315,7 @@
                                     <td>
                                         [{assign var="sFieldIdentCSS" value="sFCPOCC"|cat:$sField|cat:"Style"}]
                                         <select name="confstrs[[{$sFieldIdentCSS}]]" onchange="handleCss(this, '[{$sField}]')">
-                                            [{ foreach from=$oView->getCCStyles() key=sType item=sTitle}]
+                                            [{foreach from=$oView->getCCStyles() key=sType item=sTitle}]
                                                 <option value="[{$sType}]" [{if $sType == $confstrs.$sFieldIdentCSS}]selected[{/if}]>[{$sTitle}]</option>
                                             [{/foreach}]
                                         </select>
@@ -323,6 +323,11 @@
                                     <td>
                                         [{assign var="sFieldIdent" value="sFCPOCC"|cat:$sField|cat:"CSS"}]
                                         <input id="input_css_[{$sField}]" type="text" class="txt" size="50" name="confstrs[[{$sFieldIdent}]]" value="[{$confstrs.$sFieldIdent}]" [{ $readonly}] [{if $confstrs.$sFieldIdentCSS != "custom"}]disabled[{/if}]>
+                                        [{if $sFieldIdent=='sFCPOCCCVCCSS'}]
+                                            &nbsp;
+                                            <input type="hidden" name="confbools[blFCPOCCUseCvc]" value="false">
+                                            <input type="checkbox" name="confbools[blFCPOCCUseCvc]" value="true"  [{if ($confbools.blFCPOCCUseCvc)}]checked[{/if}]> [{oxmultilang ident="FCPO_CC_USE_CVC"}]
+                                        [{/if}]
                                     </td>
                                 </tr>
                             [{/foreach}]
@@ -330,26 +335,26 @@
                         <br>
                         <table>
                             <tr>
-                                <th style="text-align:left;width:120px;">[{ oxmultilang ident="FCPO_CC_STANDARD_STYLE" }]</th>
-                                <td>[{ oxmultilang ident="FCPO_CC_STANDARD_INPUT" }]</td>
-                                <td>[{ oxmultilang ident="FCPO_CC_STANDARD_SELECTION" }]</td>
+                                <th style="text-align:left;width:120px;">[{oxmultilang ident="FCPO_CC_STANDARD_STYLE"}]</th>
+                                <td>[{oxmultilang ident="FCPO_CC_STANDARD_INPUT"}]</td>
+                                <td>[{oxmultilang ident="FCPO_CC_STANDARD_SELECTION"}]</td>
                             </tr>
                             <tr>
-                                <td>[{ oxmultilang ident="FCPO_CC_STANDARD_FIELDS" }]</td>
+                                <td>[{oxmultilang ident="FCPO_CC_STANDARD_FIELDS"}]</td>
                                 <td><input type="text" class="txt" size="50" name="confstrs[sFCPOCCStandardInput]" value="[{$confstrs.sFCPOCCStandardInput}]" [{ $readonly}]></td>
                                 <td><input type="text" class="txt" size="50" name="confstrs[sFCPOCCStandardOutput]" value="[{$confstrs.sFCPOCCStandardOutput}]" [{ $readonly}]></td>
                             </tr>
                             <tr>
-                                <td>[{ oxmultilang ident="FCPO_CC_STANDARD_IFRAME" }]</td>
+                                <td>[{oxmultilang ident="FCPO_CC_STANDARD_IFRAME"}]</td>
                                 <td colspan="2">
                                     <table>
                                         <tr>
-                                            <td>[{ oxmultilang ident="FCPO_CC_HEADER_WIDTH" }]</td>
-                                            <td>[{ oxmultilang ident="FCPO_CC_HEADER_HEIGHT" }]</td>
+                                            <td>[{oxmultilang ident="FCPO_CC_HEADER_WIDTH"}]</td>
+                                            <td>[{oxmultilang ident="FCPO_CC_HEADER_HEIGHT"}]</td>
                                         </tr>
                                         <tr>
-                                            <td><input type="text" class="txt" size="4" name="confstrs[sFCPOCCIframeWidth]" value="[{$confstrs.sFCPOCCIframeWidth}]" [{ $readonly}]></td>
-                                            <td><input type="text" class="txt" size="4" name="confstrs[sFCPOCCIframeHeight]" value="[{$confstrs.sFCPOCCIframeHeight}]" [{ $readonly}]></td>
+                                            <td><input type="text" class="txt" size="4" name="confstrs[sFCPOCCIframeWidth]" value="[{$confstrs.sFCPOCCIframeWidth}]" [{$readonly}]></td>
+                                            <td><input type="text" class="txt" size="4" name="confstrs[sFCPOCCIframeHeight]" value="[{$confstrs.sFCPOCCIframeHeight}]" [{$readonly}]></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -392,20 +397,20 @@
     
     <div class="groupExp">
         <div>
-            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{ oxmultilang ident="FCPO_CONFIG_GROUP_DEBITNOTE" }]</b></a>
+            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{oxmultilang ident="FCPO_CONFIG_GROUP_DEBITNOTE"}]</b></a>
             <dl>
                 <dt>[{ oxmultilang ident="FCPO_CONFIG_DEBIT_BANKDATA" }]</dt>
             </dl>
             <dl style="border-top:0px;">
                 <dt>
                     <select class="select" multiple size="4" name="confarrs[aFCPODebitCountries][]" [{ $readonly}]>
-                        [{ foreach from=$oView->fcpoGetCountryList() item=oCountry}]
+                        [{foreach from=$oView->fcpoGetCountryList() item=oCountry}]
                             <option value="[{$oCountry->oxcountry__oxid->value}]"[{if $oCountry->selected}] selected[{/if}]>[{$oCountry->oxcountry__oxtitle->value}]</option>
                         [{/foreach}]
                     </select>
                 </dt>
                 <dd>
-                    [{ oxmultilang ident="FCPO_CONFIG_DEBIT_MULTISELECT" }]
+                    [{oxmultilang ident="FCPO_CONFIG_DEBIT_MULTISELECT"}]
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -418,7 +423,17 @@
                     <input type="checkbox" name="confbools[blFCPODebitOldGer]" value="true"  [{if ($confbools.blFCPODebitOldGer)}]checked[{/if}]>
                 </dt>
                 <dd>
-                    [{ oxmultilang ident="FCPO_CONFIG_DEBIT_SHOW_OLD_FIELDS" }]
+                    [{oxmultilang ident="FCPO_CONFIG_DEBIT_SHOW_OLD_FIELDS"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl style="border-top:0px;">
+                <dt>
+                    <input type="hidden" name="confbools[blFCPODebitBICMandatory]" value="false">
+                    <input type="checkbox" name="confbools[blFCPODebitBICMandatory]" value="true"  [{if ($confbools.blFCPODebitBICMandatory)}]checked[{/if}]>
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_CONFIG_DEBIT_BIC_MANDATORY"}]
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -482,6 +497,8 @@
                     [{ oxinputhelp ident="FCPO_HELP_ASSIGNCOUNTRIES_2" }]
                     <input type="radio" name="confbools[blFCPOSBPNTLive]" value="1" [{if $confbools.blFCPOSBPNTLive == '1'}]checked[{/if}]> <strong>Live</strong>
                     <input type="radio" name="confbools[blFCPOSBPNTLive]" value="0" [{if $confbools.blFCPOSBPNTLive == '0' || !$confbools.blFCPOSBPNTLive}]checked[{/if}]> Test
+                    <input type=hidden name="confbools[blFCPOSofoShowIban]" value="false">
+                    <input type="checkbox" name="confbools[blFCPOSofoShowIban]" value="true"  [{if ($confbools.blFCPOSofoShowIban)}]checked[{/if}]> <strong>[{oxmultilang ident="FCPO_SHOW_SOFO_IBAN_FIELDS"}]</strong>
                 </dd>
                 <div class="spacer"></div>
             </dl>
@@ -658,7 +675,7 @@
                 </dl>
             [{/foreach}]
             <dl>
-                <dt><input type="submit" class="edittext" name="addCampaign" value="[{oxmultilang ident="FCPO_KLARNA_ADD_CAMPAIGN"}]" onClick="Javascript:document.myedit.fnc.value='save'" [{ $readonly}]></dt>
+                <dt><input type="submit" class="edittext" name="addCampaign" value="[{oxmultilang ident="FCPO_KLARNA_ADD_CAMPAIGN"}]" onClick="Javascript:document.myedit.fnc.value='save'" [{$readonly}]></dt>
                 <dd></dd>
                 <div class="spacer"></div>
             </dl>      
@@ -732,10 +749,57 @@
             </dl>    
         </div>
     </div>
+                
+    <div class="groupExp">
+        <div>
+            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{oxmultilang ident="FCPO_CONFIG_GROUP_PAYOLUTION"}]</b></a>
+            <dl>
+                <dt>
+                    <input type="hidden" name="confbools[blFCPOPayolutionB2BMode]" value="false">
+                    <input type="checkbox" class="txt" name="confbools[blFCPOPayolutionB2BMode]" value="true" [{if $confbools.blFCPOPayolutionB2BMode}]checked[{/if}] [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_B2BMODE"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_B2BMODE"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionCompany]" value="[{$confstrs.sFCPOPayolutionCompany}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_COMPANY"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_COMPANY"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionAuthUser]" value="[{$confstrs.sFCPOPayolutionAuthUser}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_AUTH_USER"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_AUTH_USER"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+            <dl>
+                <dt>
+                    <input type="text" class="txt" name="confstrs[sFCPOPayolutionAuthSecret]" value="[{$confstrs.sFCPOPayolutionAuthSecret}]" [{$readonly}]>
+                    [{oxinputhelp ident="FCPO_HELP_PAYOLUTION_AUTH_SECRET"}]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="FCPO_PAYOLUTION_AUTH_SECRET"}]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+        </div>
+    </div>
     
     <br>
-    <input type="submit" class="edittext" name="save" value="[{ oxmultilang ident="GENERAL_SAVE" }]" onClick="Javascript:document.myedit.fnc.value='save'" [{ $readonly}]>
-    <input type="submit" class="edittext" name="export" value="[{ oxmultilang ident="FCPO_EXPORT_CONFIG" }]" target="_blank" onClick="Javascript:document.myedit.fnc.value='export'" [{ $readonly}]>
+    <input type="submit" class="edittext" name="save" value="[{oxmultilang ident="GENERAL_SAVE"}]" onClick="Javascript:document.myedit.fnc.value='save'" [{ $readonly}]>
+    <input type="submit" class="edittext" name="export" value="[{oxmultilang ident="FCPO_EXPORT_CONFIG"}]" target="_blank" onClick="Javascript:document.myedit.fnc.value='export'" [{ $readonly}]>
 </form>
 
 [{include file="bottomnaviitem.tpl"}]

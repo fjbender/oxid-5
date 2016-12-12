@@ -3,31 +3,7 @@
     <input type="hidden" name="fcpo_mode_[{$sPaymentID}]" value="[{$paymentmethod->fcpoGetOperationMode()}]">
     <ul class="form">
         [{assign var="blDisplayCampaignMissing" value=false}]
-        [{if $sPaymentID == "fcpoklarna_installment"}]
-            [{assign var="aCampaigns" value=$paymentmethod->fcpoGetKlarnaCampaigns()}]
-            [{if $aCampaigns|@count == 0}]
-                [{assign var="blDisplayCampaignMissing" value=true}]
-            [{/if}]
-        [{/if}]
         [{if $blDisplayCampaignMissing == false}]
-            [{if $sPaymentID == "fcpoklarna_installment"}]
-                <li>
-                    [{oxmultilang ident="FCPO_KLS_CHOOSE_CAMPAIGN"}]
-                    <table>
-                        [{foreach from=$aCampaigns item=aCampaign key=sId}]
-                            <tr>
-                                <td style="width:32px;"><input type="radio" name="fcpo_klarna_campaign" value="[{$aCampaign.code}]"></td>
-                                <td>[{$aCampaign.title}]</td>
-                            </tr>
-                        [{/foreach}]
-                    </table>
-                    <div id="fcpo_klarna_campaign_invalid" class="fcpo_check_error">
-                        <p class="validation-error" style="display: block;padding-left:32px;">
-                            [{oxmultilang ident="FCPO_KLS_CAMPAIGN_INVALID"}]
-                        </p>
-                    </div>
-                </li>
-            [{/if}]
             [{if $oView->fcpoKlarnaInfoNeeded()}]
                 <li>
                     [{oxmultilang ident="FCPO_KLV_INFO_NEEDED"}]

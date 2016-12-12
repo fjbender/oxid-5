@@ -32,12 +32,14 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="cvcInput" class="req control-label col-lg-3">[{oxmultilang ident="FCPO_CARD_SECURITY_CODE"}]</label>
-                    <div class="col-lg-9">
-                        <span id="cardcvc2" class="inputIframe"></span>
-                    </div>
-                </div>        
+                [{if $oView->fcpoUseCVC()}]
+                    <div class="form-group">
+                        <label for="cvcInput" class="req control-label col-lg-3">[{oxmultilang ident="FCPO_CARD_SECURITY_CODE"}]</label>
+                        <div class="col-lg-9">
+                            <span id="cardcvc2" class="inputIframe"></span>
+                        </div>
+                    </div>        
+                [{/if}]
                 <div class="form-group">
                     <label for="expireInput" class="req control-label col-lg-3">[{oxmultilang ident="FCPO_VALID_UNTIL"}]</label>
                     <div class="col-lg-9">
@@ -61,7 +63,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-9 col-lg-push-3">
-                        <div id="errorOutput" class="alert alert-danger"></div>
+                        <div id="errorOutput" class="alert-danger"></div>
                     </div>
                 </div>
                 [{oxid_include_dynamic file=$oViewConf->fcpoGetAbsModuleTemplateFrontendPath('fcpo_payment_creditcard_script.tpl')}]

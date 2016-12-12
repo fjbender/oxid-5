@@ -2,16 +2,16 @@
 
 /**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
@@ -41,6 +41,8 @@ class fcpayone_events
      */
     public static $_aRemovedPaymentMethods = array(
         'fcpoyapital',
+        'fcpocommerzfinanz',
+        'fcpoklarna_installment',
     );
     public static $sQueryTableFcporefnr = "
         CREATE TABLE fcporefnr (
@@ -137,6 +139,16 @@ class fcpayone_events
 			FCPO_FOLDER VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
 			PRIMARY KEY (`OXID`)
 		);";
+    public static $sQueryTableFcpoErrorMapping = "
+		CREATE TABLE fcpoerrormapping(
+			OXID INT(11) NOT NULL AUTO_INCREMENT ,
+			FCPO_ERROR_CODE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+			FCPO_LANG_ID VARCHAR(32) CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+			FCPO_MAPPED_MESSAGE TEXT CHARSET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' ,
+			FCPO_ERROR_TYPE VARCHAR(32) CHARSET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' ,
+			PRIMARY KEY (`OXID`),
+                        KEY `FCPO_ERROR_TYPE` (`FCPO_ERROR_TYPE`)
+		);";
     public static $sQueryTableFcpoklarnastoreids = "
         CREATE TABLE fcpoklarnastoreids (
           OXID int(11) NOT NULL AUTO_INCREMENT,
@@ -203,6 +215,8 @@ class fcpayone_events
     public static $sQueryAlterOxorderVoucherdiscountDebited = "ALTER TABLE oxorder ADD COLUMN FCPOVOUCHERDISCOUNTDEBITED TINYINT(1) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderDiscountDebited = "ALTER TABLE oxorder ADD COLUMN FCPODISCOUNTDEBITED TINYINT(1) DEFAULT '0' NOT NULL;";
     public static $sQueryAlterOxorderNotChecked = "ALTER TABLE oxorder ADD COLUMN FCPOORDERNOTCHECKED TINYINT(1) DEFAULT '0' NOT NULL;";
+    public static $sQueryAlterOxorderWorkOrderId = "ALTER TABLE oxorder ADD COLUMN FCPOWORKORDERID VARCHAR(16) DEFAULT '' NOT NULL;";
+    public static $sQueryAlterOxorderClearingReference = "ALTER TABLE oxorder ADD COLUMN FCPOCLEARINGREFERENCE VARCHAR(32) DEFAULT '' NOT NULL;";
     public static $sQueryChangeToVarchar1 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_USERID FCPO_USERID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeToVarchar2 = "ALTER TABLE fcpotransactionstatus CHANGE FCPO_TXID FCPO_TXID VARCHAR(32) DEFAULT '0' NOT NULL;";
     public static $sQueryChangeRefNrToVarchar = "ALTER TABLE oxorder CHANGE FCPOREFNR FCPOREFNR VARCHAR( 32 ) NOT NULL DEFAULT '0'";
@@ -216,12 +230,13 @@ class fcpayone_events
         'fcpoonlineueberweisung' => 'Online-Ueberweisung',
         'fcpopaypal' => 'PayPal',
         'fcpopaypal_express' => 'PayPal Express',
-        'fcpocommerzfinanz' => 'Commerz Finanz',
         'fcpobillsafe' => 'BillSAFE',
         'fcpoklarna' => 'Klarna Rechnung',
-        'fcpoklarna_installment' => 'Klarna Ratenkauf',
         'fcpobarzahlen' => 'Barzahlen',
         'fcpopaydirekt' => 'Paydirekt',
+        'fcpopo_bill' => 'Payolution Rechnung',
+        'fcpopo_debitnote' => 'Payolution Lastschrift',
+        'fcpopo_installment' => 'Payolution Ratenkauf',
     );
 
     /**
@@ -303,11 +318,7 @@ class fcpayone_events
 
         foreach (self::$aPaymentMethods as $sPaymentOxid => $sPaymentName) {
             //INSERT PAYMENT METHOD
-            if ($sPaymentOxid == 'fcpocommerzfinanz') {
-                self::insertRowIfNotExists('oxpayments', array('OXID' => $sPaymentOxid), "INSERT INTO oxpayments(OXID,OXACTIVE,OXDESC,OXADDSUM,OXADDSUMTYPE,OXFROMBONI,OXFROMAMOUNT,OXTOAMOUNT,OXVALDESC,OXCHECKED,OXDESC_1,OXVALDESC_1,OXDESC_2,OXVALDESC_2,OXDESC_3,OXVALDESC_3,OXLONGDESC,OXLONGDESC_1,OXLONGDESC_2,OXLONGDESC_3,OXSORT,FCPOISPAYONE,FCPOAUTHMODE,FCPOLIVEMODE) VALUES ('{$sPaymentOxid}', 1, '{$sPaymentName}', 0, 'abs', 0, 100, 5000, '', 0, '{$sPaymentName}', '', '', '', '', '', '', '', '', '', 0, 1, 'preauthorization', 0);");
-            } else {
-                self::insertRowIfNotExists('oxpayments', array('OXID' => $sPaymentOxid), "INSERT INTO oxpayments(OXID,OXACTIVE,OXDESC,OXADDSUM,OXADDSUMTYPE,OXFROMBONI,OXFROMAMOUNT,OXTOAMOUNT,OXVALDESC,OXCHECKED,OXDESC_1,OXVALDESC_1,OXDESC_2,OXVALDESC_2,OXDESC_3,OXVALDESC_3,OXLONGDESC,OXLONGDESC_1,OXLONGDESC_2,OXLONGDESC_3,OXSORT,FCPOISPAYONE,FCPOAUTHMODE,FCPOLIVEMODE) VALUES ('{$sPaymentOxid}', 1, '{$sPaymentName}', 0, 'abs', 0, 0, 1000000, '', 0, '{$sPaymentName}', '', '', '', '', '', '', '', '', '', 0, 1, 'preauthorization', 0);");
-            }
+            self::insertRowIfNotExists('oxpayments', array('OXID' => $sPaymentOxid), "INSERT INTO oxpayments(OXID,OXACTIVE,OXDESC,OXADDSUM,OXADDSUMTYPE,OXFROMBONI,OXFROMAMOUNT,OXTOAMOUNT,OXVALDESC,OXCHECKED,OXDESC_1,OXVALDESC_1,OXDESC_2,OXVALDESC_2,OXDESC_3,OXVALDESC_3,OXLONGDESC,OXLONGDESC_1,OXLONGDESC_2,OXLONGDESC_3,OXSORT,FCPOISPAYONE,FCPOAUTHMODE,FCPOLIVEMODE) VALUES ('{$sPaymentOxid}', 0, '{$sPaymentName}', 0, 'abs', 0, 0, 1000000, '', 0, '{$sPaymentName}', '', '', '', '', '', '', '', '', '', 0, 1, 'preauthorization', 0);");
 
             //INSERT PAYMENT METHOD CONFIGURATION
             $blInserted = self::insertRowIfNotExists('oxobject2group', array('OXSHOPID' => $sShopId, 'OXOBJECTID' => $sPaymentOxid), "INSERT INTO oxobject2group(OXID,OXSHOPID,OXOBJECTID,OXGROUPSID) values (MD5(CONCAT(NOW(), RAND())), '{$sShopId}', '{$sPaymentOxid}', 'oxidadmin');");
@@ -360,6 +371,7 @@ class fcpayone_events
         self::addTableIfNotExists('fcpocheckedaddresses', self::$sQueryTableFcpocheckedaddresses);
         self::addTableIfNotExists('fcpostatusforwarding', self::$sQueryTableFcpoStatusForwarding);
         self::addTableIfNotExists('fcpostatusmapping', self::$sQueryTableFcpoStatusMapping);
+        self::addTableIfNotExists('fcpoerrormapping', self::$sQueryTableFcpoErrorMapping);
         self::addTableIfNotExists('fcpoklarnastoreids', self::$sQueryTableFcpoklarnastoreids);
         self::addTableIfNotExists('fcpoklarnacampaigns', self::$sQueryTableFcpoklarnacampaigns);
         self::addTableIfNotExists('fcpopdfmandates', self::$sQueryTableFcpoPdfMandates);
@@ -378,6 +390,8 @@ class fcpayone_events
         self::addColumnIfNotExists('oxorder', 'FCPOVOUCHERDISCOUNTDEBITED', self::$sQueryAlterOxorderVoucherdiscountDebited);
         self::addColumnIfNotExists('oxorder', 'FCPODISCOUNTDEBITED', self::$sQueryAlterOxorderDiscountDebited);
         self::addColumnIfNotExists('oxorder', 'FCPOORDERNOTCHECKED', self::$sQueryAlterOxorderNotChecked);
+        self::addColumnIfNotExists('oxorder', 'FCPOWORKORDERID', self::$sQueryAlterOxorderWorkOrderId);
+        self::addColumnIfNotExists('oxorder', 'FCPOCLEARINGREFERENCE', self::$sQueryAlterOxorderClearingReference);
 
         self::addColumnIfNotExists('oxorderarticles', 'FCPOCAPTUREDAMOUNT', self::$sQueryAlterOxorderarticlesCapturedAmount);
         self::addColumnIfNotExists('oxorderarticles', 'FCPODEBITEDAMOUNT', self::$sQueryAlterOxorderarticlesDebitedAmount);
@@ -542,29 +556,11 @@ class fcpayone_events
     /**
      * Get the OXID eShop version.
      * 
-     * @return int versionnumber
+     * @return string versionnumber
      */
     public static function getCurrentVersion()
     {
-        return versionToInt(self::$_oFcpoHelper->fcpoGetConfig()->getActiveShop()->oxshops__oxversion->value);
-    }
-
-    /**
-     * Cast a version string to an integer.
-     * 
-     * @param string $sVersion versionnumber with dots and numbers
-     * 
-     * @todo Does this work with beta versions?
-     * 
-     * @return int verssionnumber
-     */
-    public static function versionToInt($sVersion)
-    {
-        $iVersion = (int) str_replace('.', '', $sVersion);
-        while ($iVersion < 1000) {
-            $iVersion = $iVersion * 10;
-        }
-        return $iVersion;
+        return self::$_oFcpoHelper->fcpoGetConfig()->getActiveShop()->oxshops__oxversion->value;
     }
 
     /**
@@ -576,12 +572,10 @@ class fcpayone_events
      */
     public static function isUnderVersion($sMaxVersion)
     {
-        $iMaxVersion = self::versionToInt($sMaxVersion);
-        $iCurrVersion = self::getCurrentVersion();
-        if ($iCurrVersion < $iMaxVersion) {
-            return true;
-        }
-        return false;
+        $sCurrVersion = self::getCurrentVersion();
+        $blReturn = (version_compare($sCurrVersion, $sMaxVersion, '<')) ? true : false;
+        
+        return $blReturn;
     }
 
     /**
@@ -594,18 +588,12 @@ class fcpayone_events
      */  
     public static function isOverVersion($sMinVersion, $blEqualOrGreater = false)
     {
-        $iMinVersion = self::versionToInt($sMinVersion);
-        $iCurrVersion = self::getCurrentVersion();
-        if ($blEqualOrGreater === false) {
-            if ($iCurrVersion > $iMinVersion) {
-                return true;
-            }
-        } else {
-            if ($iCurrVersion >= $iMinVersion) {
-                return true;
-            }
-        }
-        return false;
+        $sCompareOperator = ($blEqualOrGreater) ? '>=' : '>';
+        $sCurrVersion = self::getCurrentVersion();
+        
+        $blReturn = (version_compare($sCurrVersion, $sMinVersion, $sCompareOperator)) ? true : false;        
+        
+        return $blReturn;
     }
 
     /**

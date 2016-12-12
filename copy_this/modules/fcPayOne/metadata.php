@@ -2,16 +2,16 @@
 
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -21,10 +21,18 @@
  
 $aModule = array(
     'id'            => 'fcpayone',
-    'title'         => 'PAYONE FinanceGate',
-    'description'   => 'PAYONE bietet Ihnen mit dem Payment-Modul f&uuml;r Oxid eShops &uuml;ber 20 Zahlarten aus einer Hand. Das Payment-Modul von PAYONE bietet eine nahtlose Integration in den Checkout-Prozess des OXID eShops.',
+    'title'         => 'PAYONE Payment f&uuml;r OXID eShop',
+    'description'   => 'Sie suchen nach der optimalen Payment-L&ouml;sung f&uuml;r Ihren Online-Shop?<br><br>
+                        PAYONE bietet Unternehmensl&ouml;sungen zur automatisierten und ganzheitlichen Abwicklung aller Zahlungsprozesse im E-Commerce. 
+                        Der Payment Service Provider ist ein Unternehmen der Sparkassen-Finanzgruppe und von der Bundesanstalt f&uuml;r Finanzdienstleistungsaufsicht als Zahlungsinstitut zugelassen. 
+                        Das Leistungsspektrum umfasst die Akzeptanz und Abwicklung nationaler und internationaler Zahlungsarten sowie alle Zahlungsdienstleistungen. 
+                        Standardisierte Schnittstellen und Extensions erlauben eine einfache Integration in bestehende E-Commerce und IT-Systeme bei h&ouml;chsten Sicherheitsstandards.<br><br>
+                        Hier finden Sie weitere Informationen zum PAYONE Payment-Modul f&uuml;r OXID eShop: 
+                        <a href="https://www.payone.de/plattform-integration/extensions/oxid/" style="color:darkblue;text-decoration: underline;" title="PAYONE Homepage" target="_blank">
+                            https://www.payone.de
+                        </a>',
     'thumbnail'     => 'picture.gif',
-    'version'       => '2.0.7_5_5761',
+    'version'       => '2.1.3_5_6277',
     'author'        => 'FATCHIP GmbH',
     'email'         => 'kontakt@fatchip.de',
     'url'           => 'http://wiki.fatchip.de/fc/mod_oxid_payone/start',
@@ -67,6 +75,7 @@ $aModule = array(
         'fcpayone_protocol'                 => 'fcPayOne/application/controllers/admin/fcpayone_protocol.php',
         'fcpayone_status_forwarding'        => 'fcPayOne/application/controllers/admin/fcpayone_status_forwarding.php',
         'fcpayone_status_mapping'           => 'fcPayOne/application/controllers/admin/fcpayone_status_mapping.php',
+        'fcpayone_error_mapping'            => 'fcPayOne/application/controllers/admin/fcpayone_error_mapping.php',
         'fcpayone_support'                  => 'fcPayOne/application/controllers/admin/fcpayone_support.php',
         'fcpayone_support_list'             => 'fcPayOne/application/controllers/admin/fcpayone_support_list.php',
         'fcpayone_support_main'             => 'fcPayOne/application/controllers/admin/fcpayone_support_main.php',
@@ -76,10 +85,12 @@ $aModule = array(
         'fcporequestlog'                    => 'fcPayOne/application/models/fcporequestlog.php',
         'fcpotransactionstatus'             => 'fcPayOne/application/models/fcpotransactionstatus.php',
         'fcpomapping'                       => 'fcPayOne/application/models/fcpomapping.php',
+        'fcpoerrormapping'                  => 'fcPayOne/application/models/fcpoerrormapping.php',
         'fcpoforwarding'                    => 'fcPayOne/application/models/fcpoforwarding.php',
         'fcpoconfigexport'                  => 'fcPayOne/application/models/fcpoconfigexport.php',
         'fcpoklarna'                        => 'fcPayOne/application/models/fcpoklarna.php',
         'fcpopaypal'                        => 'fcPayOne/application/models/fcpopaypal.php',
+        'fcpayone_ajax'                     => 'fcPayOne/application/models/fcpayone_ajax.php',
         // libs
         'fcpohelper'                        => 'fcPayOne/lib/fcpohelper.php',
         'fcporequest'                       => 'fcPayOne/lib/fcporequest.php',
@@ -110,6 +121,7 @@ $aModule = array(
         'fcpayone_protocol.tpl'             => 'fcPayOne/application/views/admin/tpl/fcpayone_protocol.tpl',
         'fcpayone_status_forwarding.tpl'    => 'fcPayOne/application/views/admin/tpl/fcpayone_status_forwarding.tpl',
         'fcpayone_status_mapping.tpl'       => 'fcPayOne/application/views/admin/tpl/fcpayone_status_mapping.tpl',
+        'fcpayone_error_mapping.tpl'        => 'fcPayOne/application/views/admin/tpl/fcpayone_error_mapping.tpl',
         'fcpayone_support.tpl'              => 'fcPayOne/application/views/admin/tpl/fcpayone_support.tpl',
         'fcpayone_support_list.tpl'         => 'fcPayOne/application/views/admin/tpl/fcpayone_support_list.tpl',
         'fcpayone_support_main.tpl'         => 'fcPayOne/application/views/admin/tpl/fcpayone_support_main.tpl',

@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -119,11 +119,46 @@ $aLang = array(
     
 'FCPO_PAYPALEXPRESS_USER_SECURITY_ERROR'        => 'Bitte loggen Sie sich im Shop ein und führen Sie den PayPal Express Checkout nochmal durch. Ihre PayPal-Lieferadresse stimmt nicht mit den im Shop hinterlegten Adressdaten &uuml;berein.',
     
-'FCPO_YAPITAL_HEADER'                           => 'Bezahlung mit Yapital',
-'FCPO_YAPITAL_TEXT'                             => 'Sie haben zwei M&ouml;glichkeiten mit Yapital zu bezahlen. Entweder &ouml;ffnen Sie die Yapital-App, w&auml;hlen Bezahlen aus dem App-Men&uuml; und scannen den unten aufgef&uuml;hrten QR-Code. Oder Sie loggen sich mit Ihren Yapital-Zugangsdaten &uuml;ber den orangen LOG IN Button auf dieser Seite ein. Nach erfolgreicher Transaktion gelangen Sie automatisch zur&uuml;ck in den Shop.<br><br>Alle Transaktionen werden in Echtzeit &uuml;ber Ihren Yapital-Account abgewickelt. Ihre Bankdaten werden nicht von Yapital weitergeleitet, sondern lediglich die erforderlichen Transaktionsdaten.<br><br>Sollten Sie per QR-Code bezahlen, klicken Sie bitte <b>NICHT</b> auf die Links in dem Fenster! Sie werden automatisch weitergeleitet.',
-    
 'FCPO_CC_IFRAME_HEADER'                         => 'Bezahlung mit Kreditkarte',
 'FCPO_OR'                                       => 'oder',
+'FCPO_PAYOLUTION_USTID'                         => 'Umsatzsteueridentifiationsnummer (USt-IdNr.)',
+'FCPO_PAYOLUTION_PHONE'                         => 'Telefonnummer',
+'FCPO_PAYOLUTION_BIRTHDATE'                     => 'Geburtsdatum',
+'FCPO_PAYOLUTION_PRECHECK_FAILED'               => 'Die Transaktion wurde vom Finanzierungs-Dienstleister abgelehnt. Bitte wählen Sie eine andere Zahlart',
+'FCPO_PAYOLUTION_YEAR'                          => 'Jahr',
+'FCPO_PAYOLUTION_MONTH'                         => 'Monat',
+'FCPO_PAYOLUTION_DAY'                           => 'Tag',
+'FCPO_PAYOLUTION_AGREEMENT_PART_1'              => 'Mit der Übermittlung der für die Abwicklung des Rechnungskaufes und einer Identitätsprüfung und Bonitätsprüfung erforderlicher Daten an payolution bin ich einverstanden.<br>Meine',
+'FCPO_PAYOLUTION_AGREEMENT_PART_2'              => 'kann ich jederzeit mit Wirkung für die Zukunft wiederrufen',
+'FCPO_PAYOLUTION_AGREE'                         => 'Einwilligung',
+'FCPO_PAYOLUTION_EMAIL_CLEARING'                => 'Payolution Referenzcode:',
+'FCPO_PAYOLUTION_NOT_AGREED'                    => 'Sie haben die Einwilligung zur Übertragung der erforderlichen Daten an payolution nicht bestätigt.',
+'FCPO_PAYOLUTION_SEPA_NOT_AGREED'               => 'Sie haben das SEPA Lastschriftmandat noch nicht erteilt.',
+'FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1'         => 'Hiermit erteile ich das',
+'FCPO_PAYOLUTION_SEPA_AGREE'                    => 'SEPA-Lastschriftmandat',
+'FCPO_PAYOLUTION_ACCOUNTHOLDER'                 => 'Kontoinhaber',
+'FCPO_BANK_IBAN'                                => 'IBAN',
+'FCPO_BANK_BIC'                                 => 'BIC',
+'FCPO_PAYOLUTION_BANKDATA_INCOMPLETE'           => 'Ihre eingebenen Kontodaten sind nicht vollständig.',
+'FCPO_PAYOLUTION_CHECK_INSTALLMENT_AVAILABILITY'=> 'Verfügbarkeit prüfen',
+'FCPO_PAYOLUTION_INSTALLMENT_SELECTION'         => 'Ratenkaufoptionen',
+'FCPO_PAYOLUTION_SELECT_INSTALLMENT'            => 'Bitte wählen Sie eine Ratenoption aus',
+'FCPO_PAYOLUTION_INSTALLMENT_SUMMARY_AND_ACCOUNT'=> 'Übersicht und Kontoinformationen',
+'FCPO_PAYOLUTION_PLEASE_CHECK_AVAILABLILITY'    => 'Bitte prüfen Sie zunächst die Verfügbarkeit der möglichen Ratenzahlungsoptionen',
+'FCPO_PAYOLUTION_INSTALLMENT_PER_MONTH'         => 'pro Monat',
+'FCPO_PAYOLUTION_INSTALLMENT_RATES'             => 'Raten',
+'FCPO_PAYOLUTION_INSTALLMENT_RATE'              => 'Rate',
+'FCPO_PAYOLUTION_INSTALLMENT_MONTHLY_RATES'     => 'Monatliche Raten',
+'FCPO_PAYOLUTION_INSTALLMENT_INTEREST_RATE'     => 'Nominalzins',
+'FCPO_PAYOLUTION_INSTALLMENT_EFF_INTEREST_RATE' => 'Effektivzins',
+'FCPO_PAYOLUTION_INSTALLMENT_DUE_AT'            => 'f&auml;llig am',
+'FCPO_PAYOLUTION_INSTALLMENT_DOWNLOAD_DRAFT'    => 'Vertragsentwurf herunterladen',
+'FCPO_PAYOLUTION_INSTALLMENTS_NUMBER'           => 'Anzahl mögl. Ratenzahlungen',
+'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_AMOUNT'  => 'Zu finanzierender Betrag',
+'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_SUM'     => 'Total',
+'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Bitte ausw&auml;hlen',
+'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED'       => 'Sie haben keine Ratenkaufoption ausgewählt',
+'FCPO_PAYOLUTION_NO_USTID'                      => 'Bei Firmenbestellungen ist die Angabe der Umsatzsteueridentifiationsnummer (USt-IdNr.) notwendig',
 );
 
 /*

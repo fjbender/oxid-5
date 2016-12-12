@@ -2,16 +2,16 @@
 
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -134,7 +134,7 @@ class fcpayone_main extends fcpayone_admindetails {
             'type' => 'sFCPOCCMonthType',
             'size' => 'sFCPOCCMonthCount',
             'maxlength' => 'sFCPOCCMonthMax',
-            'customstyle' => 'sFCPOCCMonthIframe',
+            'customstyle' => 'sFCPOCCMonthStyle',
             'style' => 'sFCPOCCMonthCSS',
             'customiframe' => 'sFCPOCCMonthIframe',
             'widht' => 'sFCPOCCMonthWidth',
@@ -145,7 +145,7 @@ class fcpayone_main extends fcpayone_admindetails {
             'type' => 'sFCPOCCYearType',
             'size' => 'sFCPOCCYearCount',
             'maxlength' => 'sFCPOCCYearMax',
-            'customstyle' => 'sFCPOCCYearIframe',
+            'customstyle' => 'sFCPOCCYearStyle',
             'style' => 'sFCPOCCYearCSS',
             'customiframe' => 'sFCPOCCYearIframe',
             'widht' => 'sFCPOCCYearWidth',
@@ -203,7 +203,7 @@ class fcpayone_main extends fcpayone_admindetails {
             $sType = $this->_oFcpoHelper->fcpoGetRequestParameter("type");
             $this->_aViewData["type"] = $sType;
 
-            if ($oConfig->getVersion() >= 4.6) {
+            if (version_compare($oConfig->getVersion(), '4.6.0', '>=')) {
                 $oPayOneAjax = oxNew('fcpayone_main_ajax');
                 $aColumns = $oPayOneAjax->getColumns();
             } else {
@@ -528,10 +528,8 @@ class fcpayone_main extends fcpayone_admindetails {
             'fcpoonlineueberweisung' => 'sb',
             'fcpopaypal' => 'wlt',
             'fcpopaypal_express' => 'wlt',
-            'fcpocommerzfinanz' => 'fnc',
             'fcpobillsafe' => 'fnc',
             'fcpoklarna' => 'fnc',
-            'fcpoklarna_installment' => 'fnc',
             'fcpobarzahlen' => 'csh',
             'fcpopaydirekt' => 'wlt',
         );

@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -751,25 +751,6 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
     }
 
     /**
-     * Testing fcpoGetCCFields for coverage
-     * 
-     * @param void
-     * @return void
-     */
-    public function test_fcpoGetCCFields_Coverage() {
-        $oTestObject = oxNew('fcPayOnePaymentView');
-
-        $aExpect = array(
-            'cardpan',
-            'cardcvc2',
-            'cardexpiremonth',
-            'cardexpireyear',
-        );
-
-        $this->assertEquals($aExpect, $oTestObject->fcpoGetCCFields());
-    }
-
-    /**
      * Testing fcpoGetCCPaymentMetaData for coverage
      * 
      * @param void
@@ -1100,7 +1081,6 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
 
         $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
         $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue(false));
-        $oHelper->expects($this->any())->method('fcpoGetSessionVariable')->will($this->returnValue('fcpoklarna_installment'));
         $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockAddress));
 
         $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
@@ -2249,6 +2229,264 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
 
         $this->assertEquals('order', $oTestObject->_fcpoProcessValidation('order', 'somePaymentId'));
     }
+    
+
+    /**
+     * Testing _fcpoPayolutionPreCheck with valid bankdata
+     */
+    public function test__fcpoPayolutionPreCheck_ValidBankData() {
+       $oTestObject = $this->getMock('fcPayOnePaymentView', 
+                array(
+                    '_fcpoIsPayolution', 
+                    '_fcpoPayolutionSaveRequestedValues',
+                    '_fcpoCheckAgreed', 
+                    '_fcpoGetPayolutionBankData', 
+                    '_fcpoValidateBankData',
+                    '_fcpoCheckSepaAgreed',
+                    '_fcpoPerformPayolutionPreCheck',
+                ));
+        
+        $oTestObject->expects($this->any())->method('_fcpoIsPayolution')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoPayolutionSaveRequestedValues')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoCheckAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoGetPayolutionBankData')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoValidateBankData')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoCheckSepaAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoPerformPayolutionPreCheck')->will($this->returnValue(true));
+        
+        $this->assertEquals(null, $oTestObject->_fcpoPayolutionPreCheck(null, 'someId'));
+    }
+
+    /**
+     * Testing _fcpoPayolutionPreCheck with invalid bankdata
+     */
+    public function test__fcpoPayolutionPreCheck_InvalidBankData() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', 
+                array(
+                    '_fcpoIsPayolution', 
+                    '_fcpoPayolutionSaveRequestedValues',
+                    '_fcpoCheckAgreed', 
+                    '_fcpoGetPayolutionBankData', 
+                    '_fcpoValidateBankData',
+                    '_fcpoCheckSepaAgreed',
+                    '_fcpoPerformPayolutionPreCheck',
+                ));
+        
+        $oTestObject->expects($this->any())->method('_fcpoIsPayolution')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoPayolutionSaveRequestedValues')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoCheckAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoGetPayolutionBankData')->will($this->returnValue($aMockBankData));
+        $oTestObject->expects($this->any())->method('_fcpoValidateBankData')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoCheckSepaAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoPerformPayolutionPreCheck')->will($this->returnValue(false));
+        
+        $this->assertEquals(null, $oTestObject->_fcpoPayolutionPreCheck(null, 'someId'));
+    }
+    
+    /**
+     * Testing _fcpoPayolutionPreCheck with sepa check
+     */
+    public function test__fcpoPayolutionPreCheck_Sepa() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', 
+                array(
+                    '_fcpoIsPayolution', 
+                    '_fcpoPayolutionSaveRequestedValues',
+                    '_fcpoCheckAgreed', 
+                    '_fcpoGetPayolutionBankData', 
+                    '_fcpoValidateBankData',
+                    '_fcpoCheckSepaAgreed',
+                    '_fcpoPerformPayolutionPreCheck',
+                ));
+        
+        $oTestObject->expects($this->any())->method('_fcpoIsPayolution')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoPayolutionSaveRequestedValues')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoCheckAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoGetPayolutionBankData')->will($this->returnValue($aMockBankData));
+        $oTestObject->expects($this->any())->method('_fcpoValidateBankData')->will($this->returnValue(true));
+        $oTestObject->expects($this->any())->method('_fcpoCheckSepaAgreed')->will($this->returnValue(false));
+        $oTestObject->expects($this->any())->method('_fcpoPerformPayolutionPreCheck')->will($this->returnValue(false));
+        
+        $this->assertEquals(null, $oTestObject->_fcpoPayolutionPreCheck(null, 'someId'));
+    }
+
+    /**
+     * Testing _fcpoValidateBankData for coverage
+     */
+    public function test__fcpoValidateBankData_Coverage() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        
+        $this->assertEquals(true, $oTestObject->_fcpoValidateBankData($aMockBankData));
+    }
+    
+    /**
+     * Testing _fcpoGetPayolutionBankData for coverage
+     */
+    public function test__fcpoGetPayolutionBankData_Coverage() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue($aMockBankData));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(false, $oTestObject->_fcpoGetPayolutionBankData());
+    }
+    
+    /**
+     * Testing _fcpoCheckAgreed for coverage
+     */
+    public function test__fcpoCheckAgreed_Coverage() {
+        $aMockData = array(
+            'fcpo_payolution_agreed' => 'agreed',
+        );
+
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue($aMockData));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(true, $oTestObject->_fcpoCheckAgreed());
+    }
+    
+    /**
+     * Testing _fcpoCheckSepaAgreed for coverage
+     */
+    public function test__fcpoCheckSepaAgreed_Coverage() {
+        $aMockData = array(
+            'fcpo_payolution_sepa_agreed' => 'agreed',
+        );
+
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue($aMockData));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(true, $oTestObject->_fcpoCheckSepaAgreed());
+    }
+    
+    /**
+     * Testing _fcpoPayolutionSaveRequestedValues for coverage
+     */
+    public function test__fcpoPayolutionSaveRequestedValues_Coverage() {
+        $aMockData = array(
+            'fcpo_payolution_birthdate_year' => '1978',
+            'fcpo_payolution_birthdate_month' => '12',
+            'fcpo_payolution_birthdate_day' => '07',
+            'fcpo_payolution_ustid' => 'someUstid',
+        );
+        
+        $oMockUser = $this->getMock('oxUser', array('save'));
+        $oMockUser->expects($this->any())->method('save')->will($this->returnValue(true));
+        $oMockUser->oxuser__oxbirthdate = new oxField('1977-12-08', oxField::T_RAW);
+        $oMockUser->oxuser__oxustid = new oxField('someOtherUstid', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getUser'));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('fcpoGetRequestParameter')->will($this->returnValue($aMockData));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(null, $oTestObject->_fcpoPayolutionSaveRequestedValues());        
+    }
+    
+    /**
+     * Testing _fcpoIsPayolution for checking valid response on given payolution id
+     */
+    public function test__fcpoIsPayolution_IsPayolutionDebit() {
+        $sMockPaymentId = 'fcpopo_debitnote';
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        
+        $this->assertEquals(true, $oTestObject->_fcpoIsPayolution($sMockPaymentId));
+    }
+    
+    /**
+     * Testing _fcpoPerformPayolutionPreCheck for error case
+     */
+    public function test__fcpoPerformPayolutionPreCheck_Error() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+        
+        $aMockResponse = array('status'=>'ERROR','workorderid'=>'someId');
+        
+        $oMockUser = $this->getMock('oxUser', array('save'));
+        $oMockUser->expects($this->any())->method('save')->will($this->returnValue(true));
+        $oMockUser->oxuser__oxbirthdate = new oxField('1977-12-08', oxField::T_RAW);
+        $oMockUser->oxuser__oxustid = new oxField('someUstid', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getUser','_fcpoGetPayolutionBankData'));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        $oTestObject->expects($this->any())->method('_fcpoGetPayolutionBankData')->will($this->returnValue($aMockBankData));
+        
+        $oMockRequest = $this->getMock('fcporequest', array('sendRequestPayolutionPreCheck'));
+        $oMockRequest->expects($this->any())->method('sendRequestPayolutionPreCheck')->will($this->returnValue($aMockResponse));
+        
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockRequest));
+        $oHelper->expects($this->any())->method('fcpoSetSessionVariable')->will($this->returnValue(true));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(false, $oTestObject->_fcpoPerformPayolutionPreCheck('someId'));
+    }
+
+    /**
+     * Testing _fcpoPerformPayolutionPreCheck for valid case
+     */
+    public function test__fcpoPerformPayolutionPreCheck_OK() {
+        $aMockBankData = array(
+            'fcpo_payolution_accountholder' => 'Some Person',
+            'fcpo_payolution_iban' => 'DE12500105170648489890',
+            'fcpo_payolution_bic' => 'BELADEBEXXX',
+        );
+        
+        $aMockResponse = array('status'=>'OK','workorderid'=>'someId');
+        
+        $oMockUser = $this->getMock('oxUser', array('save'));
+        $oMockUser->expects($this->any())->method('save')->will($this->returnValue(true));
+        $oMockUser->oxuser__oxbirthdate = new oxField('1977-12-08', oxField::T_RAW);
+        $oMockUser->oxuser__oxustid = new oxField('someUstid', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getUser','_fcpoGetPayolutionBankData'));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        $oTestObject->expects($this->any())->method('_fcpoGetPayolutionBankData')->will($this->returnValue($aMockBankData));
+        
+        $oMockRequest = $this->getMock('fcporequest', array('sendRequestPayolutionPreCheck'));
+        $oMockRequest->expects($this->any())->method('sendRequestPayolutionPreCheck')->will($this->returnValue($aMockResponse));
+        
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockRequest));
+        $oHelper->expects($this->any())->method('fcpoSetSessionVariable')->will($this->returnValue(true));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+        
+        $this->assertEquals(true, $oTestObject->_fcpoPerformPayolutionPreCheck('someId'));
+    }
 
     /**
      * Testing fcpoSetMandateParams for coverage
@@ -2412,7 +2650,6 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
         $oMockPayment = oxNew('oxPayment');
         $oMockPayment->oxpayments__oxfromboni = new oxField(20);
 
-
         $oTestObject = $this->getMock('fcPayOnePaymentView', array('getUser'));
         $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
 
@@ -2443,5 +2680,137 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
 
         $this->assertEquals(array('someValue'), $oTestObject->_fcpoGetDynValues());
     }
+    
+    /**
+     * Testing fcpoShowB2B with activated B2B mode
+     */
+    public function test_fcpoShowB2B_B2BModeActive() {
+        $oMockConfig = $this->getMock('oxConfig', array('getConfigParam'));
+        $oMockConfig->expects($this->any())->method('getConfigParam')->will($this->returnValue(true));
+        $oMockUser = oxNew('oxUser');
+        $oMockUser->oxuser__oxcompany = new oxField('someCompany', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getConfig', 'getUser'));
+        $oTestObject->expects($this->any())->method('getConfig')->will($this->returnValue($oMockConfig));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        
+        $this->assertEquals(true, $oTestObject->fcpoShowB2B());
+    }
 
+    /**
+     * Testing fcpoShowB2B with deactivated B2B mode
+     */
+    public function test_fcpoShowB2B_B2BModeInActive() {
+        $oMockConfig = $this->getMock('oxConfig', array('getConfigParam'));
+        $oMockConfig->expects($this->any())->method('getConfigParam')->will($this->returnValue(false));
+        $oMockUser = oxNew('oxUser');
+        $oMockUser->oxuser__oxcompany = new oxField('someCompany', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getConfig', 'getUser'));
+        $oTestObject->expects($this->any())->method('getConfig')->will($this->returnValue($oMockConfig));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        
+        $this->assertEquals(false, $oTestObject->fcpoShowB2B());
+    }
+    
+    /**
+     * Testing fcpoShowB2C for coverage
+     */
+    public function test_fcpoShowB2C_Coverage() {
+        $oMockConfig = $this->getMock('oxConfig', array('getConfigParam'));
+        $oMockConfig->expects($this->any())->method('getConfigParam')->will($this->returnValue(false));
+        $oMockUser = oxNew('oxUser');
+        $oMockUser->oxuser__oxbirthdate = new oxField('1978-12-07', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getConfig', 'getUser', 'fcpoShowB2B'));
+        $oTestObject->expects($this->any())->method('getConfig')->will($this->returnValue($oMockConfig));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        $oTestObject->expects($this->any())->method('fcpoShowB2B')->will($this->returnValue(false));
+        
+        $this->assertEquals(false, $oTestObject->fcpoShowB2C());
+    }
+    
+    /**
+     * Testing fcpoGetBirthdayField for coverage
+     */
+    public function test_fcpoGetBirthdayField_Coverage() {
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('fcpoGetUserValue'));
+        $oTestObject->expects($this->any())->method('fcpoGetUserValue')->will($this->returnValue('1978-12-07'));
+        
+        $this->assertEquals('1978', $oTestObject->fcpoGetBirthdayField('year'));
+    }
+    
+    /**
+     * Testing fcpoGetUserValue coverage
+     */
+    public function test_fcpoGetUserValue_Coverage() {
+        $oMockUser = oxNew('oxUser');
+        $oMockUser->oxuser__oxbirthdate = new oxField('1978-12-07', oxField::T_RAW);
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getUser'));
+        $oTestObject->expects($this->any())->method('getUser')->will($this->returnValue($oMockUser));
+        
+        $this->assertEquals('1978-12-07', $oTestObject->fcpoGetUserValue('oxbirthdate'));
+    }
+    
+    /**
+     * Testing fcpoGetPayolutionAgreementLink coverage
+     */
+    public function test_fcpoGetPayolutionAgreementLink_Coverage() {
+        $oMockConfig = $this->getMock('oxConfig', array('getConfigParam'));
+        $oMockConfig->expects($this->any())->method('getConfigParam')->will($this->returnValue('someCompany'));
+        
+        $sExpect = 'https://payment.payolution.com/payolution-payment/infoport/dataprivacydeclaration?mId='.  base64_encode('someCompany');
+        
+        $oTestObject = $this->getMock('fcPayOnePaymentView', array('getConfig'));
+        $oTestObject->expects($this->any())->method('getConfig')->will($this->returnValue($oMockConfig));
+        
+        $this->assertEquals($sExpect, $oTestObject->fcpoGetPayolutionAgreementLink());
+    }
+    
+    /**
+     * 
+     */
+    public function test_fcpoGetPayolutionSepaAgreementLink_Coverage() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        $sExpect = 'https://payment.payolution.com/payolution-payment/infoport/sepa/mandate.pdf';
+        $this->assertEquals($sExpect, $oTestObject->fcpoGetPayolutionSepaAgreementLink());
+    }
+    
+    /**
+     * Testing fcpoGetNumericRange for coverage
+     */
+    public function test__fcpoGetNumericRange_Coverage() {
+        $aExpect = array('01','02','03');
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        $this->assertEquals($aExpect, $oTestObject->_fcpoGetNumericRange(1,3,2));
+    }
+    
+    /**
+     * Testing fcpoGetYearRange for coverage
+     */
+    public function test_fcpoGetYearRange_Coverage() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        // I will not prepare a hundred entries array ;-)
+        $aExpect = $aRange = $oTestObject->fcpoGetYearRange();
+        $this->assertEquals($aExpect, $aRange);
+    }
+    
+    /**
+     * Testing fcpoGetMonthRange for coverage
+     */
+    public function test_fcpoGetMonthRange_Coverage() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        $aExpect = $aRange = $oTestObject->fcpoGetMonthRange();
+        $this->assertEquals($aExpect, $aRange);
+    }
+    
+    /**
+     * Testing fcpoGetDayRange for coverage
+     */
+    public function test_fcpoGetDayRange_Coverage() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+        $aExpect = $aRange = $oTestObject->fcpoGetDayRange();
+        $this->assertEquals($aExpect, $aRange);
+    }
 }

@@ -1,40 +1,27 @@
 # PAYONE FinanceGate
+![license LGPL](https://img.shields.io/badge/license-LGPL-blue.svg)
 [![GitHub issues](https://img.shields.io/github/issues/PAYONE-GmbH/oxid-5.svg)](https://github.com/PAYONE-GmbH/oxid-5/issues)
 
-## Author
-FATCHIP GmbH
-www.fatchip.de
-
-## Prefix
-fc
-
-## Version
-2.0.7_5_5761
-July 17 2016
-
-## Link
-http://www.payone.de
-http://shop.fatchip.de/OXID-PAYONE-FinanceGate-Connector.html
-
-## Mail
-<a href="mailto:support@fatchip.de">support@fatchip.de</a>
-
-## Requirements
-void
-
-## Description
 The PAYONE-FinanceGate-Module offers more than 20 payment methods for your OXID-Shopsystem. Beside commonly used payment methods as 
 Paypal, Sofortueberweisung.de or eight Creditcards there is also the possibility to offer secure paying via bill or debit.
 
-## Extend
-void
+## Version
+2.1.3_5_6277  
+November 14 2016
+
+## Requirements
+Installed OXID eShop > v4.7.0
+
+## Link
+http://www.payone.de  
+http://shop.fatchip.de/OXID-PAYONE-FinanceGate-Connector.html
 
 ## Installation
 1. Extract the module-package.
 2. Copy the content of the folder "copy_this" into your shop root-folder (where config.inc.php lies).
 3. Go to Extensions->Modules, select the "PAYONE FinanceGate" extension and press the "Activate" Button in the "Overview" tab.
 4. Next you need to deposit a transaction url in the PAYONE-Webinterface at Konfiguration -> Zahlungsportale -> YOUR_PORTAL -> Erweitert -> TransactionStatus URL. The URL has to look like this:
-http://->YOUR_SHOP<-/modules/fcPayOne/status.php
+`http://->YOUR_SHOP<-/modules/fcPayOne/status.php`
 5. Empty "tmp" folder.
 6. There is a new menu item in the OXID-Interface named PAYONE. Here you can set your merchant connect data.
 
@@ -80,3 +67,11 @@ If you updating from version 2.x or higher:
 When you are using the creditcard iframe payment-method there is no transaction-id ( txid ) in the moment where the order is created.
 The transaction-id will be filled in seconds later, when the first "TransactionStatus" from Payone comes in.
 So when using pixi or another ERP where the transaction-id is needed, make sure to export the order only when the transaction-id is already there.
+
+## Author
+FATCHIP GmbH
+www.fatchip.de
+<a href="mailto:support@fatchip.de">support@fatchip.de</a>
+
+## Prefix
+fc

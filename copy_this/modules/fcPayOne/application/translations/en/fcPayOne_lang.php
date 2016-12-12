@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -124,6 +124,43 @@ $aLang = array(
     
 'FCPO_CC_IFRAME_HEADER'                         => 'Payment with creditcard',
 'FCPO_OR'                                       => 'or',
+'FCPO_PAYOLUTION_USTID'                         => 'Tax Identification Number',
+'FCPO_PAYOLUTION_PHONE'                         => 'Fon',
+'FCPO_PAYOLUTION_BIRTHDATE'                     => 'Birthdate',
+'FCPO_PAYOLUTION_PRECHECK_FAILED'               => 'Transaction has been delcined by financing-service. Please achoose another payment method.',
+'FCPO_PAYOLUTION_YEAR'                          => 'Year',
+'FCPO_PAYOLUTION_MONTH'                         => 'Monht',
+'FCPO_PAYOLUTION_DAY'                           => 'Day',
+'FCPO_PAYOLUTION_AGREEMENT_PART_1'              => 'I confirm transmission of my personal data, which is needed for processing bill payment, identity- and boni-check.<br>My',
+'FCPO_PAYOLUTION_AGREEMENT_PART_2'              => 'can be cancelled by writing any time later.',
+'FCPO_PAYOLUTION_AGREE'                         => 'consent',
+'FCPO_PAYOLUTION_EMAIL_CLEARING'                => 'Payolution Reference code:',
+'FCPO_PAYOLUTION_NOT_AGREED'                    => 'You did not agree to consent.',
+'FCPO_PAYOLUTION_SEPA_NOT_AGREED'               => 'You did not grant SEPA direct debit mandate.',
+'FCPO_PAYOLUTION_SEPA_AGREEMENT_PART_1'         => 'Herewith I give ',
+'FCPO_PAYOLUTION_SEPA_AGREE'                    => 'SEPA direct debit mandate',
+'FCPO_PAYOLUTION_ACCOUNTHOLDER'                 => 'Account owner',
+'FCPO_BANK_IBAN'                                => 'IBAN',
+'FCPO_BANK_BIC'                                 => 'BIC',
+'FCPO_PAYOLUTION_BANKDATA_INCOMPLETE'           => 'Your entered account data is not complete.',
+'FCPO_PAYOLUTION_CHECK_INSTALLMENT_AVAILABILITY'=> 'Check availability',
+'FCPO_PAYOLUTION_INSTALLMENT_SELECTION'         => 'Installment selection',
+'FCPO_PAYOLUTION_SELECT_INSTALLMENT'            => 'Please choose your installment selection',
+'FCPO_PAYOLUTION_INSTALLMENT_SUMMARY_AND_ACCOUNT'=> 'Overview and acoount information',
+'FCPO_PAYOLUTION_PLEASE_CHECK_AVAILABLILITY'    => 'Please check availibility of installment options first.',
+'FCPO_PAYOLUTION_INSTALLMENT_PER_MONTH'         => 'per Month',
+'FCPO_PAYOLUTION_INSTALLMENT_RATES'             => 'Rates',
+'FCPO_PAYOLUTION_INSTALLMENT_RATE'              => 'Rate',
+'FCPO_PAYOLUTION_INSTALLMENT_MONTHLY_RATES'     => 'Monthly installments',
+'FCPO_PAYOLUTION_INSTALLMENT_INTEREST_RATE'     => 'Interest',
+'FCPO_PAYOLUTION_INSTALLMENT_EFF_INTEREST_RATE' => 'effective insterest',
+'FCPO_PAYOLUTION_INSTALLMENT_DUE_AT'            => 'due at',
+'FCPO_PAYOLUTION_INSTALLMENT_DOWNLOAD_DRAFT'    => 'Download contract draft',
+'FCPO_PAYOLUTION_INSTALLMENTS_NUMBER'           => 'Amount of possible installments',
+'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_AMOUNT'  => 'Amount',
+'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_SUM'     => 'Total',
+'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED'  => 'Please choose',
+'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED'       => 'You did not choose an installment.',
 );
 
 /*

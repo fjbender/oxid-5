@@ -2,16 +2,16 @@
 
 /**
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -32,7 +32,6 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
      */
     protected $_oFcpoDb = null;
 
-
     /*
      * Array of all payment method IDs belonging to PAYONE
      *
@@ -48,18 +47,26 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpoonlineueberweisung',
         'fcpopaypal',
         'fcpopaypal_express',
-        'fcpocommerzfinanz',
         'fcpobillsafe',
         'fcpoklarna',
-        'fcpoklarna_installment',
         'fcpobarzahlen',
         'fcpopaydirekt',
+        'fcpopo_bill',
+        'fcpopo_debitnote',
+        'fcpopo_installment',
     );
+    
     protected static $_aIframePaymentTypes = array(
         'fcpocreditcard_iframe',
     );
     protected static $_aFrontendApiPaymentTypes = array(
         'fcpocreditcard_iframe',
+    );
+    
+    protected $_aPaymentsNoAuthorize = array(
+        'fcpobarzahlen',
+        'fcpopo_bill',
+        'fcpopo_debitnote',
     );
 
     /**
@@ -288,11 +295,11 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $aMandate = $this->_oFcpoHelper->fcpoGetSessionVariable('fcpoMandate');
 
         $blMandateTextValid = (
-            $aMandate &&
-            array_key_exists('mandate_status', $aMandate) !== false &&
-            $aMandate['mandate_status'] == 'pending' &&
-            array_key_exists('mandate_text', $aMandate) !== false
-        );
+                $aMandate &&
+                array_key_exists('mandate_status', $aMandate) !== false &&
+                $aMandate['mandate_status'] == 'pending' &&
+                array_key_exists('mandate_text', $aMandate) !== false
+                );
 
         $mReturn = false;
         if ($blMandateTextValid) {
@@ -518,6 +525,20 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         $sPayments = rtrim($sPayments, ',');
 
         return $sPayments;
+    }
+    
+    /**
+     * Public getter for checking if current payment is allowed for authorization
+     * 
+     * @param void
+     * @return bool
+     */
+    public function fcpoAuthorizeAllowed() {
+        $sPaymentId = $this->oxpayments__oxid->value;
+        $blCurrentPaymentAffected = in_array($sPaymentId, $this->_aPaymentsNoAuthorize);
+        $blAllowed = ($blCurrentPaymentAffected) ? false : true;
+        
+        return $blAllowed;
     }
 
 }

@@ -7,35 +7,7 @@
         <dd class="[{if $oView->getCheckedPaymentId() == $paymentmethod->oxpayments__oxid->value}]activePayment[{/if}]">
             <input type="hidden" name="fcpo_mode_[{$sPaymentID}]" value="[{$paymentmethod->fcpoGetOperationMode()}]">
             [{assign var="blDisplayCampaignMissing" value=false}]
-            [{if $sPaymentID == "fcpoklarna_installment"}]
-                [{assign var="aCampaigns" value=$paymentmethod->fcpoGetKlarnaCampaigns()}]
-                [{if $aCampaigns|@count == 0}]
-                    [{assign var="blDisplayCampaignMissing" value=true}]
-                [{/if}]
-            [{/if}]
             [{if $blDisplayCampaignMissing == false}]
-                [{if $sPaymentID == "fcpoklarna_installment"}]
-                    <div class="form-group" id="fcpo_elv_error_blocked">
-                        <div class="col-lg-9">
-                            [{oxmultilang ident="FCPO_KLS_CHOOSE_CAMPAIGN"}]
-                            <table>
-                                [{foreach from=$aCampaigns item=aCampaign key=sId}]
-                                    <tr>
-                                        <td style="width:32px;"><input class="form-control" type="radio" name="fcpo_klarna_campaign" value="[{$aCampaign.code}]"></td>
-                                        <td>[{$aCampaign.title}]</td>
-                                    </tr>
-                                [{/foreach}]
-                            </table>
-                            <div id="fcpo_klarna_campaign_invalid" class="fcpo_check_error">
-                                <span class="help-block">
-                                    <ul role="alert" class="list-unstyled text-danger">
-                                        <li>[{oxmultilang ident="FCPO_KLS_CAMPAIGN_INVALID"}]</li>
-                                    </ul>
-                                </span>
-                            </div>           
-                        </div>
-                    </div>
-                [{/if}]
                 [{if $oView->fcpoKlarnaInfoNeeded()}]
                     <div class="form-group" id="fcpo_elv_error_blocked">
                         <div class="col-lg-9">

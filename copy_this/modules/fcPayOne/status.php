@@ -1,16 +1,16 @@
 <?php
 /** 
  * PAYONE OXID Connector is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * PAYONE OXID Connector is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with PAYONE OXID Connector.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.payone.de
@@ -31,11 +31,9 @@ if(file_exists(dirname(__FILE__)."/config.ipwhitelist.php")) {
 }
 
 $sClientIp = null;
-if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-    if($_SERVER['HTTP_X_FORWARDED_FOR']) {
-        $aIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        $sClientIp = trim($aIps[0]);
-    }
+if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $aIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $sClientIp = trim($aIps[0]);
 }
 
 $sRemoteIp = isset($sClientIp) ? $sClientIp : $_SERVER['REMOTE_ADDR'];
@@ -56,6 +54,7 @@ if(array_search($sRemoteIp, $aWhitelist) === false) {
             }
         }
     }
+    
     if($blMatch === false) {
         echo 'Access denied';
         exit;
@@ -104,21 +103,6 @@ if(file_exists(dirname(__FILE__)."/../../bootstrap.php")) {
 class fcPayOneTransactionStatusHandler extends oxBase {
 
     protected $_aShopList = null;
-    
-    /**
-     * Instance of helper object
-     * @var object
-     */
-    protected $_oFcpoHelper = null;
-
-    
-    /**
-     * Do initialization
-     */
-    public function __construct() {
-        parent::__construct();
-        $this->_oFcpoHelper = oxNew( 'fcpohelper' );
-    }
     
     /**
      * Check and return post parameter
@@ -290,11 +274,10 @@ class fcPayOneTransactionStatusHandler extends oxBase {
     public function handle() {
         if($this->_isKeyValid()) {
             $this->log();
-            $sOrderId = oxDb::getDb()->GetOne("SELECT oxid FROM oxorder WHERE fcpotxid = '".$this->fcGetPostParam('txid')."'");
+            $sTxid = $this->fcGetPostParam('txid');
+            $sOrderId = oxDb::getDb()->GetOne("SELECT oxid FROM oxorder WHERE fcpotxid = '".$sTxid."'");
             if($sOrderId) {
-                $oOrder = oxNew('oxorder');
-                $oOrder->load($sOrderId);
-                if($oOrder->allowDebit()) {
+                if($this->_allowDebit($sTxid)) {
                     $query = "UPDATE oxorder SET oxpaid = NOW() WHERE oxid = '{$sOrderId}'";
                     oxDb::getDb()->Execute($query);
                 }
@@ -312,6 +295,27 @@ class fcPayOneTransactionStatusHandler extends oxBase {
             echo 'Key wrong or missing!';
         }
     }
+    
+    /**
+     * Checks based on the transaction status received by PAYONE whether
+     * the debit request is available for this order at the moment.
+     * 
+     * @param void
+     * @return bool
+     */
+    protected function _allowDebit($sTxid) {
+        $sAuthMode = oxDb::getDb()->GetOne("SELECT fcpoauthmode FROM oxorder WHERE fcpotxid = '".$sTxid."'");
+        if ($sAuthMode == 'authorization') {
+            $blReturn = true;
+        } else {
+            $iCount = oxDb::getDb()->GetOne("SELECT COUNT(*) FROM fcpotransactionstatus WHERE fcpo_txid = '{$sTxid}' AND fcpo_txaction = 'capture'");
+            if ($iCount == 0) {
+                $blReturn = false;
+            }
+        }
+        return $blReturn;
+    }
+    
 
 }
 

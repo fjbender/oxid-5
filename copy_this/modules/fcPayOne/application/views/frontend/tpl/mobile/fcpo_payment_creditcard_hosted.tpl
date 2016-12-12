@@ -33,10 +33,12 @@
                 <label for="cardpanInput">[{oxmultilang ident="FCPO_NUMBER"}]</label>
                 <span class="inputIframe" id="cardpan"></span>
             </li>
-            <li>
-                <label for="cvcInput">[{oxmultilang ident="FCPO_CARD_SECURITY_CODE"}]</label>
-                <span id="cardcvc2" class="inputIframe"></span>
-            </li>
+            [{if $oView->fcpoUseCVC()}]
+                <li>
+                    <label for="cvcInput">[{oxmultilang ident="FCPO_CARD_SECURITY_CODE"}]</label>
+                    <span id="cardcvc2" class="inputIframe"></span>
+                </li>
+            [{/if}]
             <li>
                 <label for="expireInput">[{oxmultilang ident="FCPO_VALID_UNTIL"}]</label>
                 <span id="expireInput" class="inputIframe">
