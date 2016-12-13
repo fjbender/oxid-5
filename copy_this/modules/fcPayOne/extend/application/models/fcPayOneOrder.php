@@ -1293,7 +1293,7 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
     protected function _fcpoSaveProfileIdent($sPaymentId, $aResponse) {
         if (in_array($sPaymentId, $this->_aPaymentsProfileIdentSave)) {
             $sProfileIdent = (isset($aResponse['userid'])) ? $aResponse['userid'] : false;
-            if ($sClearingReference) {
+            if ($sProfileIdent) {
                 $this->oxorder__fcpoprofileident = new oxField($sProfileIdent, oxField::T_RAW);
             }
         }

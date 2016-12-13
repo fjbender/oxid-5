@@ -56,6 +56,7 @@ class fcPayOneOrderarticle extends fcPayOneOrderarticle_parent {
         $oBasket = $oSession->getBasket();
         $sPaymentId = $oBasket->getPaymentId();
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
+        $blPresaveOrder = $oConfig->getConfigParam('blFCPOPresaveOrder');
 
         $blUseParentOrderMethod = (
                 $oOrder === false ||
