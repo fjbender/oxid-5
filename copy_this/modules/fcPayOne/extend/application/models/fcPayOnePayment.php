@@ -54,6 +54,15 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpopo_bill',
         'fcpopo_debitnote',
         'fcpopo_installment',
+        'fcporp_bill',
+    );
+    
+    protected static $_aRedirectPayments = array(
+        'fcpoonlineueberweisung',
+        'fcpopaypal',
+        'fcpopaypal_express',
+        'fcpoklarna',
+        'fcpopaydirekt',
     );
     
     protected static $_aIframePaymentTypes = array(
@@ -67,6 +76,7 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
         'fcpobarzahlen',
         'fcpopo_bill',
         'fcpopo_debitnote',
+        'fcporp_bill',
     );
 
     /**
@@ -82,6 +92,11 @@ class fcPayOnePayment extends fcPayOnePayment_parent {
 
     public static function fcIsPayOnePaymentType($sPaymentId) {
         $blReturn = (array_search($sPaymentId, self::$_aPaymentTypes) !== false) ? true : false;
+        return $blReturn;
+    }
+    
+    public static function fcIsPayOneRedirectType($sPaymentId) {
+        $blReturn = (in_array($sPaymentId, self::$_aRedirectPayments) !== false) ? true : false;
         return $blReturn;
     }
 

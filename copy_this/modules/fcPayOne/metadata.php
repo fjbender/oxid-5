@@ -32,7 +32,7 @@ $aModule = array(
                             https://www.payone.de
                         </a>',
     'thumbnail'     => 'picture.gif',
-    'version'       => '2.1.3_5_6277',
+    'version'       => '2.1.4_5_6374',
     'author'        => 'FATCHIP GmbH',
     'email'         => 'kontakt@fatchip.de',
     'url'           => 'http://wiki.fatchip.de/fc/mod_oxid_payone/start',
@@ -91,12 +91,12 @@ $aModule = array(
         'fcpoklarna'                        => 'fcPayOne/application/models/fcpoklarna.php',
         'fcpopaypal'                        => 'fcPayOne/application/models/fcpopaypal.php',
         'fcpayone_ajax'                     => 'fcPayOne/application/models/fcpayone_ajax.php',
+        'fcporatepay'                       => 'fcPayOne/application/models/fcporatepay.php',
         // libs
         'fcpohelper'                        => 'fcPayOne/lib/fcpohelper.php',
         'fcporequest'                       => 'fcPayOne/lib/fcporequest.php',
         // core
         'fcpayone_events'                   => 'fcPayOne/core/fcpayone_events.php',
-        
     ),
     'templates' => array(
         // frontend

@@ -32,7 +32,7 @@ if ( file_exists( getShopBasePath() . "/bootstrap.php" ) ) {
 else {
     // global variables which are important for older OXID.
     $_SERVER['REQUEST_METHOD'] = 'POST';
-    $_SERVER['HTTP_USER_AGENT'] = 'article_exporter';
+    $_SERVER['HTTP_USER_AGENT'] = 'payone_ajax';
     $_SERVER['HTTP_ACCEPT_LANGUAGE'] = '';
     $_SERVER['HTTP_REFERER'] = '';
     $_SERVER['QUERY_STRING'] = '';
@@ -45,8 +45,11 @@ else {
 
 // receive params
 $sPaymentId = filter_input( INPUT_POST, 'paymentid' );
+echo "PaymentId:".$sPaymentId."<br>";
 $sAction = filter_input( INPUT_POST, 'action' );
+echo "sAction:".$sAction."<br>";
 $sParamsJson = filter_input( INPUT_POST, 'params' );
+echo "sParamsJson:".$sParamsJson."<br>";
 
 /**
  * Class for receiving ajax calls and delivering needed data

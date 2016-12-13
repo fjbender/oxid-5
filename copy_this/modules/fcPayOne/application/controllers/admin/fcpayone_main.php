@@ -216,6 +216,23 @@ class fcpayone_main extends fcpayone_admindetails {
         }
         return $sReturn;
     }
+    
+    /**
+     * Template getter that returns an array of available ISO-Codes of currencies
+     * 
+     * @param void
+     * @return void
+     */
+    public function fcpoGetCurrencyIso() {
+        $oConfig = $this->getConfig();
+        $aCurrencyArray = $oConfig->getCurrencyArray();
+        $aReturn = array();
+        foreach ($aCurrencyArray as $oCur) {
+            $aReturn[] = $oCur->name;
+        }
+        
+        return $aReturn;
+    }
 
     /**
      * Template getter for returning template version
@@ -308,6 +325,10 @@ class fcpayone_main extends fcpayone_admindetails {
         // fill storeids and campaigns  if set
         $this->_fcpoInsertStoreIds();
         $this->_fcpoInsertCampaigns();
+        
+        // add ratepay profiles if set
+        $this->_fcpoCheckAndAddRatePayProfile();
+        $this->_fcpoInsertProfiles();
 
 
         $this->_handlePayPalExpressLogos();
@@ -380,6 +401,21 @@ class fcpayone_main extends fcpayone_admindetails {
         $aStoreIds = $this->_oFcpoHelper->fcpoGetRequestParameter('aStoreIds');
         $this->_oFcpoKlarna->fcpoInsertStoreIds($aStoreIds);
     }
+    
+    /**
+     * Insert RatePay profile
+     * 
+     * @param void
+     *  @return void
+     */
+    protected function _fcpoInsertProfiles() {
+        $aRatePayProfiles = $this->_oFcpoHelper->fcpoGetRequestParameter('aRatepayProfiles');
+        if (is_array($aRatePayProfiles)) {
+            foreach ($aRatePayProfiles as $sOxid=>$aRatePayData) {
+                $this->_oFcpoRatePay->fcpoInsertProfile($sOxid, $aRatePayData);
+            }
+        }
+    }
 
     /**
      * Check and add strore id and set message flag
@@ -391,6 +427,19 @@ class fcpayone_main extends fcpayone_admindetails {
         if ($this->_oFcpoHelper->fcpoGetRequestParameter('addStoreId')) {
             $this->_oFcpoKlarna->fcpoAddKlarnaStoreId();
             $this->_aAdminMessages["blStoreIdAdded"] = true;
+        }
+    }
+
+    /**
+     * Check and add a new RatePay Profile
+     * 
+     * @param void
+     * @return void
+     */
+    protected function _fcpoCheckAndAddRatePayProfile() {
+        if ($this->_oFcpoHelper->fcpoGetRequestParameter('addRatePayProfile')) {
+            $this->_oFcpoRatePay->fcpoAddRatePayProfile();
+            $this->_aAdminMessages["blRatePayProfileAdded"] = true;
         }
     }
 
@@ -482,6 +531,18 @@ class fcpayone_main extends fcpayone_admindetails {
         $aStoreIds = $this->_oFcpoKlarna->fcpoGetStoreIds();
 
         return $aStoreIds;
+    }
+    
+    /**
+     * Returns configured ratepay profiles
+     * 
+     * @param void
+     * @return array
+     */
+    public function fcpoGetRatePayProfiles() {
+        $aReturn = $this->_oFcpoRatePay->fcpoGetRatePayProfiles();
+
+        return $aReturn;
     }
 
     /**
