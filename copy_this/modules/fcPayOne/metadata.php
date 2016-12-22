@@ -32,7 +32,7 @@ $aModule = array(
                             https://www.payone.de
                         </a>',
     'thumbnail'     => 'picture.gif',
-    'version'       => '2.1.4_5_6374',
+    'version'       => '2.1.5_5_6406',
     'author'        => 'FATCHIP GmbH',
     'email'         => 'kontakt@fatchip.de',
     'url'           => 'http://wiki.fatchip.de/fc/mod_oxid_payone/start',

@@ -1,3 +1,7 @@
+==2.1.5==
+	Releasedate: 2016-12-20
+  * Fixed AGB confirmation bug in EE
+  
 ==2.1.4==
 	Releasedate: 2016-12-12
   * Changed wording of SOFORT Überweisung
