@@ -344,7 +344,7 @@ class fcPayOneOrderView extends fcPayOneOrderView_parent {
      * @return bool
      */
     protected function _validateTermsAndConditions() {
-        if(parent::_validateTermsAndConditions() === true); {
+        if (parent::_validateTermsAndConditions() === true) {
             return true;
         }
         
