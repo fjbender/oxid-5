@@ -1595,7 +1595,7 @@ class fcpoRequest extends oxSuperCfg {
             if ($this->_wasAddressCheckedBefore() === false) {
                 $aResponse = $this->send();
 
-                if ($aResponse['status'] == 'VALID') {
+                if ($this->_fcpoCheckAddressCanBeSaved($aResponse)) {
                     $this->_saveCheckedAddress($aResponse);
                 }
 
@@ -1603,6 +1603,52 @@ class fcpoRequest extends oxSuperCfg {
             }
             return true;
         }
+    }
+
+    /**
+     * Method checks if current address can be saved after call for address check
+     *
+     * @param $aResponse
+     * @return bool
+     */
+    protected function _fcpoCheckAddressCanBeSaved($aResponse) {
+        $blReturn = (
+            $aResponse['status'] == 'VALID' &&
+            $this->_fcpoNotBlockingPersonstatus($aResponse)
+        );
+
+        return $blReturn;
+    }
+
+    /**
+     * Method checks if personstatus and settings block saving former addresschecks
+     *
+     * @param $aResponse
+     * @return bool
+     */
+    protected function _fcpoNotBlockingPersonstatus($aResponse) {
+        $oConfig = $this->getConfig();
+        $sFCPOAddresscheck = $oConfig->getConfigParam('sFCPOAddresscheck');
+        $sResponsePersonstatus = $aResponse['personstatus'];
+
+        $aBlockingPersonStatus = array();
+        $aPersonStatusToCheck = array('PPF', 'UKN', 'PUG', 'PNZ', 'PNP');
+
+        foreach ($aPersonStatusToCheck as $sPersonstatusToCheck) {
+            $blBlocking = $oConfig->getConfigParam('blFCPOAddCheck' . $sPersonstatusToCheck);
+            if ($blBlocking) {
+                $aBlockingPersonStatus[] = $sPersonstatusToCheck;
+            }
+        }
+
+        $blReturn = true;
+        if ($sFCPOAddresscheck == 'PE') {
+            $blReturn = (
+                !in_array($sResponsePersonstatus, $aBlockingPersonStatus)
+            );
+        }
+
+        return $blReturn;
     }
 
     /**

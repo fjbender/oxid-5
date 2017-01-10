@@ -98,24 +98,24 @@ function loadLang(obj) {
 
         <tr>
             <td class="edittext">[{ oxmultilang ident="FCPO_ADDRESSCHECKTYPE"}]</td>
-            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="NO" [{if $confstrs.sFCPOAddresscheck == 'NO'}]checked[{/if}]> [{ oxmultilang ident="FCPO_NO_ADDRESSCHECK" }]</td>
+            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="NO" [{if $confstrs.sFCPOAddresscheck == 'NO'}]checked[{/if}]> [{oxmultilang ident="FCPO_NO_ADDRESSCHECK" }]</td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_NO_ADDRESSCHECK" }]<br></td>
         </tr>
         <tr>
             <td class="edittext"></td>
-            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="BA" [{if $confstrs.sFCPOAddresscheck == 'BA'}]checked[{/if}]> [{ oxmultilang ident="FCPO_BASIC_ADDRESSCHECK" }]</td>
+            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="BA" [{if $confstrs.sFCPOAddresscheck == 'BA'}]checked[{/if}]> [{oxmultilang ident="FCPO_BASIC_ADDRESSCHECK" }]</td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_BASIC_ADDRESSCHECK" }]</td>
         </tr>
         <tr>
             <td class="edittext"></td>
-            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="PE" [{if $confstrs.sFCPOAddresscheck == 'PE'}]checked[{/if}]> [{ oxmultilang ident="FCPO_PERSON_ADDRESSCHECK" }]</td>
+            <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="PE" [{if $confstrs.sFCPOAddresscheck == 'PE'}]checked[{/if}]> [{oxmultilang ident="FCPO_PERSON_ADDRESSCHECK" }]</td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_PERSON_ADDRESSCHECK" }]<br></td>
         </tr>
         <tr>
             <td class="edittext"></td>
             <td class="edittext">
                 <input type=hidden name="confbools[blFCPOCorrectAddress]" value="false">
-                <input type=checkbox name="confbools[blFCPOCorrectAddress]" value="true"  [{if ($confbools.blFCPOCorrectAddress)}]checked[{/if}]> [{ oxmultilang ident="FCPO_CORRECT_ADDRESS" }]
+                <input type=checkbox name="confbools[blFCPOCorrectAddress]" value="true"  [{if ($confbools.blFCPOCorrectAddress)}]checked[{/if}]> [{oxmultilang ident="FCPO_CORRECT_ADDRESS" }]
             </td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_CORRECT_ADDRESS" }]<br></td>
         </tr>
@@ -123,7 +123,7 @@ function loadLang(obj) {
             <td class="edittext"></td>
             <td class="edittext">
                 <input type=hidden name="confbools[blFCPOCheckDelAddress]" value="false">
-                <input type=checkbox name="confbools[blFCPOCheckDelAddress]" value="true"  [{if ($confbools.blFCPOCheckDelAddress)}]checked[{/if}]> [{ oxmultilang ident="FCPO_CHECK_DEL_ADDRESS" }]
+                <input type=checkbox name="confbools[blFCPOCheckDelAddress]" value="true"  [{if ($confbools.blFCPOCheckDelAddress)}]checked[{/if}]> [{oxmultilang ident="FCPO_CHECK_DEL_ADDRESS" }]
             </td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_CHECK_DEL_ADDRESS" }]<br></td>
         </tr>
@@ -131,7 +131,35 @@ function loadLang(obj) {
             <td class="edittext"></td>
             <td class="edittext" colspan="2">
                 <input type=hidden name="confbools[blFCPOAddCheckPPF]" value="false">
-                <input type=checkbox name="confbools[blFCPOAddCheckPPF]" value="true" [{if ($confbools.blFCPOAddCheckPPF)}]checked[{/if}]> [{ oxmultilang ident="FCPO_ADDRESSCHECK_PPF"}]
+                <input type=checkbox name="confbools[blFCPOAddCheckPPF]" value="true" [{if ($confbools.blFCPOAddCheckPPF)}]checked[{/if}]> [{oxmultilang ident="FCPO_ADDRESSCHECK_PPF"}]
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext"></td>
+            <td class="edittext" colspan="2">
+                <input type=hidden name="confbools[blFCPOAddCheckPNP]" value="false">
+                <input type=checkbox name="confbools[blFCPOAddCheckPNP]" value="true" [{if ($confbools.blFCPOAddCheckPNP)}]checked[{/if}]> [{oxmultilang ident="FCPO_ADDRESSCHECK_PNP"}]
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext"></td>
+            <td class="edittext" colspan="2">
+                <input type=hidden name="confbools[blFCPOAddCheckPUG]" value="false">
+                <input type=checkbox name="confbools[blFCPOAddCheckPUG]" value="true" [{if ($confbools.blFCPOAddCheckPUG)}]checked[{/if}]> [{oxmultilang ident="FCPO_ADDRESSCHECK_PUG"}]
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext"></td>
+            <td class="edittext" colspan="2">
+                <input type=hidden name="confbools[blFCPOAddCheckPUZ]" value="false">
+                <input type=checkbox name="confbools[blFCPOAddCheckPUZ]" value="true" [{if ($confbools.blFCPOAddCheckPUZ)}]checked[{/if}]> [{oxmultilang ident="FCPO_ADDRESSCHECK_PUZ"}]
+            </td>
+        </tr>
+        <tr>
+            <td class="edittext"></td>
+            <td class="edittext" colspan="2">
+                <input type=hidden name="confbools[blFCPOAddCheckUKN]" value="false">
+                <input type=checkbox name="confbools[blFCPOAddCheckUKN]" value="true" [{if ($confbools.blFCPOAddCheckUKN)}]checked[{/if}]> [{oxmultilang ident="FCPO_ADDRESSCHECK_UKN"}]
             </td>
         </tr>
         <tr><td colspan="3">&nbsp;</td></tr>
