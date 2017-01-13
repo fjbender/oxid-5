@@ -1301,12 +1301,15 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         $blPayolutionPayment = $this->_fcpoIsPayolution($sPaymentId);
 
         if ($blPayolutionPayment) {
-            $this->_fcpoPayolutionSaveRequestedValues($sPaymentId);
+            $blSavedSuccessfully = $this->_fcpoPayolutionSaveRequestedValues($sPaymentId);
 
             $blAgreedDataUsage = $this->_fcpoCheckAgreedDataUsage($sPaymentId);
             $blValidMandatoryUserData = $this->_fcpoCheckPayolutionMandatoryUserData($sPaymentId);
 
-            if (!$blAgreedDataUsage) {
+            if (!$blSavedSuccessfully) {
+                // message has been set more detailed in submethod _fcpoPayolutionSaveRequestedValues
+                $mReturn = null;
+            } elseif (!$blAgreedDataUsage) {
                 $sMessage = $oLang->translateString('FCPO_PAYOLUTION_NOT_AGREED');
                 $this->_oFcpoHelper->fcpoSetSessionVariable('payerror', -20);
                 $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
@@ -1563,6 +1566,8 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      */
     protected function _fcpoPayolutionSaveRequestedValues($sPaymentId) {
         $oUser = false; // $this->getUser();
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+
         if (!$oUser) {
             // try to fetch user from session
             $oSession = $this->_oFcpoHelper->fcpoGetSession();
@@ -1587,6 +1592,11 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
                 $blSaveUser = true;
             }
         }
+        else {
+            $sMessage = $oLang->translateString('FCPO_PAYOLUTION_BIRTHDATE_INVALID');
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerror', -20);
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
+        }
 
         $sRequestUstid = $this->_fcpoGetRequestedUstid($aRequestedValues, $sPaymentId);
         if ($sRequestUstid) {
@@ -1602,6 +1612,8 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         if ($blSaveUser) {
             $oUser->save();
         }
+
+        return $blSaveUser;
     }
 
     /**
@@ -1630,10 +1642,18 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return boolean
      */
     protected function _fcpoValidateBirthdayData($sPaymentId, $aRequestedValues) {
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+        $sChooseString = $oLang->translateString('FCPO_PAYOLUTION_PLEASE SELECT');
         $sFieldNameAddition = str_replace("fcpopo_", "", $sPaymentId);
         $sBirthdateYear = $aRequestedValues['fcpo_payolution_' . $sFieldNameAddition . '_birthdate_year'];
+        $sBirthdateMonth = $aRequestedValues['fcpo_payolution_' . $sFieldNameAddition . '_birthdate_month'];
+        $sBirthdateDay = $aRequestedValues['fcpo_payolution_' . $sFieldNameAddition . '_birthdate_day'];
         $blValidPayments = in_array($sPaymentId, array('fcpopo_bill', 'fcpopo_installment', 'fcpopo_debitnote'));
-        $blValidRequestData = ((isset($sBirthdateYear) && !empty($sBirthdateYear)));
+        $blValidRequestYear = ((isset($sBirthdateYear) && !empty($sBirthdateYear) && $sBirthdateYear != $sChooseString));
+        $blValidRequestMonth = ((isset($sBirthdateMonth) && !empty($sBirthdateMonth) && $sBirthdateMonth != $sChooseString));
+        $blValidRequestDay = ((isset($sBirthdateDay) && !empty($sBirthdateDay) && $sBirthdateDay != $sChooseString));
+
+        $blValidRequestData = ($blValidRequestYear && $blValidRequestMonth && $blValidRequestDay);
 
         $blReturn = false;
         if ($blValidPayments && $blValidRequestData) {
@@ -2515,10 +2535,6 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         $blB2BIsShown = $this->fcpoShowB2B();
         $blReturn = !$blB2BIsShown;
 
-        if ($blReturn) {
-            $blReturn = ($oUser->oxuser__oxbirthdate->value != '0000-00-00') ? false : true;
-        }
-
         return $blReturn;
     }
 
@@ -2599,8 +2615,10 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @param int $iPositions
      * @return array
      */
-    protected function _fcpoGetNumericRange($iFrom, $iTo, $iPositions) {
-        $aRange = array();
+    protected function _fcpoGetNumericRange($iFrom, $iTo, $iPositions, $blChooseString=true) {
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+        $sChooseString = $oLang->translateString('FCPO_PAYOLUTION_PLEASE SELECT');
+        $aRange = ($blChooseString) ? array($sChooseString) : array();
 
         for ($iCurrentNumber = $iFrom; $iCurrentNumber <= $iTo; $iCurrentNumber++) {
             $aRange[] = str_pad($iCurrentNumber, $iPositions, '0', STR_PAD_LEFT);
@@ -2616,11 +2634,17 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return array
      */
     public function fcpoGetYearRange() {
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
+        $sChooseString = $oLang->translateString('FCPO_PAYOLUTION_PLEASE SELECT');
         $iCurrentYear = (int) date('Y');
         $iHundredYearsAgo = $iCurrentYear - 100;
 
-        $aRange = $this->_fcpoGetNumericRange($iHundredYearsAgo, $iCurrentYear, 4);
-        $aReturn = array_reverse($aRange);
+        $aRange = $this->_fcpoGetNumericRange($iHundredYearsAgo, $iCurrentYear, 4, false);
+        $aReturn = array($sChooseString);
+        $aReverse = array_reverse($aRange);
+        foreach ($aReverse as $sYear) {
+            $aReturn[] = $sYear;
+        }
 
         return $aReturn;
     }
