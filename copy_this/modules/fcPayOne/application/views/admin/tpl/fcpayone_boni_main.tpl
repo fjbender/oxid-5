@@ -111,6 +111,48 @@ function loadLang(obj) {
             <td class="edittext"><input type="radio" name="confstrs[sFCPOAddresscheck]" value="PE" [{if $confstrs.sFCPOAddresscheck == 'PE'}]checked[{/if}]> [{oxmultilang ident="FCPO_PERSON_ADDRESSCHECK" }]</td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_PERSON_ADDRESSCHECK" }]<br></td>
         </tr>
+        <tr valign="top">
+            <td class="edittext" >
+                [{ oxmultilang ident="FCPO_MALUSHANDLING"}]
+            </td>
+            <td class="edittext" colspan="2">
+                <table border="0">
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_PERSONSTATUS"}]</td>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS"}] [{ oxinputhelp ident="FCPO_HELP_MALUS" }]</td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PPB"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPPB]" value="[{$confstrs.sFCPOMalusPPB}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PHB"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPHB]" value="[{$confstrs.sFCPOMalusPHB}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PAB"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPAB]" value="[{$confstrs.sFCPOMalusPAB}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PKI"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPKI]" value="[{$confstrs.sFCPOMalusPKI}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PNZ"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPNZ]" value="[{$confstrs.sFCPOMalusPNZ}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PPV"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPPV]" value="[{$confstrs.sFCPOMalusPPV}]"></td>
+                    </tr>
+                    <tr>
+                        <td class="edittext">[{ oxmultilang ident="FCPO_MALUS_PPF"}]</td>
+                        <td class="edittext"><input type=text name="confstrs[sFCPOMalusPPF]" value="[{$confstrs.sFCPOMalusPPF}]"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr><td colspan="3">&nbsp;</td></tr>
         <tr>
             <td class="edittext"></td>
             <td class="edittext">

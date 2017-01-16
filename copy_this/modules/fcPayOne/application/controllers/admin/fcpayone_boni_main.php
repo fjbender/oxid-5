@@ -36,7 +36,17 @@ class fcpayone_boni_main extends fcpayone_admindetails {
         'sFCPOApprovalText',
         'sFCPODenialText',
     );
-    
+
+    protected $_aDefaultValues = array(
+        'sFCPOMalusPPB' => '0',
+        'sFCPOMalusPHB' => '150',
+        'sFCPOMalusPAB' => '300',
+        'sFCPOMalusPKI' => '250',
+        'sFCPOMalusPNZ' => '400',
+        'sFCPOMalusPPV' => '500',
+        'sFCPOMalusPPF' => '400',
+    );
+
 
     /**
      * Loads payment protection configuration and passes them to Smarty engine, returns
@@ -63,6 +73,14 @@ class fcpayone_boni_main extends fcpayone_admindetails {
         $this->_aViewData["confbools"] = $aConfigs['bools'];
         $this->_aViewData["confstrs"] = $aConfigs['strs'];
         $this->_aViewData['sHelpURL'] = $this->_oFcpoHelper->fcpoGetHelpUrl();
+
+        $aConfStrs = $this->_aViewData["confstrs"];
+        foreach ($this->_aDefaultValues as $sVarName => $sValue) {
+            if(array_key_exists($sVarName, $aConfStrs) === false || empty($aConfStrs[$sVarName])) {
+                $aConfStrs[$sVarName] = $sValue;
+            }
+        }
+        $this->_aViewData["confstrs"] = $aConfStrs;
 
         return $sReturn;
     }
