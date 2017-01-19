@@ -133,7 +133,7 @@ class fcPayOneUser extends fcPayOneUser_parent {
         $blCheckedBoni = false;
         $sFCPOBonicheck = $oConfig->getConfigParam('sFCPOBonicheck');
         
-        if ( $sFCPOBonicheck == -1 || $sFCPOBonicheck == '-1' ) {
+        if ($sFCPOBonicheck == -1 || $sFCPOBonicheck == '-1' || !$sFCPOBonicheck) {
             $blFCPOBonicheck = false;
         } else {
             $blFCPOBonicheck = true;

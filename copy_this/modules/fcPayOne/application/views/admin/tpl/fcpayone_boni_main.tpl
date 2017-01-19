@@ -49,7 +49,7 @@ function loadLang(obj) {
 
         <tr>
             <td class="edittext">[{ oxmultilang ident="FCPO_CONSUMERSCORETYPE"}]</td>
-            <td class="edittext"><input type="radio" name="confstrs[sFCPOBonicheck]" value="-1" [{if $confstrs.sFCPOBonicheck == '-1'}]checked[{/if}]> [{ oxmultilang ident="FCPO_NO_BONICHECK" }]</td>
+            <td class="edittext"><input type="radio" name="confstrs[sFCPOBonicheck]" value="-1" [{if $confstrs.sFCPOBonicheck == '-1' || !$confstrs.sFCPOBonicheck}]checked[{/if}]> [{ oxmultilang ident="FCPO_NO_BONICHECK" }]</td>
             <td class="edittext">[{ oxinputhelp ident="FCPO_HELP_NO_BONICHECK" }]</td>
         </tr>
         <tr>
