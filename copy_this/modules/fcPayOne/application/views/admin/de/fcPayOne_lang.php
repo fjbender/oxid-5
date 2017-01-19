@@ -396,6 +396,18 @@ $aLang = array(
 'FCPO_RATEPAY_GENERAL_SETTINGS'             => 'RatePay Einstellungen',
 'FCPO_RATEPAY_B2BMODE'                      => 'RatePay im B2B-Modus betreiben',
 'FCPO_HELP_RATEPAY_B2BMODE'                 => 'Bei aktiviertem B2B Modus und vom Benutzer angegebenem Firmennamen wird die USt-IdNr. abgefragt. Bei B2C Kunden wird stattdessen das Geburtsdatum abgefragt.',
+'FCPO_MALUSHANDLING'                        => 'Personstatus Abzug Handling',
+'FCPO_PERSONSTATUS'                        	=> 'Personstatus',
+'FCPO_MALUS'                        		=> 'Abzug',
+'FCPO_MALUS_PPB'                            => 'Person kann f&uuml;r diese Adresse best&auml;tigt werden',
+'FCPO_MALUS_PHB'                            => 'Nachname bekannt',
+'FCPO_MALUS_PAB'                            => 'Vor- und Nachname unbekannt',
+'FCPO_MALUS_PKI'                            => 'Mehrdeutigkeit in Name und Adresse',
+'FCPO_MALUS_PNZ'                            => 'Kann nicht geliefert werden',
+'FCPO_MALUS_PPV'                            => 'Person verstorben',
+'FCPO_MALUS_PPF'                            => 'Details der postalischen Adresse sind inkorrekt',
+'FCPO_HELP_MALUS'                           => 'Die konfigurierten Abz&uuml;ge werden entsprechend dem R&uuml;ckgabewert der Adresspr&uuml;fung vom Bonit&auml;ts-Wert des Kunden abgezogen. Der Bonit&auml;ts-Wert kann 0 hierbei nicht unterschreiten.',
+
 );
 
 /*
