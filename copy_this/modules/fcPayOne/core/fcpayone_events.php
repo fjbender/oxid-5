@@ -187,7 +187,7 @@ class fcpayone_events
     public static $sQueryTableRatePay = "
         CREATE TABLE `fcporatepay` (
           `OXID` char(32) COLLATE latin1_general_ci NOT NULL,
-          `OXPAYMENTID` COLLATE latin1_general_ci char(32) NOT NULL,
+          `OXPAYMENTID` char(32) COLLATE latin1_general_ci NOT NULL,
           `shopid` int(11) NOT NULL,
           `merchant_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
           `merchant_status` int(11) DEFAULT NULL,
