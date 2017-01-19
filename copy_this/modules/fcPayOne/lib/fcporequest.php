@@ -1550,6 +1550,61 @@ class fcpoRequest extends oxSuperCfg {
     }
 
     /**
+     * This is the wrapper for address checks that has been called from the admin
+     *
+     * @param $oUser
+     * @param bool $blCheckDeliveryAddress
+     * @return mixed
+     */
+    public function sendRequestAddresscheck($oUser, $blCheckDeliveryAddress = false) {
+        $mReturn = $this->sendStandardRequestAddresscheck($oUser, $blCheckDeliveryAddress);
+        if(is_array($mReturn) && isset($mReturn['personstatus'])) {
+            $this->setPayoneMalus($oUser, $mReturn);
+        }
+        return $mReturn;
+    }
+
+
+    /**
+     * Method sets malus depending on addresscheck
+     *
+     * @param $oUser
+     * @param $aResponse
+     * @return void
+     */
+    public function setPayoneMalus($oUser, $aResponse) {
+        if(isset($aResponse['personstatus'])) {
+            $iNewMalus = $oUser->getConfig()->getConfigParam('sFCPOMalus'.strtoupper($aResponse['personstatus']));
+            if($iNewMalus !== null) {// null comes if personstatus is unkown
+                $iOldMalus = (int)$oUser->oxuser__fcpocurrmalus->value;
+
+                //realboni field is used to keep track of the "real" boni, since this calculation cuts of the boni at 0
+                //otherwise the customer could gain boni through this
+                $iOldBoni = $oUser->oxuser__fcporealboni->value;
+                if($iOldBoni === null) {// real boni not yet calculated
+                    $iOldBoni = (int)$oUser->oxuser__oxboni->value;
+                }
+
+                $oUser->oxuser__fcpocurrmalus->value = (int)$iNewMalus;
+
+                $iNewBoni = $iOldBoni + $iOldMalus - (int)$iNewMalus;
+                $oUser->oxuser__fcporealboni->value = $iNewBoni;
+
+                if($iNewBoni < 0) {
+                    $iNewBoni = 0;
+                }
+                $oUser->oxuser__oxboni->value = (int)$iNewBoni;
+                $oUser->save();
+
+                // setting it somehow is not saved, so save it this way
+                $sQuery = "UPDATE oxuser SET oxboni = '{$iNewBoni}' WHERE oxid = '{$oUser->getId()}'";
+                oxDb::getDb()->Execute($sQuery);
+            }
+        }
+    }
+
+
+    /**
      * Send request to PAYONE Server-API with request-type "addresscheck"
      * Returns array of the response if the address was checked
      * OR
@@ -1560,7 +1615,7 @@ class fcpoRequest extends oxSuperCfg {
      * 
      * @return array
      */
-    public function sendRequestAddresscheck($oUser, $blCheckDeliveryAddress = false) {
+    public function sendStandardRequestAddresscheck($oUser, $blCheckDeliveryAddress = false) {
         $oConfig = $this->getConfig();
         $this->addParameter('request', 'addresscheck');
         $this->addParameter('mode', $oConfig->getConfigParam('sFCPOBoniOpMode')); //Operationmode live or test
@@ -1595,7 +1650,7 @@ class fcpoRequest extends oxSuperCfg {
             if ($this->_wasAddressCheckedBefore() === false) {
                 $aResponse = $this->send();
 
-                if ($aResponse['status'] == 'VALID') {
+                if ($this->_fcpoCheckAddressCanBeSaved($aResponse)) {
                     $this->_saveCheckedAddress($aResponse);
                 }
 
@@ -1603,6 +1658,52 @@ class fcpoRequest extends oxSuperCfg {
             }
             return true;
         }
+    }
+
+    /**
+     * Method checks if current address can be saved after call for address check
+     *
+     * @param $aResponse
+     * @return bool
+     */
+    protected function _fcpoCheckAddressCanBeSaved($aResponse) {
+        $blReturn = (
+            $aResponse['status'] == 'VALID' &&
+            $this->_fcpoNotBlockingPersonstatus($aResponse)
+        );
+
+        return $blReturn;
+    }
+
+    /**
+     * Method checks if personstatus and settings block saving former addresschecks
+     *
+     * @param $aResponse
+     * @return bool
+     */
+    protected function _fcpoNotBlockingPersonstatus($aResponse) {
+        $oConfig = $this->getConfig();
+        $sFCPOAddresscheck = $oConfig->getConfigParam('sFCPOAddresscheck');
+        $sResponsePersonstatus = $aResponse['personstatus'];
+
+        $aBlockingPersonStatus = array();
+        $aPersonStatusToCheck = array('PPF', 'UKN', 'PUG', 'PNZ', 'PNP');
+
+        foreach ($aPersonStatusToCheck as $sPersonstatusToCheck) {
+            $blBlocking = $oConfig->getConfigParam('blFCPOAddCheck' . $sPersonstatusToCheck);
+            if ($blBlocking) {
+                $aBlockingPersonStatus[] = $sPersonstatusToCheck;
+            }
+        }
+
+        $blReturn = true;
+        if ($sFCPOAddresscheck == 'PE') {
+            $blReturn = (
+                !in_array($sResponsePersonstatus, $aBlockingPersonStatus)
+            );
+        }
+
+        return $blReturn;
     }
 
     /**

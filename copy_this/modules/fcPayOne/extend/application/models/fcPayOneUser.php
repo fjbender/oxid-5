@@ -133,7 +133,7 @@ class fcPayOneUser extends fcPayOneUser_parent {
         $blCheckedBoni = false;
         $sFCPOBonicheck = $oConfig->getConfigParam('sFCPOBonicheck');
         
-        if ( $sFCPOBonicheck == -1 || $sFCPOBonicheck == '-1' ) {
+        if ($sFCPOBonicheck == -1 || $sFCPOBonicheck == '-1' || !$sFCPOBonicheck) {
             $blFCPOBonicheck = false;
         } else {
             $blFCPOBonicheck = true;
@@ -306,8 +306,9 @@ class fcPayOneUser extends fcPayOneUser_parent {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oLang = $this->_oFcpoHelper->fcpoGetLang();
         $oUtilsView = $this->_oFcpoHelper->fcpoGetUtilsView();
+        $mPersonstatus = $oConfig->getConfigParam('blFCPOAddCheck' . $aResponse['personstatus']);
 
-        if ($oConfig->getConfigParam('blFCPOAddCheck' . $aResponse['personstatus'])) {
+        if ($mPersonstatus) {
             $sErrorMsg = $oLang->translateString('FCPO_ADDRESSCHECK_FAILED1') . $oLang->translateString('FCPO_ADDRESSCHECK_' . $aResponse['personstatus']) . $oLang->translateString('FCPO_ADDRESSCHECK_FAILED2');
             $oUtilsView->addErrorToDisplay($sErrorMsg, false, true);
             return false;

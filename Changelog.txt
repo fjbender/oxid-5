@@ -1,3 +1,12 @@
+==2.1.6==
+Releasdate: 2017-01-17
+  * Added check for personstatus UKN,PUG,PNZ and PNP
+  * Adjusted Addresscheck-Saves to NOT save an address as checked if personstatus is configured to lead user back to user-page and status occurs
+  * Fixed collation of foreign key fields of fcporatepay table
+  * Improved birthdate checking and displaying
+  * Integrated extension Addresscheck into core module
+  * Made 'No Boni Check' default value
+
 ==2.1.5==
 	Releasedate: 2016-12-20
   * Fixed AGB confirmation bug in EE
