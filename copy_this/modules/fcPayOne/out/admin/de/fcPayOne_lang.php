@@ -157,9 +157,13 @@ $aLang = array(
 'FCPO_ADDRESSCHECK_PHB'                     => 'Nachname bekannt',
 'FCPO_ADDRESSCHECK_PAB'                     => 'Vor- & Nachname nicht bekannt',
 'FCPO_ADDRESSCHECK_PKI'                     => 'Mehrdeutigkeit bei Name zu Anschrift',
-'FCPO_ADDRESSCHECK_PNZ'                     => 'nicht (mehr) zustellbar',
+'FCPO_ADDRESSCHECK_PNZ'                     => 'Wenn nicht (mehr) zu Adresse zustellbar wird Benutzer zum Benutzerformular zurück geschickt',
 'FCPO_ADDRESSCHECK_PPV'                     => 'Person verstorben',
 'FCPO_ADDRESSCHECK_PPF'                     => 'Wenn Adresse postalisch falsch wird Benutzer zum Benutzerformular zurück geschickt',
+'FCPO_ADDRESSCHECK_PUG'                     => 'Wenn Gebäude nicht bekannt wird Benutzer zum Benutzerformular zurück geschickt',
+'FCPO_ADDRESSCHECK_PUZ'                     => 'Wenn Person umgezogen wird Benutzer zum Benutzerformular zurück geschickt',
+'FCPO_ADDRESSCHECK_UKN'                     => 'Wenn Werte unbekannt wird Benutzer zum Benutzerformular zurück geschickt',
+'FCPO_ADDRESSCHECK_PNP'                     => 'Wenn Adresse aufgrund eines falschen Namens nicht geprüft werden kann wird Benutzer zum Benutzerformular zurück geschickt',
 'FCPO_DURABILITY_BONICHECK'                 => 'Lebensdauer Bonitätsprüfung in Tagen',
 'FCPO_HELP_DURABILITY_BONICHECK'            => 'Anzahl in Tagen, nach der eine neue Bonitätsprüfung durchgeführt wird.<br><br>Bitte beachten Sie die Bestimmungen des BDSG und der Vertragsbedingungen bzgl. der Speicherung und der Lebensdauer der Bonitätsprüfungen. Es wird empfohlen, eine Lebensdauer von 1 Tag zu konfigurieren.',
 'FCPO_MODULE_VERSION'                       => 'Version Modul',
@@ -392,6 +396,18 @@ $aLang = array(
 'FCPO_RATEPAY_GENERAL_SETTINGS'             => 'RatePay Einstellungen',
 'FCPO_RATEPAY_B2BMODE'                      => 'RatePay im B2B-Modus betreiben',
 'FCPO_HELP_RATEPAY_B2BMODE'                 => 'Bei aktiviertem B2B Modus und vom Benutzer angegebenem Firmennamen wird die USt-IdNr. abgefragt. Bei B2C Kunden wird stattdessen das Geburtsdatum abgefragt.',
+'FCPO_MALUSHANDLING'                        => 'Personstatus Abzug Handling',
+'FCPO_PERSONSTATUS'                        	=> 'Personstatus',
+'FCPO_MALUS'                        		=> 'Abzug',
+'FCPO_MALUS_PPB'                            => 'Person kann f&uuml;r diese Adresse best&auml;tigt werden',
+'FCPO_MALUS_PHB'                            => 'Nachname bekannt',
+'FCPO_MALUS_PAB'                            => 'Vor- und Nachname unbekannt',
+'FCPO_MALUS_PKI'                            => 'Mehrdeutigkeit in Name und Adresse',
+'FCPO_MALUS_PNZ'                            => 'Kann nicht geliefert werden',
+'FCPO_MALUS_PPV'                            => 'Person verstorben',
+'FCPO_MALUS_PPF'                            => 'Details der postalischen Adresse sind inkorrekt',
+'FCPO_HELP_MALUS'                           => 'Die konfigurierten Abz&uuml;ge werden entsprechend dem R&uuml;ckgabewert der Adresspr&uuml;fung vom Bonit&auml;ts-Wert des Kunden abgezogen. Der Bonit&auml;ts-Wert kann 0 hierbei nicht unterschreiten.',
+
 );
 
 /*
