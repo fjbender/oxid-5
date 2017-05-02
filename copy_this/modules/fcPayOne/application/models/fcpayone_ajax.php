@@ -45,11 +45,8 @@ else {
 
 // receive params
 $sPaymentId = filter_input( INPUT_POST, 'paymentid' );
-echo "PaymentId:".$sPaymentId."<br>";
 $sAction = filter_input( INPUT_POST, 'action' );
-echo "sAction:".$sAction."<br>";
 $sParamsJson = filter_input( INPUT_POST, 'params' );
-echo "sParamsJson:".$sParamsJson."<br>";
 
 /**
  * Class for receiving ajax calls and delivering needed data
