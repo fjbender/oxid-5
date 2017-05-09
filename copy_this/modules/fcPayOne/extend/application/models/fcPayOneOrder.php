@@ -735,10 +735,11 @@ class fcPayOneOrder extends fcPayOneOrder_parent {
      * @return bool
      */
     public function allowDebit() {
-        $blReturn = ($this->oxorder__fcpoauthmode->value == 'authorization') ? true : false;
-        if (!$blReturn) {
-            $iCount = $this->_oFcpoDb->GetOne("SELECT COUNT(*) FROM fcpotransactionstatus WHERE fcpo_txid = '{$this->oxorder__fcpotxid->value}' AND fcpo_txaction = 'capture'");
-            $blReturn = ($iCount == 0) ? false : true;
+        $blReturn = true;
+        $iCount = $this->_oFcpoDb->GetOne("SELECT COUNT(*) FROM fcpotransactionstatus WHERE fcpo_txid = '{$this->oxorder__fcpotxid->value}' AND fcpo_txaction = 'appointed'");
+
+        if ($iCount == 0) {
+            $blReturn = false;
         }
 
         return $blReturn;
