@@ -1023,7 +1023,6 @@ class fcpoRequest extends oxSuperCfg {
     public function sendRequestPayolutionInstallment($sPaymentId, $oUser, $aBankData = null, $sAction = 'calculation', $sWorkorderId = null, $sDuration = null) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oSession = $this->_oFcpoHelper->fcpoGetSession();
-        $oApplicationServer = oxNew('oxApplicationServer');
 
         $sRequestMethod = 'genericpayment';
         $sRequestMethod = ($sAction == 'preauthorization') ? 'preauthorization' : 'genericpayment';
@@ -1089,7 +1088,6 @@ class fcpoRequest extends oxSuperCfg {
     public function sendRequestPayolutionPreCheck($sPaymentId, $oUser, $aBankData, $sWorkorderId = null) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oSession = $this->_oFcpoHelper->fcpoGetSession();
-        $oApplicationServer = oxNew('oxApplicationServer');
 
         $this->addParameter('request', 'genericpayment'); //Request method
         $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
