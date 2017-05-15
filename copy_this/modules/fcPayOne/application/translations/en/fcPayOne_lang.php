@@ -161,6 +161,7 @@ $aLang = array(
     'FCPO_PAYOLUTION_INSTALLMENT_FINANCING_SUM' => 'Total',
     'FCPO_PAYOLUTION_INSTALLMENT_NOT_YET_SELECTED' => 'Please choose',
     'FCPO_PAYOLUTION_NO_INSTALLMENT_SELECTED' => 'You did not choose an installment.',
+    'FCPO_PAYOLUTION_BIRTHDATE_INVALID' => 'Your date of birth was not entered correctly',
 );
 
 /*
