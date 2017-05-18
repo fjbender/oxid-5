@@ -32,31 +32,77 @@ Installed OXID eShop > v4.7.0
 If you are updating from Version 1.52 or lower:
 1.	Deactivate the "Payone FinanceGate"
 2.	Delete the following files/folder from your server:
-3.	SHOPROOT/application/controllers/admin/inc
-4.	SHOPROOT/application/controllers/admin/fcpayone_admin.php
-5.	SHOPROOT/application/controllers/admin/fcpayone_apilog.php
-6.	SHOPROOT/application/controllers/admin/fcpayone_apilog_list.php
-7.	SHOPROOT/application/controllers/admin/fcpayone_apilog_main.php
-8.	SHOPROOT/application/controllers/admin/fcpayone_boni.php
-9.	SHOPROOT/application/controllers/admin/fcpayone_boni_list.php
-10.	SHOPROOT/application/controllers/admin/fcpayone_boni_main.php
-11.	SHOPROOT/application/controllers/admin/fcpayone_common.php
-12.	SHOPROOT/application/controllers/admin/fcpayone_list.php
-13.	SHOPROOT/application/controllers/admin/fcpayone_log.php
-14.	SHOPROOT/application/controllers/admin/fcpayone_log_list.php
-15.	SHOPROOT/application/controllers/admin/fcpayone_main.php
-16.	SHOPROOT/application/controllers/admin/fcpayone_order.php
-17.	SHOPROOT/application/controllers/admin/fcpayone_protocol.php
-18.	SHOPROOT/application/controllers/admin/fcpayone_status_forwarding.php
-19.	SHOPROOT/application/controllers/admin/fcpayone_status_mapping.php
-20.	SHOPROOT/application/controllers/admin/fcpayone_support.php
-21.	SHOPROOT/application/controllers/admin/fcpayone_support_list.php
-22.	SHOPROOT/application/controllers/admin/fcpayone_support_main.php
-23.	SHOPROOT/modules/fcPayOne
-24.	SHOPROOT/out/admin/img/certified_extension_100px.png
-25.	SHOPROOT/out/admin/img/logoclaim.gif
-26.	Copy the content of "copy this" into your shop root-folder (where config.inc.php lies).
-27.	Activate the "Payone FinanceGate"
+
+#####Folder application/contollers/admin:
+* fcpayone_admin.php
+* fcpayone_apilog.php
+* fcpayone_apilog_list.php
+* fcpayone_apilog_main.php
+* fcpayone_boni.php
+* fcpayone_boni_list.php
+* fcpayone_boni_main.php
+* fcpayone_common.php
+* fcpayone_list.php
+* fcpayone_log.php
+* fcpayone_log_list.php
+* fcpayone_main.php
+* fcpayone_order.php
+* fcpayone_protocol.php
+* fcpayone_status_forwarding.php
+* fcpayone_status_mapping.php
+* fcpayone_support.php
+* fcpayone_support_list.php
+* fcpayone_support_main.php
+
+#####Folder application/contollers/admin/inc:
+* fcpayone_main.inc.php
+
+#####Folder application/models:
+* fcpoconfig.php
+* fcporequest.php
+* fcporequestlog.php
+* fcpotransactionstatus.php
+
+Folder application/views/admin/de:
+* fcPayOne_lang.php
+
+#####Folder application/views/admin/en:
+* fcPayOne_lang.php
+
+#####Folder application/views/admin/tpl:
+* fcpayone.tpl
+* fcpayone_apilog.tpl
+* fcpayone_apilog_list.tpl
+* fcpayone_apilog_main.tpl
+* fcpayone_boni.tpl
+* fcpayone_boni_list.tpl
+* fcpayone_boni_main.tpl
+* fcpayone_cc_preview.tpl
+* fcpayone_common.tpl
+* fcpayone_list.tpl
+* fcpayone_log.tpl
+* fcpayone_log_list.tpl
+* fcpayone_main.tpl
+* fcpayone_order.tpl
+* fcpayone_protocol.tpl
+* fcpayone_status_forwarding.tpl
+* fcpayone_status_mapping.tpl
+* fcpayone_support.tpl
+* fcpayone_support_list.tpl
+* fcpayone_support_main.tpl
+
+#####Folder application/views/admin/tpl/popups:
+* fcpayone_main.tpl
+
+#####Folder modules/fcPayOne:
+* completely!
+
+#####Folder out\admin\img:
+* certified_extension_100px.png
+* logoclaim.gif
+
+3.	Copy the content of "copy this" into your shop root-folder (where config.inc.php lies).
+4.	Activate the "Payone FinanceGate"
 
 If you updating from version 2.x or higher:
 1.	Deactivate the "Payone FinanceGate"
