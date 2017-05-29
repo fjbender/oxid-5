@@ -146,15 +146,12 @@ class fcPayOneUser extends fcPayOneUser_parent {
         $blAddressCheckValid = ($blCheckAddress && $blAddressCheck);
         $blFCPOCorrectAddress = (bool) $oConfig->getConfigParam('blFCPOCorrectAddress');
         $blFCPOCheckDelAddress = (bool) $oConfig->getConfigParam('blFCPOCheckDelAddress');
-
-
         $blCheckedBoni = $this->_fcpoValidateBoni($blBoniCheckValid);
 
         if ($blAddressCheckValid) {
             //Addresscheck
             $blIsValidAddress = $this->_fcpoValidateAddress($sFCPOBonicheck, $blCheckedBoni, $blFCPOCorrectAddress);
             $blIsValidAddress = $this->_fcpoValidateDelAddress($blIsValidAddress, $blFCPOCheckDelAddress);
-
             if ($blIsValidAddress && $blFCPOCheckDelAddress === true) {
                 //Check Lieferadresse
                 $oPORequest = $this->_oFcpoHelper->getFactoryObject('fcporequest');
