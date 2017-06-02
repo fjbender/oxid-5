@@ -1571,8 +1571,9 @@ class fcpoRequest extends oxSuperCfg {
      * @return void
      */
     public function setPayoneMalus($oUser, $aResponse) {
-        if(isset($aResponse['personstatus'])) {
-            $iNewMalus = $oUser->getConfig()->getConfigParam('sFCPOMalus'.strtoupper($aResponse['personstatus']));
+        if(isset($aResponse['personstatus']) && is_object($oUser)) {
+            $oConfig = $this->getConfig();
+            $iNewMalus = $oConfig->getConfigParam('sFCPOMalus'.strtoupper($aResponse['personstatus']));
             if($iNewMalus !== null) {// null comes if personstatus is unkown
                 $iOldMalus = (int)$oUser->oxuser__fcpocurrmalus->value;
 
@@ -1618,7 +1619,7 @@ class fcpoRequest extends oxSuperCfg {
         $this->addParameter('request', 'addresscheck');
         $this->addParameter('mode', $oConfig->getConfigParam('sFCPOBoniOpMode')); //Operationmode live or test
         $this->addParameter('aid', $oConfig->getConfigParam('sFCPOSubAccountID')); //ID of PayOne Sub-Account
-        $sAddresschecktype = $oConfig->getConfigParam('sFCPOAddresscheck');
+        $sAddresschecktype = $this->_fcpoGetAddressCheckType();
         $this->addParameter('addresschecktype', $sAddresschecktype);
 
         if ($sAddresschecktype == 'PE' && $this->getCountryIso2($oUser->oxuser__oxcountryid->value) != 'DE') {
@@ -1656,6 +1657,49 @@ class fcpoRequest extends oxSuperCfg {
             }
             return true;
         }
+    }
+
+    /**
+     * Parses response and set fallback if conditions match
+     *
+     * @param $aResponse
+     * @return array
+     */
+    protected function _fcpoCheckUseFallbackBoniversum($aResponse) {
+        $oConfig = $this->getConfig();
+        $sScore = $aResponse['score'];
+        $sAddresscheckType = $this->_fcpoGetAddressCheckType();
+
+        $blUseFallBack = (
+            $sScore == 'U' &&
+            in_array($sAddresscheckType, array('BB', 'PB'))
+        );
+
+        if ($blUseFallBack) {
+            $sFCPOBoniversumFallback = $oConfig->getConfigParam('sFCPOBoniversumFallback');
+            $aResponse['score'] = $sFCPOBoniversumFallback;
+            if ($sFCPOBoniversumFallback == 'R' && $aResponse['status'] == 'VALID') {
+                $aResponse['status'] = 'ERROR';
+            }
+        }
+
+        return $aResponse;
+    }
+
+    /**
+     * Check, correct and return addresschecktype
+     *
+     */
+    protected function _fcpoGetAddressCheckType() {
+        $oConfig = $this->getConfig();
+        $sBoniCheckType = $oConfig->getConfigParam('sFCPOBonicheck');
+        $sAddressCheckType = $oConfig->getConfigParam('sFCPOAddresscheck');
+
+        if ($sBoniCheckType == 'CE') {
+            $sAddressCheckType = 'PB';
+        }
+
+        return $sAddressCheckType;
     }
 
     /**
@@ -1738,6 +1782,7 @@ class fcpoRequest extends oxSuperCfg {
             }
         }
         $sHash = md5($sAddress);
+
         return $sHash;
     }
 
@@ -1774,7 +1819,7 @@ class fcpoRequest extends oxSuperCfg {
      * @return array;
      */
     public function sendRequestConsumerscore($oUser) {
-        // Consumerscore nur f?r Deutschland zul?ssig
+        // Consumerscore nur fuer Deutschland zulaessig
         if ($this->getCountryIso2($oUser->oxuser__oxcountryid->value) == 'DE') {
             $oConfig = $this->getConfig();
             $this->addParameter('request', 'consumerscore');
@@ -1791,7 +1836,11 @@ class fcpoRequest extends oxSuperCfg {
             }
 
             $this->addParameter('language', $this->_oFcpoHelper->fcpoGetLang()->getLanguageAbbr());
-            return $this->send();
+
+            $aResponse = $this->send();
+            $aResponse = $this->_fcpoCheckUseFallbackBoniversum($aResponse);
+
+            return $aResponse;
         } else {
             // Ampel Gruen Response simulieren
             $aResponse = array('scorevalue' => 500, 'fcWrongCountry' => true);
