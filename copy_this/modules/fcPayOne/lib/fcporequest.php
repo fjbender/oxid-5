@@ -1774,7 +1774,8 @@ class fcpoRequest extends oxSuperCfg {
         foreach ($aAddressParameters as $sParamKey) {
             $sParamValue = $this->getParameter($sParamKey);
             if ($sParamValue) {
-                if ($aResponse !== false && array_key_exists($sParamKey, $aResponse) !== false && $aResponse[$sParamKey] != $sParamValue) {
+                $blCorrectAddressParam = $this->_fcpoCorrectAddressParam($sParamKey, $sParamValue, $aResponse);
+                if ($blCorrectAddressParam) {
                     //take the corrected value from the address-check
                     $sParamValue = $aResponse[$sParamKey];
                 }
@@ -1784,6 +1785,24 @@ class fcpoRequest extends oxSuperCfg {
         $sHash = md5($sAddress);
 
         return $sHash;
+    }
+
+    /**
+     * Check response against current addressdata
+     *
+     * @param $sParamKey
+     * @param $sParamValue
+     * @param $aResponse
+     * @return bool
+     */
+    protected function _fcpoCorrectAddressParam($sParamKey, $sParamValue, $aResponse) {
+        $blCorrectAddressParam = (
+            $aResponse !== false &&
+            array_key_exists($sParamKey, $aResponse) !== false &&
+            $aResponse[$sParamKey] != $sParamValue
+        );
+
+        return $blCorrectAddressParam;
     }
 
     /**
@@ -1808,7 +1827,7 @@ class fcpoRequest extends oxSuperCfg {
      */
     protected function _saveCheckedAddress($aResponse) {
         $sCheckHash = $this->_getAddressHash($aResponse);
-        $sQuery = "INSERT INTO fcpocheckedaddresses ( fcpo_address_hash ) VALUES ( '{$sCheckHash}' )";
+        $sQuery = "REPLACE INTO fcpocheckedaddresses ( fcpo_address_hash ) VALUES ( '{$sCheckHash}' )";
         oxDb::getDb()->Execute($sQuery);
     }
 
@@ -1819,7 +1838,7 @@ class fcpoRequest extends oxSuperCfg {
      * @return array;
      */
     public function sendRequestConsumerscore($oUser) {
-        // Consumerscore nur fuer Deutschland zulaessig
+        // Consumerscore only allowed in germany
         if ($this->getCountryIso2($oUser->oxuser__oxcountryid->value) == 'DE') {
             $oConfig = $this->getConfig();
             $this->addParameter('request', 'consumerscore');
