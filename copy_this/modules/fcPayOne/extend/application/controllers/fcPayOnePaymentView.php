@@ -1315,9 +1315,7 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
                 $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
                 $mReturn = null;
             } else if (!$blValidMandatoryUserData) {
-                $sMessage = $oLang->translateString('FCPO_PAYOLUTION_NO_USTID');
-                $this->_oFcpoHelper->fcpoSetSessionVariable('payerror', -20);
-                $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
+                // detailed error messages have been set in submethods
                 $mReturn = null;
             } else {
                 $aBankData = ($sPaymentId == 'fcpopo_debitnote' || $sPaymentId == 'fcpopo_installment') ? $this->_fcpoGetPayolutionBankData($sPaymentId) : false;
@@ -1409,12 +1407,19 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
     protected function _fcpoValidatePayolutionBillHasUstid() {
         $blReturn = true;
         $oConfig = $this->getConfig();
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
         $blB2BModeActive = $oConfig->getConfigParam('blFCPOPayolutionB2BMode');
         $blIsCompany = (bool)$this->fcpoGetUserValue('oxcompany');
 
         if ($blIsCompany && $blB2BModeActive) {
             $sUstid = $this->fcpoGetUserValue('oxustid');
             $blReturn = (bool) $sUstid;
+        }
+
+        if (!$blReturn) {
+            $sMessage = $oLang->translateString('FCPO_PAYOLUTION_NO_USTID');
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerror', -20);
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
         }
 
         return $blReturn;
@@ -1428,12 +1433,19 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return bool
      */
     protected function _fcpoValidatePayolutionBillHasTelephone() {
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
         $blTelephoneRequired = $this->fcpoPayolutionBillTelephoneRequired();
         $blReturn = true;
 
         if ($blTelephoneRequired) {
             $sCurrentTelephoneNumber = $this->fcpoGetUserValue('oxfon');
             $blReturn = (bool) $sCurrentTelephoneNumber;
+        }
+
+        if (!$blReturn) {
+            $sMessage = $oLang->translateString('FCPO_PAYOLUTION_PHONE_MISSING');
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerror', -20);
+            $this->_oFcpoHelper->fcpoSetSessionVariable('payerrortext', $sMessage);
         }
 
         return $blReturn;
@@ -1663,7 +1675,7 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      */
     protected function _fcpoSaveBirthdayData($aRequestedValues, $sPaymentId) {
         $oUser = $this->_fcpoGetUserFromSession();
-        $oLang = $this->_oFcpoHelper->fcpoGeLang();
+        $oLang = $this->_oFcpoHelper->fcpoGetLang();
         $sFieldNameAddition = str_replace("fcpopo_", "", $sPaymentId);
         $blSavedData = false;
 
@@ -2630,10 +2642,7 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
      * @return bool
      */
     public function fcpoPayolutionBillTelephoneRequired() {
-        $oLang = $this->_oFcpoHelper->fcpoGetLang();
-        $sBillCountry = $this->fcGetBillCountry();
-        $sShippingCountry = $this->fcGetShippingCountry();
-        $sTargetCountry = ($sShippingCountry) ? $sShippingCountry : $sBillCountry;
+        $sTargetCountry = $this->fcpoGetTargetCountry();
         $sCurrentTelephone = $this->fcpoGetUserValue('oxfon');
 
         $blRequired = (
@@ -2643,6 +2652,21 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
 
         return $blRequired;
     }
+
+    /**
+     * Returns shipping country if set or billing country if not as ISO 2 string
+     *
+     * @param void
+     * @return void
+     */
+    public function fcpoGetTargetCountry() {
+        $sBillCountry = $this->fcGetBillCountry();
+        $sShippingCountry = $this->fcGetShippingCountry();
+        $sTargetCountry = ($sShippingCountry) ? $sShippingCountry : $sBillCountry;
+
+        return $sTargetCountry;
+    }
+
 
     /**
      * Template getter which delivers certain parts of birthdate
@@ -2713,10 +2737,12 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         $oConfig = $this->getConfig();
         $oLang = $this->_oFcpoHelper->fcpoGetLang();
         $sLangAbbr = $oLang->getLanguageAbbr();
+        $sTargetCountry = strtoupper($this->fcpoGetTargetCountry());
 
         $sCompanyName = $oConfig->getConfigParam('sFCPOPayolutionCompany');
         $sLink  = $this->_sPayolutionAgreementBaseLink . '?mId=' . base64_encode($sCompanyName);
         $sLink .= '&lang='.$sLangAbbr;
+        $sLink .= '&territory='.$sTargetCountry;
 
         return $sLink;
     }
