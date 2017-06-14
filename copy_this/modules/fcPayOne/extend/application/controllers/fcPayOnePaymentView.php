@@ -101,6 +101,16 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
     protected $_aPayolutionBillMandatoryTelephoneCountries = array('NL');
 
     /**
+     * List of handled themes
+     * @var array
+     */
+    protected $_aSupportedThemes = array(
+        'flow' => 'flow',
+        'azure' => 'azure',
+        'mobile' => 'mobile',
+    );
+
+    /**
      * init object construction
      * 
      * @return null
@@ -574,6 +584,34 @@ class fcPayOnePaymentView extends fcPayOnePaymentView_parent {
         }
 
         return $aPaymentMetaData;
+    }
+
+    /**
+     * Method returns active theme path by checking current theme and its parent
+     * If theme is not assignable, 'azure' will be the fallback
+     *
+     * @param void
+     * @return string
+     */
+    public function fcpoGetActiveThemePath() {
+        $sReturn = 'azure';
+        $oTheme = $this->_oFcpoHelper->getFactoryObject('oxTheme');
+
+        $sCurrentActiveId = $oTheme->getActiveThemeId();
+        $oTheme->load($sCurrentActiveId);
+        $aThemeIds = array_keys($this->_aSupportedThemes);
+        $sCurrentParentId = $oTheme->getInfo('parentTheme');
+
+        // we're more interested on the parent then on child theme
+        if ($sCurrentParentId) {
+            $sCurrentActiveId = $sCurrentParentId;
+        }
+
+        if (in_array($sCurrentActiveId, $aThemeIds)) {
+            $sReturn = $this->_aSupportedThemes[$sCurrentActiveId];
+        }
+
+        return $sReturn;
     }
 
     /**
