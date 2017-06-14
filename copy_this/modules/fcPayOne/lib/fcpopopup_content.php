@@ -100,7 +100,7 @@ class fcpopopup_content extends oxBase {
      */
     public function fcpo_fetch_content() {
         $resCurl = curl_init();
-        $sUrl = $this->_sUrl."&duration=".$this->_sDuration;
+        $sUrl = $this->_sDuration ? $this->_sUrl."&duration=".$this->_sDuration : $this->_sUrl;
         
         curl_setopt($resCurl, CURLOPT_URL, $sUrl);
         curl_setopt($resCurl, CURLOPT_RETURNTRANSFER, true);
