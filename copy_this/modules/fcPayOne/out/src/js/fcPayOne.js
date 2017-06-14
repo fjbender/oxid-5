@@ -817,7 +817,7 @@ $('#payolution_installment_check_availability').click(function(){
         
         if (formType == 'checkbox') {
             var inputValue = '';
-            if ($(this).attr('checked')) {
+            if ($(this).prop('checked')) {
                 inputValue = $(this).val();
             }
         }

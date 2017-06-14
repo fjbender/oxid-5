@@ -823,6 +823,60 @@ class Unit_fcPayOne_Extend_Application_Controllers_fcPayOnePaymentView extends O
     }
 
     /**
+     * Testing case that current theme id is supported
+     */
+    public function test_fcpoGetActiveThemePath_ThemeMatches() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oMockTheme = $this->getMock('oxTheme', array('getActiveThemeId', 'load', 'getInfo'));
+        $oMockTheme->expects($this->any())->method('getActiveThemeId')->will($this->returnValue('flow'));
+        $oMockTheme->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockTheme->expects($this->any())->method('getInfo')->will($this->returnValue(''));
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockTheme));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+
+        $this->assertEquals('flow', $oTestObject->fcpoGetActiveThemePath());
+    }
+
+    /**
+     * Testing case that parent theme matches with supported theme ids
+     */
+    public function test_fcpoGetActiveThemePath_ParentThemeMatches() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oMockTheme = $this->getMock('oxTheme', array('getActiveThemeId', 'load', 'getInfo'));
+        $oMockTheme->expects($this->any())->method('getActiveThemeId')->will($this->returnValue('someChildTheme'));
+        $oMockTheme->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockTheme->expects($this->any())->method('getInfo')->will($this->returnValue('flow'));
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockTheme));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+
+        $this->assertEquals('flow', $oTestObject->fcpoGetActiveThemePath());
+    }
+
+    /**
+     * Testing case that wether theme id nor parent theme id is supported
+     */
+    public function test_fcpoGetActiveThemePath_Fallback() {
+        $oTestObject = oxNew('fcPayOnePaymentView');
+
+        $oMockTheme = $this->getMock('oxTheme', array('getActiveThemeId', 'load', 'getInfo'));
+        $oMockTheme->expects($this->any())->method('getActiveThemeId')->will($this->returnValue('someChildTheme'));
+        $oMockTheme->expects($this->any())->method('load')->will($this->returnValue(true));
+        $oMockTheme->expects($this->any())->method('getInfo')->will($this->returnValue('someParentTheme'));
+
+        $oHelper = $this->getMockBuilder('fcpohelper')->disableOriginalConstructor()->getMock();
+        $oHelper->expects($this->any())->method('getFactoryObject')->will($this->returnValue($oMockTheme));
+        $this->invokeSetAttribute($oTestObject, '_oFcpoHelper', $oHelper);
+
+        $this->assertEquals('azure', $oTestObject->fcpoGetActiveThemePath());
+    }
+
+    /**
      * Testing _fcpoGetOnlinePaymentData for coverage
      * 
      * @param void
