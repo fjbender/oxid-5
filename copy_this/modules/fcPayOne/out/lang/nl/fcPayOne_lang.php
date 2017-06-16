@@ -18,7 +18,7 @@
  * @version   OXID eShop CE
  */
 
-$sLangName = "English";
+$sLangName = "Dutch";
 // -------------------------------
 // RESOURCE IDENTITFIER = STRING
 // -------------------------------
@@ -130,9 +130,9 @@ $aLang = array(
     'FCPO_PAYOLUTION_YEAR' => 'Year',
     'FCPO_PAYOLUTION_MONTH' => 'Month',
     'FCPO_PAYOLUTION_DAY' => 'Day',
-    'FCPO_PAYOLUTION_AGREEMENT_PART_1' => 'I agree with the transmission of the necessary data to payolution which is needed for processing the purchase, the identity-check and the credit rating.<br>My',
-    'FCPO_PAYOLUTION_AGREEMENT_PART_2' => 'can be revoked for the future any time.',
-    'FCPO_PAYOLUTION_AGREE' => 'consent',
+    'FCPO_PAYOLUTION_AGREEMENT_PART_1' => 'Ik aanvaard de overdracht van de benodigde gegevens voor de afwikkeling van de aankoop op factuur en een controle van mijn identiteit en kredietwaardigheid.<br>Deze',
+    'FCPO_PAYOLUTION_AGREEMENT_PART_2' => 'kan ik op elk gewenst moment met onmiddellijke ingang herroepen.',
+    'FCPO_PAYOLUTION_AGREE' => 'inwilliging',
     'FCPO_PAYOLUTION_EMAIL_CLEARING' => 'Payolution Reference code:',
     'FCPO_PAYOLUTION_NOT_AGREED' => 'You did not agree to consent.',
     'FCPO_PAYOLUTION_SEPA_NOT_AGREED' => 'You did not grant SEPA direct debit mandate.',

@@ -1088,6 +1088,7 @@ class fcpoRequest extends oxSuperCfg {
     public function sendRequestPayolutionPreCheck($sPaymentId, $oUser, $aBankData, $sWorkorderId = null) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oSession = $this->_oFcpoHelper->fcpoGetSession();
+        $sTelephoneNumber = $oUser->oxuser__oxfon->value;
 
         $this->addParameter('request', 'genericpayment'); //Request method
         $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
@@ -1115,6 +1116,10 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('workorderid', $sWorkorderId);
         }
 
+        if ($sTelephoneNumber) {
+            $this->addParameter('telephonenumber', $sTelephoneNumber);
+        }
+
         if ($oConfig->isUtf()) {
             $this->addParameter('encoding', 'UTF-8');
         } else {
@@ -1126,6 +1131,8 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('ip', $sIp);
 
         $this->addParameter('language', $this->_oFcpoHelper->fcpoGetLang()->getLanguageAbbr());
+
+
 
         $blValidBankData = (
                 isset($aBankData) &&
