@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_PAYOLUTION_USTID"}]</label>
                 <div class="col-lg-9">
-                    <input class="form-control" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_bill_ustid]" value="[{$oView->fcpoGetUserValue('oxustid')}]">
+                    <input class="form-control" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_bill_oxustid]" value="[{$oView->fcpoGetUserValue('oxustid')}]">
                 </div>
             </div>
         [{elseif $oView->fcpoShowB2C()}]
@@ -36,6 +36,14 @@
                             <option value="[{$sYear}]" [{if $sYear == $oView->fcpoGetBirthdayField('year')}]selected[{/if}]>[{$sYear}]</option>
                         [{/foreach}]
                     </select>
+                </div>
+            </div>
+        [{/if}]
+        [{if $oView->fcpoPayolutionBillTelephoneRequired()}]
+            <div class="form-group">
+                <label class="req control-label col-lg-3">[{oxmultilang ident="FCPO_PAYOLUTION_PHONE"}]</label>
+                <div class="col-lg-9">
+                    <input class="form-control" type="text" size="20" maxlength="64" name="dynvalue[fcpo_payolution_bill_oxfon]" value="[{$oView->fcpoGetUserValue('oxfon')}]">
                 </div>
             </div>
         [{/if}]

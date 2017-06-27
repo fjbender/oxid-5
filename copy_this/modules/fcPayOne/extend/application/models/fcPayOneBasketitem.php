@@ -57,8 +57,11 @@ class fcPayOneBasketitem extends fcPayOneBasketitem_parent {
         $blReduceStockBefore    = !(bool)$oConfig->getConfigParam('blFCPOReduceStock');
         $blSuccess              = $this->_oFcpoHelper->fcpoGetRequestParameter('fcposuccess');
         $sRefNr                 = $this->_oFcpoHelper->fcpoGetRequestParameter('refnr');
-        $blCheckProduct         = !($blReduceStockBefore && $blSuccess && $sRefNr);
-        
+
+        if ($blSuccess && $sRefNr) {
+            $blCheckProduct         = !($blReduceStockBefore && $blSuccess && $sRefNr);
+        }
+
         try {
             $blReturn = $this->_fcpoParentGetArticle($blCheckProduct, $sProductId, $blDisableLazyLoading);//
         } 

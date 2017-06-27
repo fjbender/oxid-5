@@ -1088,6 +1088,7 @@ class fcpoRequest extends oxSuperCfg {
     public function sendRequestPayolutionPreCheck($sPaymentId, $oUser, $aBankData, $sWorkorderId = null) {
         $oConfig = $this->_oFcpoHelper->fcpoGetConfig();
         $oSession = $this->_oFcpoHelper->fcpoGetSession();
+        $sTelephoneNumber = $oUser->oxuser__oxfon->value;
 
         $this->addParameter('request', 'genericpayment'); //Request method
         $this->addParameter('mode', $this->getOperationMode($sPaymentId)); //PayOne Portal Operation Mode (live or test)
@@ -1115,6 +1116,10 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('workorderid', $sWorkorderId);
         }
 
+        if ($sTelephoneNumber) {
+            $this->addParameter('telephonenumber', $sTelephoneNumber);
+        }
+
         if ($oConfig->isUtf()) {
             $this->addParameter('encoding', 'UTF-8');
         } else {
@@ -1126,6 +1131,8 @@ class fcpoRequest extends oxSuperCfg {
             $this->addParameter('ip', $sIp);
 
         $this->addParameter('language', $this->_oFcpoHelper->fcpoGetLang()->getLanguageAbbr());
+
+
 
         $blValidBankData = (
                 isset($aBankData) &&
@@ -2139,7 +2146,7 @@ class fcpoRequest extends oxSuperCfg {
             $sPayOneUserId = $this->_getPayoneUserIdByCustNr($oUser->oxuser__oxcustnr->value);
             if ($sPayOneUserId) {
                 $oPORequest = oxNew('fcporequest');
-                $oResponse = $oPORequest->sendRequestUpdateuser($oOrder, $oUser, $sPayOneUserId);
+                $oResponse = $oPORequest->sendRequestUpdateuser($oOrder, $oUser);
             }
         }
     }
@@ -2218,10 +2225,9 @@ class fcpoRequest extends oxSuperCfg {
      * 
      * @return array
      */
-    public function sendRequestUpdateuser($oOrder, $oUser, $sPayOneUserId) {
+    public function sendRequestUpdateuser($oOrder, $oUser) {
         $this->addParameter('request', 'updateuser'); //Request method
         $this->addParameter('mode', $this->getOperationMode($oOrder->oxorder__oxpaymenttype->value)); //PayOne Portal Operation Mode (live or test)
-        $this->addParameter('customerid', $sPayOneUserId);
 
         $this->_addUserDataParameters($oOrder, $oUser, true);
         return $this->send();
