@@ -46,7 +46,7 @@ class fcPayOneUser extends fcPayOneUser_parent {
     protected function fcpoSetBoni($aResponse) {
         $boni = 100;
         if ($aResponse['scorevalue']) {
-            $boni = $aResponse['scorevalue'];
+            $boni = $this->_fcpoCalculateBoniFromScoreValue($aResponse['scorevalue']);
         } else {
             $aResponse = $this->_fcpoCheckUseFallbackBoniversum($aResponse);
             $aMap = array('G' => 500, 'Y' => 300, 'R' => 100);
@@ -64,6 +64,25 @@ class fcPayOneUser extends fcPayOneUser_parent {
         }
 
         $this->save();
+    }
+
+    /**
+     * Calculates scorevalue to make it usable in OXID
+     *
+     * @param $sScoreValue
+     * @return string
+     * @see https://integrator.payone.de/jira/browse/OXID-136
+     */
+    protected function _fcpoCalculateBoniFromScoreValue($sScoreValue) {
+        $dScoreValue = (double)$sScoreValue;
+        $oConfig = $this->getConfig();
+        $sFCPOBonicheck = $oConfig->getConfigParam('sFCPOBonicheck');
+
+        if ($sFCPOBonicheck == 'CE') {
+            $sScoreValue = (string) round(1000-($dScoreValue/6),0);
+        }
+
+        return $sScoreValue;
     }
 
     /**
